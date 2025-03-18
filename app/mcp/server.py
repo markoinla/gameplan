@@ -5,6 +5,10 @@ This module implements the Model Context Protocol server for the GamePlan applic
 allowing AI assistants to interact with the application programmatically.
 """
 import json
+import sys
+import logging
+import traceback
+from datetime import datetime
 from typing import Dict, List, Optional, Any, Union
 from fastapi import FastAPI, Request, Response
 from pydantic import BaseModel, Field
@@ -12,6 +16,17 @@ from pydantic import BaseModel, Field
 # Import models and database
 from app import db
 from app.models import Project, Sprint, Task, Issue
+
+# Configure logging
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.StreamHandler(sys.stderr),
+        logging.FileHandler('mcp_server_integrated.log')
+    ]
+)
+logger = logging.getLogger('mcp_server')
 
 # Create FastAPI app for MCP server
 mcp_app = FastAPI(title="GamePlan MCP Server", 
@@ -452,30 +467,93 @@ async def get_tools():
 async def execute_tool(request: Request):
     """Execute a tool based on the request"""
     from flask import request
-    data = request.get_json()
-    tool_name = data.get("name")
-    parameters = data.get("parameters", {}) or data.get("arguments", {})
     
-    # Log the received parameters for debugging
-    print(f"MCP execute tool: {tool_name} with parameters: {parameters}", file=sys.stderr)
+    # Generate a unique request ID for tracking
+    timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+    request_id = f"req_{timestamp}"
     
-    # Find the tool implementation
-    tool_impl = globals().get(f"tool_{tool_name}")
-    if not tool_impl:
-        return {"error": f"Tool '{tool_name}' not found"}
-    
-    # Execute the tool with the provided parameters
     try:
-        # Ensure boolean parameters are properly handled
-        for key, value in parameters.items():
-            if isinstance(value, str) and value.lower() in ['true', 'false']:
-                parameters[key] = value.lower() == 'true'
+        data = request.get_json()
+        if not data:
+            error_msg = "Invalid JSON data in request"
+            logger.error(f"[{request_id}] {error_msg}")
+            return {"error": error_msg}
+            
+        tool_name = data.get("name")
+        if not tool_name:
+            error_msg = "Missing tool name in request"
+            logger.error(f"[{request_id}] {error_msg}")
+            return {"error": error_msg}
+            
+        parameters = data.get("parameters", {}) or data.get("arguments", {})
+        if not isinstance(parameters, dict):
+            error_msg = f"Tool parameters must be an object, got {type(parameters).__name__}"
+            logger.error(f"[{request_id}] {error_msg}")
+            return {"error": error_msg}
         
-        result = tool_impl(**parameters)
-        return {"result": result}
+        # Log the received request
+        logger.info(f"[{request_id}] Executing tool: {tool_name}")
+        logger.debug(f"[{request_id}] Tool parameters: {json.dumps(parameters)}")
+        
+        # Find the tool implementation
+        tool_impl_name = f"tool_{tool_name}"
+        tool_impl = globals().get(tool_impl_name)
+        if not tool_impl:
+            error_msg = f"Tool '{tool_name}' not found (implementation '{tool_impl_name}' not found in globals)"
+            logger.error(f"[{request_id}] {error_msg}")
+            logger.debug(f"[{request_id}] Available tools: {[name for name in globals().keys() if name.startswith('tool_')]}")
+            return {"error": error_msg}
+        
+        # Execute the tool with the provided parameters
+        try:
+            # Ensure boolean parameters are properly handled
+            for key, value in parameters.items():
+                if isinstance(value, str) and value.lower() in ['true', 'false']:
+                    original_value = parameters[key]
+                    parameters[key] = value.lower() == 'true'
+                    logger.debug(f"[{request_id}] Converted boolean parameter '{key}': '{original_value}' -> {parameters[key]}")
+            
+            # Log the actual parameters being passed to the tool implementation
+            logger.debug(f"[{request_id}] Calling {tool_impl_name} with parameters: {json.dumps(parameters)}")
+            
+            result = tool_impl(**parameters)
+            
+            # Log the successful execution
+            logger.info(f"[{request_id}] Tool {tool_name} executed successfully")
+            logger.debug(f"[{request_id}] Result: {json.dumps(result) if result else 'None'}")
+            
+            return {"result": result}
+        except TypeError as e:
+            # Handle parameter mismatch errors specifically
+            error_msg = f"Parameter mismatch for tool '{tool_name}': {str(e)}"
+            logger.error(f"[{request_id}] {error_msg}")
+            
+            # Get the function signature to help with debugging
+            import inspect
+            try:
+                signature = str(inspect.signature(tool_impl))
+                logger.debug(f"[{request_id}] Expected signature for {tool_impl_name}: {signature}")
+            except:
+                logger.debug(f"[{request_id}] Could not get signature for {tool_impl_name}")
+                
+            return {"error": error_msg}
+        except ValueError as e:
+            # Handle validation errors
+            error_msg = f"Validation error for tool '{tool_name}': {str(e)}"
+            logger.error(f"[{request_id}] {error_msg}")
+            return {"error": error_msg}
+        except Exception as e:
+            # Handle other errors
+            error_msg = f"Error executing tool '{tool_name}': {str(e)}"
+            logger.error(f"[{request_id}] {error_msg}")
+            logger.error(f"[{request_id}] Traceback: {traceback.format_exc()}")
+            return {"error": error_msg}
     except Exception as e:
-        print(f"Error executing tool {tool_name}: {str(e)}", file=sys.stderr)
-        return {"error": str(e)}
+        # Handle unexpected errors in the request processing
+        error_msg = f"Unexpected error processing request: {str(e)}"
+        logger.error(f"[{request_id}] {error_msg}")
+        logger.error(f"[{request_id}] Traceback: {traceback.format_exc()}")
+        return {"error": error_msg}
 
 # Tool implementations
 def tool_list_projects():
@@ -745,7 +823,7 @@ def setup_mcp_server(app):
             for key, value in parameters.items():
                 if isinstance(value, str) and value.lower() in ['true', 'false']:
                     parameters[key] = value.lower() == 'true'
-            
+        
             result = tool_impl(**parameters)
             return {"result": result}
         except Exception as e:

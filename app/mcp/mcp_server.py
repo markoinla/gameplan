@@ -11,6 +11,10 @@ import sys
 import json
 import os
 import socket
+import logging
+import traceback
+from datetime import datetime
+
 try:
     import requests
 except ImportError:
@@ -22,6 +26,17 @@ from urllib.parse import urljoin
 DEFAULT_BASE_URL = "http://127.0.0.1:5001"
 # Default timeout for HTTP requests (in seconds)
 DEFAULT_TIMEOUT = 10
+
+# Configure logging
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.StreamHandler(sys.stderr),
+        logging.FileHandler(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'mcp_server.log'))
+    ]
+)
+logger = logging.getLogger('mcp_server')
 
 def find_available_port():
     """Find an available port on the system"""
@@ -35,16 +50,18 @@ def read_message():
     """Read a JSON-RPC message from stdin"""
     line = sys.stdin.readline()
     if not line:
+        logger.warning("Received empty input line")
         return None
     try:
         return json.loads(line)
     except json.JSONDecodeError as e:
-        print(f"Error decoding JSON: {str(e)}", file=sys.stderr)
+        logger.error(f"Error decoding JSON: {str(e)}")
         return None
 
 def write_message(message):
     """Write a JSON-RPC message to stdout"""
     json_str = json.dumps(message)
+    logger.debug(f"Sending response: {json_str}")
     sys.stdout.write(json_str + "\n")
     sys.stdout.flush()
 
@@ -67,13 +84,12 @@ def handle_initialize(message):
         response = requests.get(urljoin(base_url, "/mcp/tools"), timeout=DEFAULT_TIMEOUT)
         if response.status_code == 200:
             tools = response.json()
-            print(f"Successfully fetched {len(tools)} tools from the server", file=sys.stderr)
+            logger.info(f"Successfully fetched {len(tools)} tools from the server")
         else:
-            print(f"Error fetching tools: Status code {response.status_code}", file=sys.stderr)
+            logger.error(f"Error fetching tools: Status code {response.status_code}")
             tools = []
     except requests.RequestException as e:
-        # More specific exception handling
-        print(f"Error fetching tools: {str(e)}", file=sys.stderr)
+        logger.error(f"Error fetching tools: {str(e)}")
         tools = []
     
     return {
@@ -95,7 +111,7 @@ def handle_tools_list(message):
         response = requests.get(urljoin(base_url, "/mcp/tools"), timeout=DEFAULT_TIMEOUT)
         if response.status_code == 200:
             tools = response.json()
-            print(f"Successfully fetched {len(tools)} tools from the server", file=sys.stderr)
+            logger.info(f"Successfully fetched {len(tools)} tools from the server")
             return {
                 "jsonrpc": "2.0",
                 "id": message.get("id"),
@@ -104,7 +120,7 @@ def handle_tools_list(message):
                 }
             }
         else:
-            print(f"Error fetching tools: Status code {response.status_code}", file=sys.stderr)
+            logger.error(f"Error fetching tools: Status code {response.status_code}")
             return {
                 "jsonrpc": "2.0",
                 "id": message.get("id"),
@@ -114,7 +130,7 @@ def handle_tools_list(message):
                 }
             }
     except requests.RequestException as e:
-        print(f"Error fetching tools: {str(e)}", file=sys.stderr)
+        logger.error(f"Error fetching tools: {str(e)}")
         return {
             "jsonrpc": "2.0",
             "id": message.get("id"),
@@ -126,92 +142,178 @@ def handle_tools_list(message):
 
 def handle_tools_call(message):
     """Handle tools/call request"""
+    request_id = message.get("id", "unknown")
     params = message.get("params", {})
-    print(f"handle_tools_call message: {message}", file=sys.stderr)
+    
+    # Log the incoming request with a unique identifier
+    timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+    request_log_id = f"req_{timestamp}_{request_id}"
+    
+    logger.info(f"[{request_log_id}] Received tool call request")
+    logger.debug(f"[{request_log_id}] Full message: {json.dumps(message)}")
+    
+    # Extract and validate tool name
     tool_name = params.get("name")
+    if not tool_name:
+        error_msg = "Missing tool name in request"
+        logger.error(f"[{request_log_id}] {error_msg}")
+        return {
+            "jsonrpc": "2.0",
+            "id": request_id,
+            "error": {
+                "code": -32602,
+                "message": error_msg
+            }
+        }
+    
+    # Extract and validate tool parameters
     tool_params = params.get("arguments", {})
+    if not isinstance(tool_params, dict):
+        error_msg = f"Tool parameters must be an object, got {type(tool_params).__name__}"
+        logger.error(f"[{request_log_id}] {error_msg}")
+        return {
+            "jsonrpc": "2.0",
+            "id": request_id,
+            "error": {
+                "code": -32602,
+                "message": error_msg
+            }
+        }
+    
     base_url = get_base_url()
+    logger.info(f"[{request_log_id}] Executing tool: {tool_name}")
+    logger.debug(f"[{request_log_id}] Tool parameters: {json.dumps(tool_params)}")
     
-    print(f"Executing tool: {tool_name} with params: {tool_params}", file=sys.stderr)
-    print(f"Tool name type: {type(tool_name)}, Tool params type: {type(tool_params)}", file=sys.stderr)
-    
-    # Check if tool_name has a prefix and remove it if needed
+    # Handle tool name prefixes (e.g., mcp0_, mcp1_, etc.)
+    original_tool_name = tool_name
     if tool_name and "_" in tool_name:
         prefix, actual_name = tool_name.split("_", 1)
-        print(f"Tool name may have prefix: '{prefix}', actual name: '{actual_name}'", file=sys.stderr)
+        logger.debug(f"[{request_log_id}] Tool name has prefix: '{prefix}', actual name: '{actual_name}'")
+        
         # If the tool name has a prefix like 'mcp0_', remove it
         if prefix.startswith("mcp"):
-            original_tool_name = tool_name
             tool_name = actual_name
-            print(f"Removed prefix from tool name: {original_tool_name} -> {tool_name}", file=sys.stderr)
+            logger.info(f"[{request_log_id}] Removed prefix from tool name: {original_tool_name} -> {tool_name}")
     
     # Convert boolean values from strings to actual booleans if needed
     # This fixes issues with completed parameter for tasks and issues
     for key, value in tool_params.items():
         if isinstance(value, str) and value.lower() in ['true', 'false']:
+            original_value = tool_params[key]
             tool_params[key] = value.lower() == 'true'
+            logger.debug(f"[{request_log_id}] Converted boolean parameter '{key}': '{original_value}' -> {tool_params[key]}")
     
     try:
+        # Prepare the request to the internal API
+        api_endpoint = urljoin(base_url, "/mcp/execute")
+        request_data = {"name": tool_name, "parameters": tool_params}
+        
+        logger.debug(f"[{request_log_id}] Sending request to internal API: POST {api_endpoint}")
+        logger.debug(f"[{request_log_id}] Request data: {json.dumps(request_data)}")
+        
+        # Make the request to the internal API
         response = requests.post(
-            urljoin(base_url, "/mcp/execute"),
-            json={"name": tool_name, "parameters": tool_params},
+            api_endpoint,
+            json=request_data,
             timeout=DEFAULT_TIMEOUT
         )
-        print(f"handle_tools_call response: {response.status_code} {response.text}", file=sys.stderr)
+        
+        logger.debug(f"[{request_log_id}] Response status: {response.status_code}")
+        logger.debug(f"[{request_log_id}] Response body: {response.text}")
         
         if response.status_code == 200:
-            result = response.json().get("result")
-            return {
-                "jsonrpc": "2.0",
-                "id": message.get("id"),
-                "result": {
-                    "content": [
-                        {
-                            "type": "text",
-                            "text": json.dumps(result)
-                        }
-                    ]
+            try:
+                result = response.json().get("result")
+                logger.info(f"[{request_log_id}] Tool executed successfully")
+                
+                # Format the result for the MCP client
+                return {
+                    "jsonrpc": "2.0",
+                    "id": request_id,
+                    "result": {
+                        "content": [
+                            {
+                                "type": "text",
+                                "text": json.dumps(result)
+                            }
+                        ]
+                    }
                 }
-            }
+            except json.JSONDecodeError as e:
+                error_msg = f"Invalid JSON response from internal API: {str(e)}"
+                logger.error(f"[{request_log_id}] {error_msg}")
+                logger.error(f"[{request_log_id}] Response body: {response.text}")
+                return {
+                    "jsonrpc": "2.0",
+                    "id": request_id,
+                    "error": {
+                        "code": -32000,
+                        "message": error_msg
+                    }
+                }
         else:
-            print(f"Error executing tool: Status code {response.status_code}", file=sys.stderr)
+            # Handle HTTP error from the internal API
+            error_msg = f"Error from internal API: {response.status_code}"
+            try:
+                error_details = response.json()
+                if "error" in error_details:
+                    error_msg += f" - {error_details['error']}"
+            except:
+                error_msg += f" - {response.text}"
+            
+            logger.error(f"[{request_log_id}] {error_msg}")
             return {
                 "jsonrpc": "2.0",
-                "id": message.get("id"),
+                "id": request_id,
                 "error": {
                     "code": -32000,
-                    "message": f"Error from GamePlan MCP server: {response.status_code}"
+                    "message": error_msg
                 }
             }
     except requests.RequestException as e:
-        print(f"Error executing tool: {str(e)}", file=sys.stderr)
+        # Handle network errors
+        error_msg = f"Error communicating with internal API: {str(e)}"
+        logger.error(f"[{request_log_id}] {error_msg}")
         return {
             "jsonrpc": "2.0",
-            "id": message.get("id"),
+            "id": request_id,
             "error": {
                 "code": -32000,
-                "message": f"Error communicating with GamePlan MCP server: {str(e)}"
+                "message": error_msg
+            }
+        }
+    except Exception as e:
+        # Catch-all for unexpected errors
+        error_msg = f"Unexpected error processing tool call: {str(e)}"
+        logger.error(f"[{request_log_id}] {error_msg}")
+        logger.error(f"[{request_log_id}] Traceback: {traceback.format_exc()}")
+        return {
+            "jsonrpc": "2.0",
+            "id": request_id,
+            "error": {
+                "code": -32000,
+                "message": error_msg
             }
         }
 
 def main():
     """Main function to handle MCP protocol communication"""
     # Print startup message to stderr (won't interfere with JSON-RPC)
-    print(f"GamePlan MCP Bridge starting, connecting to {get_base_url()}", file=sys.stderr)
+    logger.info(f"GamePlan MCP Bridge starting, connecting to {get_base_url()}")
     
     # Find an available port
     port = find_available_port()
-    print(f"Starting MCP server on port {port}", file=sys.stderr)
+    logger.info(f"Starting MCP server on port {port}")
     
     while True:
         message = read_message()
         if not message:
-            print("No message received or invalid JSON, exiting", file=sys.stderr)
+            logger.warning("No message received or invalid JSON, exiting")
             break
         
         method = message.get("method")
         
-        print(f"Received method: {method}", file=sys.stderr)
+        logger.info(f"Received method: {method}")
         
         if method == "initialize":
             response = handle_initialize(message)
@@ -230,7 +332,7 @@ def main():
             })
             break
         else:
-            print(f"Unknown method: {method}", file=sys.stderr)
+            logger.error(f"Unknown method: {method}")
             write_message({
                 "jsonrpc": "2.0",
                 "id": message.get("id"),
