@@ -1,0 +1,571 @@
+/* GamePlan Dark Theme - Modern coding interface style
+ * This theme uses a dark background with white and light-grey accents
+ * No neon colors are used to maintain a clean, professional look
+ */
+
+:root {
+  /* Main color palette */
+  --gp-bg-dark: #1e1e2e;         /* Dark background */
+  --gp-bg-darker: #181825;       /* Darker background for contrast */
+  --gp-bg-lighter: #2a2a3c;      /* Slightly lighter background for cards, etc. */
+  --gp-primary: #7aa2f7;         /* Primary accent color - soft blue */
+  --gp-secondary: #565f89;       /* Secondary color - muted blue-grey */
+  --gp-text: #c0caf5;            /* Main text color - light blue-grey */
+  --gp-text-muted: #9aa5ce;      /* Muted text - lighter blue-grey */
+  --gp-text-bright: #ffffff;     /* Bright text for emphasis */
+  --gp-text-body: #e0e0f0;       /* Body text - slightly darker white for better readability */
+  --gp-border: #414868;          /* Border color */
+  --gp-success: #9ece6a;         /* Success color - soft green */
+  --gp-warning: #e0af68;         /* Warning color - soft orange */
+  --gp-danger: #f7768e;          /* Danger color - soft red */
+  --gp-info: #7dcfff;            /* Info color - soft cyan */
+  
+  /* Shadows */
+  --gp-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  --gp-shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.4);
+}
+
+/* Base styles */
+body {
+  background-color: var(--gp-bg-dark);
+  color: var(--gp-text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* Navigation bar */
+.navbar {
+  background-color: var(--gp-bg-darker) !important;
+  border-bottom: 1px solid var(--gp-border);
+}
+
+.navbar-brand, .nav-link {
+  color: var(--gp-text-bright) !important;
+}
+
+.nav-link:hover {
+  color: var(--gp-primary) !important;
+}
+
+/* Cards and containers */
+.card, .sprint-card {
+  background-color: var(--gp-bg-lighter);
+  border: 1px solid var(--gp-border);
+  box-shadow: var(--gp-shadow);
+}
+
+.card-header, .sprint-header {
+  background-color: var(--gp-bg-darker);
+  border-bottom: 1px solid var(--gp-border);
+  color: var(--gp-text-bright);
+}
+
+.card-body {
+  background-color: var(--gp-bg-lighter);
+}
+
+/* Project cards */
+.project-card {
+  transition: transform 0.2s, box-shadow 0.2s;
+  background-color: var(--gp-bg-lighter);
+  border: 1px solid var(--gp-border);
+}
+
+.project-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--gp-shadow-lg);
+  border-color: var(--gp-primary);
+}
+
+/* Sprint sections */
+.sprint-header {
+  background-color: var(--gp-bg-darker);
+  cursor: pointer;
+}
+
+.sprint-header:hover {
+  background-color: var(--gp-secondary);
+}
+
+/* Task and issue items */
+.task-item, .issue-item {
+  border-bottom: 1px solid var(--gp-border);
+  background-color: var(--gp-bg-lighter);
+  transition: background-color 0.2s;
+}
+
+.task-item:hover, .issue-item:hover {
+  background-color: var(--gp-bg-darker);
+}
+
+/* Form elements */
+.form-control, .form-select {
+  background-color: var(--gp-bg-darker);
+  border: 1px solid var(--gp-border);
+  color: var(--gp-text);
+}
+
+.form-control:focus, .form-select:focus {
+  background-color: var(--gp-bg-darker);
+  border-color: var(--gp-primary);
+  box-shadow: 0 0 0 0.25rem rgba(122, 162, 247, 0.25);
+  color: var(--gp-text-bright);
+}
+
+.form-check-input {
+  background-color: var(--gp-bg-darker);
+  border: 1px solid var(--gp-border);
+}
+
+.form-check-input:checked {
+  background-color: var(--gp-primary);
+  border-color: var(--gp-primary);
+}
+
+.form-check-input:checked + .form-check-label {
+  text-decoration: line-through;
+  color: var(--gp-text-muted);
+}
+
+/* Buttons */
+.btn-primary {
+  background-color: var(--gp-primary);
+  border-color: var(--gp-primary);
+  color: var(--gp-bg-darker);
+}
+
+.btn-primary:hover {
+  background-color: var(--gp-primary);
+  filter: brightness(110%);
+  border-color: var(--gp-primary);
+}
+
+.btn-secondary {
+  background-color: var(--gp-secondary);
+  border-color: var(--gp-secondary);
+}
+
+.btn-success {
+  background-color: var(--gp-success);
+  border-color: var(--gp-success);
+  color: var(--gp-bg-darker);
+}
+
+.btn-danger {
+  background-color: var(--gp-danger);
+  border-color: var(--gp-danger);
+  color: var(--gp-bg-darker);
+}
+
+.btn-warning {
+  background-color: var(--gp-warning);
+  border-color: var(--gp-warning);
+  color: var(--gp-bg-darker);
+}
+
+.btn-info {
+  background-color: var(--gp-info);
+  border-color: var(--gp-info);
+  color: var(--gp-bg-darker);
+}
+
+/* Modals */
+.modal-content {
+  background-color: var(--gp-bg-lighter);
+  border: 1px solid var(--gp-border);
+}
+
+.modal-header {
+  border-bottom: 1px solid var(--gp-border);
+  background-color: var(--gp-bg-darker);
+}
+
+.modal-footer {
+  border-top: 1px solid var(--gp-border);
+  background-color: var(--gp-bg-darker);
+}
+
+/* Table styles */
+.table {
+  color: var(--gp-text);
+}
+
+.table thead th {
+  background-color: var(--gp-bg-darker);
+  color: var(--gp-text-bright);
+  border-color: var(--gp-border);
+}
+
+.table tbody td {
+  border-color: var(--gp-border);
+}
+
+.table-hover tbody tr:hover {
+  background-color: var(--gp-bg-darker);
+  color: var(--gp-text-bright);
+}
+
+/* Footer */
+footer {
+  background-color: var(--gp-bg-darker) !important;
+  color: var(--gp-text-muted);
+  border-top: 1px solid var(--gp-border);
+}
+
+/* Text colors */
+.text-muted {
+  color: var(--gp-text-muted) !important;
+}
+
+.text-primary {
+  color: var(--gp-primary) !important;
+}
+
+.text-success {
+  color: var(--gp-success) !important;
+}
+
+.text-danger {
+  color: var(--gp-danger) !important;
+}
+
+.text-warning {
+  color: var(--gp-warning) !important;
+}
+
+.text-info {
+  color: var(--gp-info) !important;
+}
+
+/* Dark Mode Styles - Applied when the .dark-mode class is present */
+html.dark-mode body {
+  background-color: var(--gp-bg-dark);
+  color: var(--gp-text);
+}
+
+/* Improved text readability for paragraphs and other text elements */
+html.dark-mode p,
+html.dark-mode .card-text,
+html.dark-mode .project-description,
+html.dark-mode .project-requirements,
+html.dark-mode .sprint-description,
+html.dark-mode .task-details,
+html.dark-mode .issue-details {
+  color: var(--gp-text-body);
+}
+
+/* Improved readability for form labels */
+html.dark-mode label,
+html.dark-mode .form-check-label,
+html.dark-mode .form-label {
+  color: var(--gp-text-body);
+}
+
+/* Keep strikethrough style for completed tasks */
+html.dark-mode .form-check-input:checked + .form-check-label {
+  text-decoration: line-through;
+  color: var(--gp-text-muted);
+}
+
+/* Improved readability for headings */
+html.dark-mode h1,
+html.dark-mode h2,
+html.dark-mode h3,
+html.dark-mode h4,
+html.dark-mode h5,
+html.dark-mode h6,
+html.dark-mode .card-header h3,
+html.dark-mode .project-name,
+html.dark-mode .sprint-name {
+  color: var(--gp-text-bright);
+}
+
+html.dark-mode .navbar {
+  background-color: var(--gp-bg-darker) !important;
+  border-bottom: 1px solid var(--gp-border);
+}
+
+html.dark-mode .navbar-brand, 
+html.dark-mode .nav-link {
+  color: var(--gp-text-bright) !important;
+}
+
+html.dark-mode .nav-link:hover {
+  color: var(--gp-primary) !important;
+}
+
+/* Theme toggle button specific styles */
+html.dark-mode .theme-toggle {
+  color: var(--gp-text-bright) !important;
+  transition: color 0.2s ease;
+}
+
+html.dark-mode .theme-toggle:hover {
+  color: var(--gp-primary) !important;
+  background-color: transparent !important; /* Prevent any background color on hover */
+}
+
+/* Hamburger menu button styles */
+html.dark-mode .navbar-toggler {
+  border-color: var(--gp-border);
+  color: var(--gp-text-bright);
+  background-color: transparent;
+}
+
+html.dark-mode .navbar-toggler:hover,
+html.dark-mode .navbar-toggler:focus {
+  outline: none;
+  box-shadow: none;
+  border-color: var(--gp-primary);
+  background-color: transparent !important;
+}
+
+html.dark-mode .card, 
+html.dark-mode .sprint-card {
+  background-color: var(--gp-bg-lighter);
+  border: 1px solid var(--gp-border);
+  box-shadow: var(--gp-shadow);
+}
+
+html.dark-mode .card-header,
+html.dark-mode .card-header.bg-light,
+html.dark-mode .sprint-header {
+  background-color: var(--gp-bg-darker) !important;
+  border-bottom: 1px solid var(--gp-border);
+  color: var(--gp-text-bright);
+}
+
+html.dark-mode .card-body {
+  background-color: var(--gp-bg-lighter);
+}
+
+html.dark-mode .project-card {
+  background-color: var(--gp-bg-lighter);
+  border: 1px solid var(--gp-border);
+}
+
+html.dark-mode .project-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--gp-shadow-lg);
+  border-color: var(--gp-primary);
+}
+
+html.dark-mode .sprint-header {
+  background-color: var(--gp-bg-darker);
+}
+
+html.dark-mode .sprint-header:hover {
+  background-color: var(--gp-secondary);
+}
+
+html.dark-mode .task-item, 
+html.dark-mode .issue-item {
+  border-bottom: 1px solid var(--gp-border);
+  background-color: var(--gp-bg-lighter);
+}
+
+html.dark-mode .task-item:hover, 
+html.dark-mode .issue-item:hover {
+  background-color: var(--gp-bg-darker);
+}
+
+html.dark-mode .bg-light {
+  background-color: var(--gp-bg-lighter) !important;
+  color: var(--gp-text) !important;
+}
+
+html.dark-mode .form-control, 
+html.dark-mode .form-select {
+  background-color: var(--gp-bg-darker);
+  border: 1px solid var(--gp-border);
+  color: var(--gp-text);
+}
+
+html.dark-mode .form-control:focus, 
+html.dark-mode .form-select:focus {
+  background-color: var(--gp-bg-darker);
+  border-color: var(--gp-primary);
+  box-shadow: 0 0 0 0.25rem rgba(122, 162, 247, 0.25);
+  color: var(--gp-text-bright);
+}
+
+html.dark-mode .form-check-input {
+  background-color: var(--gp-bg-darker);
+  border: 1px solid var(--gp-border);
+}
+
+html.dark-mode .form-check-input:checked {
+  background-color: var(--gp-primary);
+  border-color: var(--gp-primary);
+}
+
+html.dark-mode .form-check-input:checked + .form-check-label {
+  text-decoration: line-through;
+  color: var(--gp-text-muted);
+}
+
+html.dark-mode .btn-primary {
+  background-color: var(--gp-primary);
+  border-color: var(--gp-primary);
+  color: var(--gp-bg-darker);
+}
+
+html.dark-mode .btn-primary:hover {
+  background-color: var(--gp-primary);
+  filter: brightness(110%);
+  border-color: var(--gp-primary);
+}
+
+html.dark-mode .btn-secondary {
+  background-color: var(--gp-secondary);
+  border-color: var(--gp-secondary);
+}
+
+html.dark-mode .btn-success {
+  background-color: var(--gp-success);
+  border-color: var(--gp-success);
+  color: var(--gp-bg-darker);
+}
+
+html.dark-mode .btn-danger {
+  background-color: var(--gp-danger);
+  border-color: var(--gp-danger);
+  color: var(--gp-bg-darker);
+}
+
+html.dark-mode .btn-warning {
+  background-color: var(--gp-warning);
+  border-color: var(--gp-warning);
+  color: var(--gp-bg-darker);
+}
+
+html.dark-mode .btn-info {
+  background-color: var(--gp-info);
+  border-color: var(--gp-info);
+  color: var(--gp-bg-darker);
+}
+
+html.dark-mode .btn-outline-primary,
+html.dark-mode .btn-outline-secondary,
+html.dark-mode .btn-outline-success,
+html.dark-mode .btn-outline-danger,
+html.dark-mode .btn-outline-warning,
+html.dark-mode .btn-outline-info {
+  color: var(--gp-text);
+}
+
+html.dark-mode .btn-outline-primary:hover,
+html.dark-mode .btn-outline-secondary:hover,
+html.dark-mode .btn-outline-success:hover,
+html.dark-mode .btn-outline-danger:hover,
+html.dark-mode .btn-outline-warning:hover,
+html.dark-mode .btn-outline-info:hover {
+  color: var(--gp-text-bright);
+}
+
+html.dark-mode .modal-content {
+  background-color: var(--gp-bg-lighter);
+  border: 1px solid var(--gp-border);
+}
+
+html.dark-mode .modal-header {
+  border-bottom: 1px solid var(--gp-border);
+  background-color: var(--gp-bg-darker);
+}
+
+html.dark-mode .modal-footer {
+  border-top: 1px solid var(--gp-border);
+  background-color: var(--gp-bg-darker);
+}
+
+html.dark-mode .table {
+  color: var(--gp-text);
+}
+
+html.dark-mode .table thead th {
+  background-color: var(--gp-bg-darker);
+  color: var(--gp-text-bright);
+  border-color: var(--gp-border);
+}
+
+html.dark-mode .table tbody td {
+  border-color: var(--gp-border);
+}
+
+html.dark-mode .table-hover tbody tr:hover {
+  background-color: var(--gp-bg-darker);
+  color: var(--gp-text-bright);
+}
+
+html.dark-mode footer {
+  background-color: var(--gp-bg-darker) !important;
+  color: var(--gp-text-muted);
+  border-top: 1px solid var(--gp-border);
+}
+
+html.dark-mode .text-muted {
+  color: var(--gp-text-muted) !important;
+}
+
+html.dark-mode .text-primary {
+  color: var(--gp-primary) !important;
+}
+
+html.dark-mode .text-success {
+  color: var(--gp-success) !important;
+}
+
+html.dark-mode .text-danger {
+  color: var(--gp-danger) !important;
+}
+
+html.dark-mode .text-warning {
+  color: var(--gp-warning) !important;
+}
+
+html.dark-mode .text-info {
+  color: var(--gp-info) !important;
+}
+
+/* Collapsible sections styling for dark mode */
+html.dark-mode .collapsible-header:hover {
+  background-color: var(--gp-bg-darker);
+}
+
+html.dark-mode .collapsible-header .btn-link {
+  color: var(--gp-text-muted);
+}
+
+html.dark-mode .collapsible-header .btn-link:hover {
+  color: var(--gp-text-bright);
+}
+
+/* Sprint header collapsible styling for dark mode */
+html.dark-mode .sprint-header .toggle-icon {
+  color: var(--gp-text-muted);
+}
+
+html.dark-mode .sprint-header:hover .toggle-icon {
+  color: var(--gp-text-bright);
+}
+
+/* Theme toggle button styling */
+.theme-toggle {
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+}
+
+.theme-toggle:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+html.dark-mode .theme-toggle:hover {
+  background-color: var(--gp-bg-lighter);
+}
+
+/* Smooth transition between themes */
+body, .card, .sprint-card, .project-card, .navbar, .form-control, 
+.btn, .modal-content, .task-item, .issue-item {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}

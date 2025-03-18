@@ -32,13 +32,30 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <div class="mb-3">
-                        <h5>Description & Goals:</h5>
-                        <p class="project-description">{{ project.description or 'No description provided.' }}</p>
+                    <!-- Description Section - Collapsible with Alpine.js -->
+                    <div class="mb-3" x-data="{ descOpen{{ project.id }}: true }">
+                        <div class="d-flex justify-content-between align-items-center collapsible-header" @click="descOpen{{ project.id }} = !descOpen{{ project.id }}">
+                            <h5 class="mb-0">Description & Goals:</h5>
+                            <button class="btn btn-sm btn-link p-0" @click.stop="descOpen{{ project.id }} = !descOpen{{ project.id }}">
+                                <i class="fas" :class="descOpen{{ project.id }} ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+                            </button>
+                        </div>
+                        <div x-show="descOpen{{ project.id }}" x-transition.duration.200ms>
+                            <p class="project-description mt-2">{{ project.description or 'No description provided.' }}</p>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <h5>Requirements:</h5>
-                        <p class="project-requirements">{{ project.requirements or 'No requirements specified.' }}</p>
+                    
+                    <!-- Requirements Section - Collapsible with Alpine.js -->
+                    <div class="mb-3" x-data="{ reqOpen{{ project.id }}: true }">
+                        <div class="d-flex justify-content-between align-items-center collapsible-header" @click="reqOpen{{ project.id }} = !reqOpen{{ project.id }}">
+                            <h5 class="mb-0">Requirements:</h5>
+                            <button class="btn btn-sm btn-link p-0" @click.stop="reqOpen{{ project.id }} = !reqOpen{{ project.id }}">
+                                <i class="fas" :class="reqOpen{{ project.id }} ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+                            </button>
+                        </div>
+                        <div x-show="reqOpen{{ project.id }}" x-transition.duration.200ms>
+                            <p class="project-requirements mt-2">{{ project.requirements or 'No requirements specified.' }}</p>
+                        </div>
                     </div>
                     
                     <!-- Sprints Section -->
@@ -48,102 +65,135 @@
                             {% if project.sprints %}
                                 {% for sprint in project.sprints %}
                                     <div class="card mb-3 sprint-card" data-sprint-id="{{ sprint.id }}">
-                                        <div class="card-header d-flex justify-content-between align-items-center sprint-header" 
-                                             data-bs-toggle="collapse" 
-                                             data-bs-target="#sprint{{ sprint.id }}Content" 
-                                             aria-expanded="true">
-                                            <div>
-                                                <span class="sprint-name">{{ sprint.name }}</span>
-                                                <span class="badge rounded-pill 
-                                                    {% if sprint.status == 'Planned' %}bg-secondary
-                                                    {% elif sprint.status == 'Active' %}bg-primary
-                                                    {% elif sprint.status == 'Completed' %}bg-success
-                                                    {% endif %}">{{ sprint.status }}</span>
-                                            </div>
-                                            <div class="sprint-actions">
-                                                <button class="btn btn-sm btn-outline-secondary me-2 edit-sprint-btn" data-sprint-id="{{ sprint.id }}">
-                                                    <i class="fas fa-edit"></i>
-                                                </button>
-                                                <button class="btn btn-sm btn-outline-danger delete-sprint-btn" data-sprint-id="{{ sprint.id }}">
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
-                                                <i class="fas fa-chevron-down toggle-icon"></i>
-                                            </div>
-                                        </div>
-                                        <div class="collapse show" id="sprint{{ sprint.id }}Content">
-                                            <div class="card-body">
-                                                <p class="sprint-description">{{ sprint.description or 'No description provided.' }}</p>
-                                                
-                                                <!-- Tasks Section -->
-                                                <div class="tasks-section mt-3">
-                                                    <div class="d-flex justify-content-between align-items-center mb-2">
-                                                        <h5>Tasks</h5>
-                                                        <button class="btn btn-sm btn-outline-primary add-task-btn" data-sprint-id="{{ sprint.id }}">
-                                                            <i class="fas fa-plus me-1"></i>Add Task
-                                                        </button>
-                                                    </div>
-                                                    <ul class="list-group tasks-list">
-                                                        {% if sprint.tasks %}
-                                                            {% for task in sprint.tasks %}
-                                                                <li class="list-group-item d-flex justify-content-between align-items-center task-item" data-task-id="{{ task.id }}">
-                                                                    <div class="form-check">
-                                                                        <input class="form-check-input task-checkbox" type="checkbox" 
-                                                                               {% if task.completed %}checked{% endif %}
-                                                                               data-task-id="{{ task.id }}">
-                                                                        <label class="form-check-label {% if task.completed %}text-decoration-line-through{% endif %}">
-                                                                            {{ task.details }}
-                                                                        </label>
-                                                                    </div>
-                                                                    <div class="task-actions">
-                                                                        <button class="btn btn-sm btn-outline-secondary edit-task-btn" data-task-id="{{ task.id }}">
-                                                                            <i class="fas fa-edit"></i>
-                                                                        </button>
-                                                                        <button class="btn btn-sm btn-outline-danger delete-task-btn" data-task-id="{{ task.id }}">
-                                                                            <i class="fas fa-trash"></i>
-                                                                        </button>
-                                                                    </div>
-                                                                </li>
-                                                            {% endfor %}
-                                                        {% else %}
-                                                            <li class="list-group-item text-muted">No tasks created yet.</li>
-                                                        {% endif %}
-                                                    </ul>
+                                        <!-- Sprint Header - Collapsible with Alpine.js -->
+                                        <div x-data="{ sprintOpen{{ sprint.id }}: true }" class="sprint-container">
+                                            <div class="card-header d-flex justify-content-between align-items-center sprint-header cursor-pointer" 
+                                                 @click="sprintOpen{{ sprint.id }} = !sprintOpen{{ sprint.id }}">
+                                                <div>
+                                                    <span class="sprint-name">{{ sprint.name }}</span>
+                                                    <span class="badge rounded-pill 
+                                                        {% if sprint.status == 'Planned' %}bg-secondary
+                                                        {% elif sprint.status == 'Active' %}bg-primary
+                                                        {% elif sprint.status == 'Completed' %}bg-success
+                                                        {% endif %}">{{ sprint.status }}</span>
                                                 </div>
-                                                
-                                                <!-- Issues Section -->
-                                                <div class="issues-section mt-3">
-                                                    <div class="d-flex justify-content-between align-items-center mb-2">
-                                                        <h5>Issues</h5>
-                                                        <button class="btn btn-sm btn-outline-primary add-issue-btn" data-sprint-id="{{ sprint.id }}">
-                                                            <i class="fas fa-plus me-1"></i>Add Issue
-                                                        </button>
+                                                <div class="sprint-actions">
+                                                    <button class="btn btn-sm btn-outline-secondary me-2 edit-sprint-btn" 
+                                                            data-sprint-id="{{ sprint.id }}" 
+                                                            @click.stop>
+                                                        <i class="fas fa-edit"></i>
+                                                    </button>
+                                                    <button class="btn btn-sm btn-outline-danger delete-sprint-btn" 
+                                                            data-sprint-id="{{ sprint.id }}" 
+                                                            @click.stop>
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                    <i class="fas" :class="sprintOpen{{ sprint.id }} ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+                                                </div>
+                                            </div>
+                                            <!-- Sprint Content - Shown/Hidden based on sprintOpen state -->
+                                            <div x-show="sprintOpen{{ sprint.id }}" x-transition.duration.200ms id="sprint{{ sprint.id }}Content">
+                                                <div class="card-body">
+                                                    <!-- Sprint Description - Collapsible -->
+                                                    <div class="mb-3" x-data="{ sprintDescOpen{{ sprint.id }}: true }">
+                                                        <div class="d-flex justify-content-between align-items-center collapsible-header" @click="sprintDescOpen{{ sprint.id }} = !sprintDescOpen{{ sprint.id }}">
+                                                            <h5 class="mb-0">Description:</h5>
+                                                            <button class="btn btn-sm btn-link p-0" @click.stop="sprintDescOpen{{ sprint.id }} = !sprintDescOpen{{ sprint.id }}">
+                                                                <i class="fas" :class="sprintDescOpen{{ sprint.id }} ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+                                                            </button>
+                                                        </div>
+                                                        <div x-show="sprintDescOpen{{ sprint.id }}" x-transition.duration.200ms>
+                                                            <p class="sprint-description mt-2">{{ sprint.description or 'No description provided.' }}</p>
+                                                        </div>
                                                     </div>
-                                                    <ul class="list-group issues-list">
-                                                        {% if sprint.issues %}
-                                                            {% for issue in sprint.issues %}
-                                                                <li class="list-group-item d-flex justify-content-between align-items-center issue-item" data-issue-id="{{ issue.id }}">
-                                                                    <div class="form-check">
-                                                                        <input class="form-check-input issue-checkbox" type="checkbox" 
-                                                                               {% if issue.completed %}checked{% endif %}
-                                                                               data-issue-id="{{ issue.id }}">
-                                                                        <label class="form-check-label {% if issue.completed %}text-decoration-line-through{% endif %}">
-                                                                            {{ issue.details }}
-                                                                        </label>
+                                                    
+                                                    <!-- Tasks Section -->
+                                                    <div class="tasks-section mt-3" x-data="{ tasksOpen{{ sprint.id }}: true }">
+                                                        <div class="d-flex justify-content-between align-items-center mb-2 collapsible-header" @click="tasksOpen{{ sprint.id }} = !tasksOpen{{ sprint.id }}">
+                                                            <h5 class="mb-0">Tasks</h5>
+                                                            <div>
+                                                                <button class="btn btn-sm btn-outline-primary add-task-btn me-2" data-sprint-id="{{ sprint.id }}" @click.stop>
+                                                                    <i class="fas fa-plus me-1"></i>Add Task
+                                                                </button>
+                                                                <button class="btn btn-sm btn-link p-0" @click.stop="tasksOpen{{ sprint.id }} = !tasksOpen{{ sprint.id }}">
+                                                                    <i class="fas" :class="tasksOpen{{ sprint.id }} ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                        <div x-show="tasksOpen{{ sprint.id }}" x-transition.duration.200ms>
+                                                            <div class="task-list">
+                                                                {% if sprint.tasks %}
+                                                                    {% for task in sprint.tasks %}
+                                                                        <div class="task-item p-2 d-flex justify-content-between align-items-center" data-task-id="{{ task.id }}">
+                                                                            <div class="form-check">
+                                                                                <input class="form-check-input task-check" type="checkbox" value="" id="task{{ task.id }}" 
+                                                                                    {% if task.completed %}checked{% endif %} data-task-id="{{ task.id }}">
+                                                                                <label class="form-check-label {% if task.completed %}text-muted{% endif %}" for="task{{ task.id }}">
+                                                                                    {{ task.details }}
+                                                                                </label>
+                                                                            </div>
+                                                                            <div class="task-actions">
+                                                                                <button class="btn btn-sm btn-link edit-task-btn" data-task-id="{{ task.id }}">
+                                                                                    <i class="fas fa-edit"></i>
+                                                                                </button>
+                                                                                <button class="btn btn-sm btn-link text-danger delete-task-btn" data-task-id="{{ task.id }}">
+                                                                                    <i class="fas fa-trash"></i>
+                                                                                </button>
+                                                                            </div>
+                                                                        </div>
+                                                                    {% endfor %}
+                                                                {% else %}
+                                                                    <div class="text-center py-3 text-muted">
+                                                                        <p>No tasks created yet for this sprint.</p>
                                                                     </div>
-                                                                    <div class="issue-actions">
-                                                                        <button class="btn btn-sm btn-outline-secondary edit-issue-btn" data-issue-id="{{ issue.id }}">
-                                                                            <i class="fas fa-edit"></i>
-                                                                        </button>
-                                                                        <button class="btn btn-sm btn-outline-danger delete-issue-btn" data-issue-id="{{ issue.id }}">
-                                                                            <i class="fas fa-trash"></i>
-                                                                        </button>
+                                                                {% endif %}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <!-- Issues Section -->
+                                                    <div class="issues-section mt-3" x-data="{ issuesOpen{{ sprint.id }}: true }">
+                                                        <div class="d-flex justify-content-between align-items-center mb-2 collapsible-header" @click="issuesOpen{{ sprint.id }} = !issuesOpen{{ sprint.id }}">
+                                                            <h5 class="mb-0">Issues</h5>
+                                                            <div>
+                                                                <button class="btn btn-sm btn-outline-primary add-issue-btn me-2" data-sprint-id="{{ sprint.id }}" @click.stop>
+                                                                    <i class="fas fa-plus me-1"></i>Add Issue
+                                                                </button>
+                                                                <button class="btn btn-sm btn-link p-0" @click.stop="issuesOpen{{ sprint.id }} = !issuesOpen{{ sprint.id }}">
+                                                                    <i class="fas" :class="issuesOpen{{ sprint.id }} ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                        <div x-show="issuesOpen{{ sprint.id }}" x-transition.duration.200ms>
+                                                            <div class="issue-list">
+                                                                {% if sprint.issues %}
+                                                                    {% for issue in sprint.issues %}
+                                                                        <div class="issue-item p-2 d-flex justify-content-between align-items-center" data-issue-id="{{ issue.id }}">
+                                                                            <div class="form-check">
+                                                                                <input class="form-check-input issue-check" type="checkbox" value="" id="issue{{ issue.id }}" 
+                                                                                    {% if issue.completed %}checked{% endif %} data-issue-id="{{ issue.id }}">
+                                                                                <label class="form-check-label {% if issue.completed %}text-muted{% endif %}" for="issue{{ issue.id }}">
+                                                                                    {{ issue.details }}
+                                                                                </label>
+                                                                            </div>
+                                                                            <div class="issue-actions">
+                                                                                <button class="btn btn-sm btn-link edit-issue-btn" data-issue-id="{{ issue.id }}">
+                                                                                    <i class="fas fa-edit"></i>
+                                                                                </button>
+                                                                                <button class="btn btn-sm btn-link text-danger delete-issue-btn" data-issue-id="{{ issue.id }}">
+                                                                                    <i class="fas fa-trash"></i>
+                                                                                </button>
+                                                                            </div>
+                                                                        </div>
+                                                                    {% endfor %}
+                                                                {% else %}
+                                                                    <div class="text-center py-3 text-muted">
+                                                                        <p>No issues created yet for this sprint.</p>
                                                                     </div>
-                                                                </li>
-                                                            {% endfor %}
-                                                        {% else %}
-                                                            <li class="list-group-item text-muted">No issues reported yet.</li>
-                                                        {% endif %}
-                                                    </ul>
+                                                                {% endif %}
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>

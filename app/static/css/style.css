@@ -55,6 +55,46 @@ main {
     transform: rotate(-90deg);
 }
 
+/* Collapsible sections styling */
+.collapsible-header {
+    cursor: pointer;
+    padding: 8px 0;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+}
+
+.collapsible-header:hover {
+    background-color: rgba(0, 0, 0, 0.03);
+}
+
+.collapsible-header h5 {
+    margin-bottom: 0;
+}
+
+.collapsible-header .btn-link {
+    color: #6c757d;
+    transition: transform 0.2s ease;
+}
+
+.collapsible-header .btn-link:hover {
+    color: #495057;
+}
+
+/* Sprint header collapsible styling */
+.sprint-header {
+    cursor: pointer;
+}
+
+.sprint-header .toggle-icon {
+    transition: transform 0.2s ease;
+}
+
+/* Transition animations for collapsible content */
+[x-transition] {
+    transition-property: height, opacity, transform;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 /* Task and Issue Item Styles */
 .task-item, .issue-item {
     transition: background-color 0.2s;

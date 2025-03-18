@@ -23,6 +23,8 @@ function initializeBootstrapComponents() {
     tooltipTriggerList.map(function (tooltipTriggerEl) {
         return new bootstrap.Tooltip(tooltipTriggerEl);
     });
+
+    // Do not initialize modals here - we'll handle them individually when needed
 }
 
 /**
@@ -80,34 +82,40 @@ function initializeProjectEventListeners() {
  */
 function initializeSprintEventListeners() {
     // Add sprint button click
-    document.addEventListener('click', function(e) {
-        if (e.target.closest('.add-sprint-btn') || e.target.closest('.add-first-sprint-btn')) {
-            const projectId = e.target.closest('[data-project-id]').dataset.projectId;
+    document.querySelectorAll('.add-sprint-btn, .add-first-sprint-btn').forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            const projectId = this.dataset.projectId;
             openSprintModal(projectId);
-        }
+        });
     });
     
     // Save sprint button click
-    document.getElementById('saveSprintBtn').addEventListener('click', function() {
+    document.getElementById('saveSprintBtn').addEventListener('click', function(e) {
+        e.stopPropagation();
+        e.preventDefault();
         saveSprint();
     });
     
     // Edit sprint button click
-    document.addEventListener('click', function(e) {
-        if (e.target.closest('.edit-sprint-btn')) {
-            const sprintId = e.target.closest('.edit-sprint-btn').dataset.sprintId;
+    document.querySelectorAll('.edit-sprint-btn').forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            const sprintId = this.dataset.sprintId;
             editSprint(sprintId);
-            e.stopPropagation(); // Prevent collapse toggle
-        }
+        });
     });
     
     // Delete sprint button click
-    document.addEventListener('click', function(e) {
-        if (e.target.closest('.delete-sprint-btn')) {
-            const sprintId = e.target.closest('.delete-sprint-btn').dataset.sprintId;
+    document.querySelectorAll('.delete-sprint-btn').forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            const sprintId = this.dataset.sprintId;
             confirmDeleteSprint(sprintId);
-            e.stopPropagation(); // Prevent collapse toggle
-        }
+        });
     });
     
     // Sprint header click (collapse/expand)
@@ -129,41 +137,50 @@ function initializeSprintEventListeners() {
  */
 function initializeTaskEventListeners() {
     // Add task button click
-    document.addEventListener('click', function(e) {
-        if (e.target.closest('.add-task-btn')) {
-            const sprintId = e.target.closest('.add-task-btn').dataset.sprintId;
+    document.querySelectorAll('.add-task-btn').forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            const sprintId = this.dataset.sprintId;
             openTaskModal(sprintId);
-        }
+        });
     });
     
     // Save task button click
-    document.getElementById('saveTaskBtn').addEventListener('click', function() {
+    document.getElementById('saveTaskBtn').addEventListener('click', function(e) {
+        e.stopPropagation();
+        e.preventDefault();
         saveTask();
     });
     
     // Edit task button click
-    document.addEventListener('click', function(e) {
-        if (e.target.closest('.edit-task-btn')) {
-            const taskId = e.target.closest('.edit-task-btn').dataset.taskId;
+    document.querySelectorAll('.edit-task-btn').forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            const taskId = this.dataset.taskId;
             editTask(taskId);
-        }
+        });
     });
     
     // Delete task button click
-    document.addEventListener('click', function(e) {
-        if (e.target.closest('.delete-task-btn')) {
-            const taskId = e.target.closest('.delete-task-btn').dataset.taskId;
+    document.querySelectorAll('.delete-task-btn').forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            const taskId = this.dataset.taskId;
             confirmDeleteTask(taskId);
-        }
+        });
     });
     
     // Task checkbox change
-    document.addEventListener('change', function(e) {
-        if (e.target.classList.contains('task-checkbox')) {
-            const taskId = e.target.dataset.taskId;
-            const completed = e.target.checked;
+    document.querySelectorAll('.task-check').forEach(checkbox => {
+        checkbox.addEventListener('change', function(e) {
+            e.stopPropagation();
+            const taskId = this.dataset.taskId;
+            const completed = this.checked;
             toggleTaskCompletion(taskId, completed);
-        }
+        });
     });
 }
 
@@ -172,41 +189,50 @@ function initializeTaskEventListeners() {
  */
 function initializeIssueEventListeners() {
     // Add issue button click
-    document.addEventListener('click', function(e) {
-        if (e.target.closest('.add-issue-btn')) {
-            const sprintId = e.target.closest('.add-issue-btn').dataset.sprintId;
+    document.querySelectorAll('.add-issue-btn').forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            const sprintId = this.dataset.sprintId;
             openIssueModal(sprintId);
-        }
+        });
     });
     
     // Save issue button click
-    document.getElementById('saveIssueBtn').addEventListener('click', function() {
+    document.getElementById('saveIssueBtn').addEventListener('click', function(e) {
+        e.stopPropagation();
+        e.preventDefault();
         saveIssue();
     });
     
     // Edit issue button click
-    document.addEventListener('click', function(e) {
-        if (e.target.closest('.edit-issue-btn')) {
-            const issueId = e.target.closest('.edit-issue-btn').dataset.issueId;
+    document.querySelectorAll('.edit-issue-btn').forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            const issueId = this.dataset.issueId;
             editIssue(issueId);
-        }
+        });
     });
     
     // Delete issue button click
-    document.addEventListener('click', function(e) {
-        if (e.target.closest('.delete-issue-btn')) {
-            const issueId = e.target.closest('.delete-issue-btn').dataset.issueId;
+    document.querySelectorAll('.delete-issue-btn').forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            const issueId = this.dataset.issueId;
             confirmDeleteIssue(issueId);
-        }
+        });
     });
     
     // Issue checkbox change
-    document.addEventListener('change', function(e) {
-        if (e.target.classList.contains('issue-checkbox')) {
-            const issueId = e.target.dataset.issueId;
-            const completed = e.target.checked;
+    document.querySelectorAll('.issue-check').forEach(checkbox => {
+        checkbox.addEventListener('change', function(e) {
+            e.stopPropagation();
+            const issueId = this.dataset.issueId;
+            const completed = this.checked;
             toggleIssueCompletion(issueId, completed);
-        }
+        });
     });
 }
 
@@ -374,21 +400,29 @@ function deleteProject(projectId) {
 // ===== SPRINT FUNCTIONS =====
 
 /**
- * Open the sprint modal for creating a new sprint
+ * Open the sprint modal for creating a new sprint or editing an existing one
  * @param {string} projectId - The ID of the project to add the sprint to
+ * @param {string} sprintId - Optional, the ID of the sprint to edit
  */
 function openSprintModal(projectId, sprintId = null) {
     // Clear form
     document.getElementById('sprintForm').reset();
-    document.getElementById('sprintId').value = '';
+    
+    // Set project ID
     document.getElementById('sprintProjectId').value = projectId;
     
-    // Set modal title
+    // Set modal title and sprint ID
     const modalTitle = document.getElementById('sprintModalLabel');
-    modalTitle.textContent = 'Create Sprint';
+    if (sprintId) {
+        document.getElementById('sprintId').value = sprintId;
+        modalTitle.textContent = 'Edit Sprint';
+    } else {
+        document.getElementById('sprintId').value = '';
+        modalTitle.textContent = 'Create Sprint';
+    }
     
-    // Show modal
-    const sprintModal = new bootstrap.Modal(document.getElementById('sprintModal'));
+    // Show modal using getOrCreateInstance
+    const sprintModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('sprintModal'));
     sprintModal.show();
 }
 
@@ -417,18 +451,16 @@ function saveSprint() {
         project_id: parseInt(projectId)
     };
     
-    // Determine if creating or updating
-    const isUpdate = sprintId !== '';
-    const url = isUpdate ? `/api/sprints/${sprintId}` : '/api/sprints';
-    const method = isUpdate ? 'PUT' : 'POST';
-    
-    // Send API request
-    fetch(url, {
-        method: method,
+    // Send request through MCP
+    fetch('/mcp/execute', {
+        method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(sprintData)
+        body: JSON.stringify({
+            name: sprintId ? 'update_sprint' : 'create_sprint',
+            parameters: sprintId ? { ...sprintData, sprint_id: parseInt(sprintId) } : sprintData
+        })
     })
     .then(response => {
         if (!response.ok) {
@@ -437,8 +469,8 @@ function saveSprint() {
         return response.json();
     })
     .then(data => {
-        // Close modal
-        const sprintModal = bootstrap.Modal.getInstance(document.getElementById('sprintModal'));
+        // Close modal using getOrCreateInstance
+        const sprintModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('sprintModal'));
         sprintModal.hide();
         
         // Refresh page to show changes
@@ -455,8 +487,17 @@ function saveSprint() {
  * @param {string} sprintId - The ID of the sprint to edit
  */
 function editSprint(sprintId) {
-    // Fetch sprint data
-    fetch(`/api/sprints/${sprintId}`)
+    // Fetch sprint data through MCP
+    fetch('/mcp/execute', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            name: 'get_sprint',
+            parameters: { sprint_id: parseInt(sprintId) }
+        })
+    })
     .then(response => {
         if (!response.ok) {
             throw new Error('Network response was not ok');
@@ -464,8 +505,8 @@ function editSprint(sprintId) {
         return response.json();
     })
     .then(data => {
-        if (data.status === 'success') {
-            const sprint = data.data;
+        if (data.result) {
+            const sprint = data.result;
             
             // Fill form with sprint data
             document.getElementById('sprintId').value = sprint.id;
@@ -474,12 +515,8 @@ function editSprint(sprintId) {
             document.getElementById('sprintDescription').value = sprint.description || '';
             document.getElementById('sprintStatus').value = sprint.status;
             
-            // Set modal title
-            document.getElementById('sprintModalLabel').textContent = 'Edit Sprint';
-            
-            // Show modal
-            const sprintModal = new bootstrap.Modal(document.getElementById('sprintModal'));
-            sprintModal.show();
+            // Open modal with edit title
+            openSprintModal(sprint.project_id, sprint.id);
         }
     })
     .catch(error => {
@@ -503,8 +540,8 @@ function confirmDeleteSprint(sprintId) {
         deleteSprint(sprintId);
     };
     
-    // Show confirmation modal
-    const confirmationModal = new bootstrap.Modal(document.getElementById('confirmationModal'));
+    // Show confirmation modal using getOrCreateInstance
+    const confirmationModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('confirmationModal'));
     confirmationModal.show();
 }
 
@@ -513,9 +550,16 @@ function confirmDeleteSprint(sprintId) {
  * @param {string} sprintId - The ID of the sprint to delete
  */
 function deleteSprint(sprintId) {
-    // Send delete request
-    fetch(`/api/sprints/${sprintId}`, {
-        method: 'DELETE'
+    // Send delete request through MCP
+    fetch('/mcp/execute', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            name: 'delete_sprint',
+            parameters: { sprint_id: parseInt(sprintId) }
+        })
     })
     .then(response => {
         if (!response.ok) {
@@ -540,21 +584,29 @@ function deleteSprint(sprintId) {
 // ===== TASK FUNCTIONS =====
 
 /**
- * Open the task modal for creating a new task
+ * Open the task modal for creating a new task or editing an existing one
  * @param {string} sprintId - The ID of the sprint to add the task to
+ * @param {string} taskId - Optional, the ID of the task to edit
  */
 function openTaskModal(sprintId, taskId = null) {
     // Clear form
     document.getElementById('taskForm').reset();
-    document.getElementById('taskId').value = '';
+    
+    // Set sprint ID
     document.getElementById('taskSprintId').value = sprintId;
     
-    // Set modal title
+    // Set modal title and task ID
     const modalTitle = document.getElementById('taskModalLabel');
-    modalTitle.textContent = 'Create Task';
+    if (taskId) {
+        document.getElementById('taskId').value = taskId;
+        modalTitle.textContent = 'Edit Task';
+    } else {
+        document.getElementById('taskId').value = '';
+        modalTitle.textContent = 'Create Task';
+    }
     
-    // Show modal
-    const taskModal = new bootstrap.Modal(document.getElementById('taskModal'));
+    // Show modal using getOrCreateInstance
+    const taskModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('taskModal'));
     taskModal.show();
 }
 
@@ -581,18 +633,16 @@ function saveTask() {
         sprint_id: parseInt(sprintId)
     };
     
-    // Determine if creating or updating
-    const isUpdate = taskId !== '';
-    const url = isUpdate ? `/api/tasks/${taskId}` : '/api/tasks';
-    const method = isUpdate ? 'PUT' : 'POST';
-    
-    // Send API request
-    fetch(url, {
-        method: method,
+    // Send request through MCP
+    fetch('/mcp/execute', {
+        method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(taskData)
+        body: JSON.stringify({
+            name: taskId ? 'update_task' : 'create_task',
+            parameters: taskId ? { ...taskData, task_id: parseInt(taskId) } : taskData
+        })
     })
     .then(response => {
         if (!response.ok) {
@@ -601,8 +651,8 @@ function saveTask() {
         return response.json();
     })
     .then(data => {
-        // Close modal
-        const taskModal = bootstrap.Modal.getInstance(document.getElementById('taskModal'));
+        // Close modal using getOrCreateInstance
+        const taskModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('taskModal'));
         taskModal.hide();
         
         // Refresh page to show changes
@@ -619,8 +669,17 @@ function saveTask() {
  * @param {string} taskId - The ID of the task to edit
  */
 function editTask(taskId) {
-    // Fetch task data
-    fetch(`/api/tasks/${taskId}`)
+    // Fetch task data through MCP
+    fetch('/mcp/execute', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            name: 'get_task',
+            parameters: { task_id: parseInt(taskId) }
+        })
+    })
     .then(response => {
         if (!response.ok) {
             throw new Error('Network response was not ok');
@@ -628,8 +687,8 @@ function editTask(taskId) {
         return response.json();
     })
     .then(data => {
-        if (data.status === 'success') {
-            const task = data.data;
+        if (data.result) {
+            const task = data.result;
             
             // Fill form with task data
             document.getElementById('taskId').value = task.id;
@@ -676,9 +735,16 @@ function confirmDeleteTask(taskId) {
  * @param {string} taskId - The ID of the task to delete
  */
 function deleteTask(taskId) {
-    // Send delete request
-    fetch(`/api/tasks/${taskId}`, {
-        method: 'DELETE'
+    // Send delete request through MCP
+    fetch('/mcp/execute', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            name: 'delete_task',
+            parameters: { task_id: parseInt(taskId) }
+        })
     })
     .then(response => {
         if (!response.ok) {
@@ -707,7 +773,7 @@ function deleteTask(taskId) {
  */
 function toggleTaskCompletion(taskId, completed) {
     // Get the label element
-    const checkbox = document.querySelector(`.task-checkbox[data-task-id="${taskId}"]`);
+    const checkbox = document.querySelector(`.task-check[data-task-id="${taskId}"]`);
     const label = checkbox.nextElementSibling;
     
     // Update label style
@@ -718,15 +784,19 @@ function toggleTaskCompletion(taskId, completed) {
     }
     
     // Send update request
-    fetch(`/api/tasks/${taskId}`, {
-        method: 'PUT',
+    fetch('/mcp/execute', {
+        method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            completed: completed,
-            details: label.textContent.trim(),
-            sprint_id: parseInt(checkbox.closest('.sprint-card').dataset.sprintId)
+            name: 'update_task',
+            parameters: {
+                task_id: parseInt(taskId),
+                details: label.textContent.trim(),
+                completed: completed,
+                sprint_id: parseInt(checkbox.closest('.sprint-card').dataset.sprintId)
+            }
         })
     })
     .then(response => {
@@ -751,21 +821,29 @@ function toggleTaskCompletion(taskId, completed) {
 // ===== ISSUE FUNCTIONS =====
 
 /**
- * Open the issue modal for creating a new issue
+ * Open the issue modal for creating a new issue or editing an existing one
  * @param {string} sprintId - The ID of the sprint to add the issue to
+ * @param {string} issueId - Optional, the ID of the issue to edit
  */
 function openIssueModal(sprintId, issueId = null) {
     // Clear form
     document.getElementById('issueForm').reset();
-    document.getElementById('issueId').value = '';
+    
+    // Set sprint ID
     document.getElementById('issueSprintId').value = sprintId;
     
-    // Set modal title
+    // Set modal title and issue ID
     const modalTitle = document.getElementById('issueModalLabel');
-    modalTitle.textContent = 'Create Issue';
+    if (issueId) {
+        document.getElementById('issueId').value = issueId;
+        modalTitle.textContent = 'Edit Issue';
+    } else {
+        document.getElementById('issueId').value = '';
+        modalTitle.textContent = 'Create Issue';
+    }
     
-    // Show modal
-    const issueModal = new bootstrap.Modal(document.getElementById('issueModal'));
+    // Show modal using getOrCreateInstance
+    const issueModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('issueModal'));
     issueModal.show();
 }
 
@@ -792,18 +870,16 @@ function saveIssue() {
         sprint_id: parseInt(sprintId)
     };
     
-    // Determine if creating or updating
-    const isUpdate = issueId !== '';
-    const url = isUpdate ? `/api/issues/${issueId}` : '/api/issues';
-    const method = isUpdate ? 'PUT' : 'POST';
-    
-    // Send API request
-    fetch(url, {
-        method: method,
+    // Send request through MCP
+    fetch('/mcp/execute', {
+        method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(issueData)
+        body: JSON.stringify({
+            name: issueId ? 'update_issue' : 'create_issue',
+            parameters: issueId ? { ...issueData, issue_id: parseInt(issueId) } : issueData
+        })
     })
     .then(response => {
         if (!response.ok) {
@@ -812,8 +888,8 @@ function saveIssue() {
         return response.json();
     })
     .then(data => {
-        // Close modal
-        const issueModal = bootstrap.Modal.getInstance(document.getElementById('issueModal'));
+        // Close modal using getOrCreateInstance
+        const issueModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('issueModal'));
         issueModal.hide();
         
         // Refresh page to show changes
@@ -830,8 +906,17 @@ function saveIssue() {
  * @param {string} issueId - The ID of the issue to edit
  */
 function editIssue(issueId) {
-    // Fetch issue data
-    fetch(`/api/issues/${issueId}`)
+    // Fetch issue data through MCP
+    fetch('/mcp/execute', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            name: 'get_issue',
+            parameters: { issue_id: parseInt(issueId) }
+        })
+    })
     .then(response => {
         if (!response.ok) {
             throw new Error('Network response was not ok');
@@ -839,8 +924,8 @@ function editIssue(issueId) {
         return response.json();
     })
     .then(data => {
-        if (data.status === 'success') {
-            const issue = data.data;
+        if (data.result) {
+            const issue = data.result;
             
             // Fill form with issue data
             document.getElementById('issueId').value = issue.id;
@@ -887,9 +972,16 @@ function confirmDeleteIssue(issueId) {
  * @param {string} issueId - The ID of the issue to delete
  */
 function deleteIssue(issueId) {
-    // Send delete request
-    fetch(`/api/issues/${issueId}`, {
-        method: 'DELETE'
+    // Send delete request through MCP
+    fetch('/mcp/execute', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            name: 'delete_issue',
+            parameters: { issue_id: parseInt(issueId) }
+        })
     })
     .then(response => {
         if (!response.ok) {
@@ -918,7 +1010,7 @@ function deleteIssue(issueId) {
  */
 function toggleIssueCompletion(issueId, completed) {
     // Get the label element
-    const checkbox = document.querySelector(`.issue-checkbox[data-issue-id="${issueId}"]`);
+    const checkbox = document.querySelector(`.issue-check[data-issue-id="${issueId}"]`);
     const label = checkbox.nextElementSibling;
     
     // Update label style
@@ -929,15 +1021,19 @@ function toggleIssueCompletion(issueId, completed) {
     }
     
     // Send update request
-    fetch(`/api/issues/${issueId}`, {
-        method: 'PUT',
+    fetch('/mcp/execute', {
+        method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            completed: completed,
-            details: label.textContent.trim(),
-            sprint_id: parseInt(checkbox.closest('.sprint-card').dataset.sprintId)
+            name: 'update_issue',
+            parameters: {
+                issue_id: parseInt(issueId),
+                details: label.textContent.trim(),
+                completed: completed,
+                sprint_id: parseInt(checkbox.closest('.sprint-card').dataset.sprintId)
+            }
         })
     })
     .then(response => {
