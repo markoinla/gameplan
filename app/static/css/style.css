@@ -90,9 +90,59 @@ main {
 }
 
 /* Transition animations for collapsible content */
-[x-transition] {
-    transition-property: height, opacity, transform;
+/* Alpine.js transition classes */
+.transition {
+    transition-property: all;
     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.duration-150 {
+    transition-duration: 150ms;
+}
+
+.duration-200 {
+    transition-duration: 200ms;
+}
+
+.duration-300 {
+    transition-duration: 300ms;
+}
+
+.ease-in {
+    transition-timing-function: cubic-bezier(0.4, 0, 1, 1);
+}
+
+.ease-out {
+    transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
+}
+
+.transform {
+    --transform-translate-x: 0;
+    --transform-translate-y: 0;
+    --transform-rotate: 0;
+    --transform-skew-x: 0;
+    --transform-skew-y: 0;
+    --transform-scale-x: 1;
+    --transform-scale-y: 1;
+    transform: translateX(var(--transform-translate-x)) translateY(var(--transform-translate-y)) rotate(var(--transform-rotate)) skewX(var(--transform-skew-x)) skewY(var(--transform-skew-y)) scaleX(var(--transform-scale-x)) scaleY(var(--transform-scale-y));
+}
+
+.scale-95 {
+    --transform-scale-x: .95;
+    --transform-scale-y: .95;
+}
+
+.scale-100 {
+    --transform-scale-x: 1;
+    --transform-scale-y: 1;
+}
+
+.opacity-0 {
+    opacity: 0;
+}
+
+.opacity-100 {
+    opacity: 1;
 }
 
 /* Task and Issue Item Styles */
@@ -116,6 +166,7 @@ main {
 }
 
 .task-item:hover .task-actions {
+    visibility: visible;
     opacity: 1;
 }
 

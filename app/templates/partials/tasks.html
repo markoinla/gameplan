@@ -1,0 +1,24 @@
+{% if tasks %}
+    {% for task in tasks %}
+        <div class="task-item {% if task.completed %}completed{% endif %}" data-task-id="{{ task.id }}">
+            <div class="form-check">
+                <input class="form-check-input task-check" type="checkbox" 
+                       {% if task.completed %}checked{% endif %} 
+                       data-task-id="{{ task.id }}">
+                <label class="form-check-label" data-bs-toggle="tooltip" title="Task #{{ task.id }}">
+                    Task #{{ task.id }}: {{ task.details }}
+                </label>
+                <div class="task-actions">
+                    <button class="btn btn-sm btn-link edit-task-btn p-0 me-2" data-task-id="{{ task.id }}">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn btn-sm btn-link delete-task-btn p-0" data-task-id="{{ task.id }}">
+                        <i class="fas fa-trash text-danger"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+{% else %}
+    <p class="text-muted">No tasks yet.</p>
+{% endif %}

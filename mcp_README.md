@@ -29,58 +29,124 @@ To configure Windsurf to use the GamePlan MCP server, add the following to your 
 {
   "mcpServers": {
     "gameplan": {
-      "command": "python3",
-      "args": [
-        "${workspaceRoot}/mcp_server.py"
-      ],
+      "command": "/path/to/gameplan/run_mcp.sh",
+      "args": [],
       "env": {
         "PYTHONUNBUFFERED": "1",
+        "PYTHONIOENCODING": "utf-8",
         "GAMEPLAN_BASE_URL": "http://127.0.0.1:5001"
-      }
+      },
+      "windowsCommand": "${workspaceRoot}\\run_mcp.bat",
+      "windowsArgs": []
     }
   }
 }
 ```
 
-### Configuration Options
+Replace `/path/to/gameplan/run_mcp.sh` with the absolute path to your `run_mcp.sh` script.
 
-The MCP server bridge can be configured using the following environment variables:
+## MCP Tools Usage Guide
 
-- `GAMEPLAN_BASE_URL`: The base URL of the GamePlan application (default: `http://127.0.0.1:5001`)
-- `PYTHONUNBUFFERED`: Set to `1` to ensure Python output is not buffered (required for proper communication with Windsurf)
+The GamePlan MCP server provides several tools for managing projects, sprints, tasks, and issues. Below is a guide on how to use these tools correctly.
+
+### Important Notes for All Tools
+
+1. **Boolean Parameters**: When setting boolean parameters like `completed`, ensure they are passed as actual boolean values (`true` or `false`), not as strings (`"true"` or `"false"`).
+
+2. **ID Parameters**: All update and delete operations require an `id` parameter to identify the resource to modify.
+
+3. **Required Parameters**: Always include all required parameters as specified in the tool definition.
+
+### Project Management Tools
+
+- `list_projects`: List all projects
+- `get_project`: Get details of a specific project by ID
+- `create_project`: Create a new project
+- `update_project`: Update an existing project
+- `delete_project`: Delete a project by ID
+
+### Sprint Management Tools
+
+- `list_sprints`: List all sprints, optionally filtered by project ID
+- `get_sprint`: Get details of a specific sprint by ID
+- `create_sprint`: Create a new sprint
+- `update_sprint`: Update an existing sprint
+- `delete_sprint`: Delete a sprint by ID
+
+### Task Management Tools
+
+- `list_tasks`: List all tasks, optionally filtered by sprint ID
+- `get_task`: Get details of a specific task by ID
+- `create_task`: Create a new task
+- `update_task`: Update an existing task
+- `delete_task`: Delete a task by ID
+
+### Issue Management Tools
+
+- `list_issues`: List all issues, optionally filtered by sprint ID
+- `get_issue`: Get details of a specific issue by ID
+- `create_issue`: Create a new issue
+- `update_issue`: Update an existing issue
+- `delete_issue`: Delete an issue by ID
+
+## Examples
+
+### Updating a Task
+
+To update a task, use the `update_task` tool with the following parameters:
+
+```json
+{
+  "id": 37,
+  "completed": true,
+  "details": "Task description",
+  "sprint_id": 2
+}
+```
+
+**Important**: The `completed` parameter must be a boolean value (`true` or `false`), not a string.
+
+If you're using curl directly to test the API:
+
+```bash
+curl -X PUT http://127.0.0.1:5000/api/tasks/37 -H "Content-Type: application/json" -d '{"completed": true, "details": "Task description", "sprint_id": 2}'
+```
+
+### Updating an Issue
+
+To update an issue, use the `update_issue` tool with the following parameters:
+
+```json
+{
+  "id": 10,
+  "completed": true,
+  "details": "Issue description",
+  "sprint_id": 2
+}
+```
+
+**Important**: The `completed` parameter must be a boolean value (`true` or `false`), not a string.
+
+If you're using curl directly to test the API:
+
+```bash
+curl -X PUT http://127.0.0.1:5000/api/issues/10 -H "Content-Type: application/json" -d '{"completed": true, "details": "Issue description", "sprint_id": 2}'
+```
 
 ## Troubleshooting
 
 ### Common Issues
 
-1. **"Failed to start command: exec: 'python': executable file not found in $PATH"**
-   - Solution: Use `python3` instead of `python` in the command field, or provide the full path to the Python executable
+1. **Boolean Parameter Errors**: If you're having trouble updating the `completed` status of tasks or issues, make sure you're passing a boolean value (`true` or `false`), not a string (`"true"` or `"false"`).
 
-2. **"Error fetching tools: Status code 404"**
-   - Solution: Make sure the GamePlan application is running and the base URL is correct
-   - Check that the `/mcp/tools` endpoint is accessible in your browser
+2. **Missing Required Parameters**: When updating tasks or issues, make sure to include the `sprint_id` parameter, as it's required by the API.
 
-3. **"Request failed" error in Windsurf**
-   - Solution: Ensure the GamePlan application is running
-   - Check the MCP server bridge script for any errors
-   - Verify that the environment variables are correctly set
+3. **Parameter Name Mismatch**: Make sure you're using `id` (not `task_id` or `issue_id`) when updating tasks or issues.
 
-## Development Notes
+### Direct API Access
 
-When modifying the MCP server bridge:
+If the MCP tools aren't working correctly, you can always use direct API calls as shown in the examples above.
 
-1. Always ensure the correct endpoint URLs are used (`/mcp/tools` and `/mcp/execute`)
-2. Handle exceptions properly to avoid crashing the bridge
-3. Use the `PYTHONUNBUFFERED=1` environment variable to prevent output buffering
-4. Test the bridge manually before configuring Windsurf:
-   ```
-   echo '{"jsonrpc": "2.0", "method": "initialize", "id": 1}' | ./mcp_server.py
-   ```
+## Further Help
 
-## Portable Configuration
-
-The MCP server bridge is designed to be portable across different installations:
-
-1. It uses `#!/usr/bin/env python3` for cross-platform compatibility
-2. It supports configuration via environment variables
-3. It works with relative paths using the `${workspaceRoot}` variable in Windsurf configuration
+If you encounter any issues with the MCP server or tools, please check the server logs for error messages and ensure that both the GamePlan application and the MCP server are running correctly.

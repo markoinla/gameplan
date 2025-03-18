@@ -307,11 +307,11 @@ TOOLS = [
     },
     {
         "name": "update_task",
-        "description": "Update an existing task",
+        "description": "Update an existing task. Note: When setting 'completed' to true or false, ensure it's passed as a boolean value (not a string). Example: use 'completed': true (not 'completed': 'true'). If using curl directly: curl -X PUT http://127.0.0.1:5000/api/tasks/{id} -H 'Content-Type: application/json' -d '{\"completed\": true, \"details\": \"Task details\", \"sprint_id\": 2}'",
         "parameters": {
             "type": "object",
             "properties": {
-                "task_id": {
+                "id": {
                     "type": "integer",
                     "description": "ID of the task to update"
                 },
@@ -321,14 +321,14 @@ TOOLS = [
                 },
                 "completed": {
                     "type": "boolean",
-                    "description": "New completion status of the task"
+                    "description": "New completion status of the task (must be a boolean value, not a string)"
                 },
                 "sprint_id": {
                     "type": "integer",
                     "description": "New sprint ID for the task"
                 }
             },
-            "required": ["task_id"]
+            "required": ["id"]
         }
     },
     {
@@ -397,11 +397,11 @@ TOOLS = [
     },
     {
         "name": "update_issue",
-        "description": "Update an existing issue",
+        "description": "Update an existing issue. Note: When setting 'completed' to true or false, ensure it's passed as a boolean value (not a string). Example: use 'completed': true (not 'completed': 'true'). If using curl directly: curl -X PUT http://127.0.0.1:5000/api/issues/{id} -H 'Content-Type: application/json' -d '{\"completed\": true, \"details\": \"Issue details\", \"sprint_id\": 2}'",
         "parameters": {
             "type": "object",
             "properties": {
-                "issue_id": {
+                "id": {
                     "type": "integer",
                     "description": "ID of the issue to update"
                 },
@@ -411,14 +411,14 @@ TOOLS = [
                 },
                 "completed": {
                     "type": "boolean",
-                    "description": "New completion status of the issue"
+                    "description": "New completion status of the issue (must be a boolean value, not a string)"
                 },
                 "sprint_id": {
                     "type": "integer",
                     "description": "New sprint ID for the issue"
                 }
             },
-            "required": ["issue_id"]
+            "required": ["id"]
         }
     },
     {
@@ -451,9 +451,13 @@ async def get_tools():
 @mcp_app.post("/mcp/execute")
 async def execute_tool(request: Request):
     """Execute a tool based on the request"""
-    data = await request.json()
+    from flask import request
+    data = request.get_json()
     tool_name = data.get("name")
     parameters = data.get("parameters", {}) or data.get("arguments", {})
+    
+    # Log the received parameters for debugging
+    print(f"MCP execute tool: {tool_name} with parameters: {parameters}", file=sys.stderr)
     
     # Find the tool implementation
     tool_impl = globals().get(f"tool_{tool_name}")
@@ -462,9 +466,15 @@ async def execute_tool(request: Request):
     
     # Execute the tool with the provided parameters
     try:
+        # Ensure boolean parameters are properly handled
+        for key, value in parameters.items():
+            if isinstance(value, str) and value.lower() in ['true', 'false']:
+                parameters[key] = value.lower() == 'true'
+        
         result = tool_impl(**parameters)
         return {"result": result}
     except Exception as e:
+        print(f"Error executing tool {tool_name}: {str(e)}", file=sys.stderr)
         return {"error": str(e)}
 
 # Tool implementations
@@ -600,11 +610,11 @@ def tool_create_task(details: str, sprint_id: int, completed: bool = False):
     db.session.commit()
     return task.to_dict()
 
-def tool_update_task(task_id: int, details: str = None, completed: bool = None, sprint_id: int = None):
+def tool_update_task(id: int, details: str = None, completed: bool = None, sprint_id: int = None):
     """Update an existing task"""
-    task = Task.query.get(task_id)
+    task = Task.query.get(id)
     if not task:
-        raise ValueError(f"Task with ID {task_id} not found")
+        raise ValueError(f"Task with ID {id} not found")
     
     if details is not None:
         task.details = details
@@ -657,11 +667,11 @@ def tool_create_issue(details: str, sprint_id: int, completed: bool = False):
     db.session.commit()
     return issue.to_dict()
 
-def tool_update_issue(issue_id: int, details: str = None, completed: bool = None, sprint_id: int = None):
+def tool_update_issue(id: int, details: str = None, completed: bool = None, sprint_id: int = None):
     """Update an existing issue"""
-    issue = Issue.query.get(issue_id)
+    issue = Issue.query.get(id)
     if not issue:
-        raise ValueError(f"Issue with ID {issue_id} not found")
+        raise ValueError(f"Issue with ID {id} not found")
     
     if details is not None:
         issue.details = details
@@ -721,6 +731,9 @@ def setup_mcp_server(app):
         tool_name = data.get("name")
         parameters = data.get("parameters", {}) or data.get("arguments", {})
         
+        # Log the received parameters for debugging
+        print(f"MCP execute tool: {tool_name} with parameters: {parameters}", file=sys.stderr)
+        
         # Find the tool implementation
         tool_impl = globals().get(f"tool_{tool_name}")
         if not tool_impl:
@@ -728,9 +741,15 @@ def setup_mcp_server(app):
         
         # Execute the tool with the provided parameters
         try:
+            # Ensure boolean parameters are properly handled
+            for key, value in parameters.items():
+                if isinstance(value, str) and value.lower() in ['true', 'false']:
+                    parameters[key] = value.lower() == 'true'
+            
             result = tool_impl(**parameters)
             return {"result": result}
         except Exception as e:
+            print(f"Error executing tool {tool_name}: {str(e)}", file=sys.stderr)
             return {"error": str(e)}
     
     return app

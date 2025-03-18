@@ -12,19 +12,254 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize event listeners
     initializeEventListeners();
+    
+    // Initialize keyboard shortcuts
+    initializeKeyboardShortcuts();
 });
 
 /**
  * Initialize Bootstrap components like modals, tooltips, etc.
  */
 function initializeBootstrapComponents() {
-    // Initialize all tooltips
+    // Initialize all tooltips with custom configuration to prevent multiple tooltips
     var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
     tooltipTriggerList.map(function (tooltipTriggerEl) {
-        return new bootstrap.Tooltip(tooltipTriggerEl);
+        return new bootstrap.Tooltip(tooltipTriggerEl, {
+            trigger: 'hover',  // Only trigger on hover, not on focus
+            container: 'body', // Append tooltips to body to manage z-index better
+            template: '<div class="tooltip" role="tooltip"><div class="tooltip-inner"></div></div>', // Remove arrow
+            animation: false,  // Disable animation for cleaner appearance
+            delay: { show: 50, hide: 0 } // Quick show, immediate hide
+        });
+    });
+
+    // Ensure only one tooltip is shown at a time
+    document.addEventListener('mouseover', function(e) {
+        if (!e.target.hasAttribute('data-bs-toggle') && !e.target.closest('[data-bs-toggle="tooltip"]')) {
+            // Hide all tooltips when mouse is not over a tooltip trigger
+            tooltipTriggerList.forEach(function(tooltipTriggerEl) {
+                const tooltip = bootstrap.Tooltip.getInstance(tooltipTriggerEl);
+                if (tooltip) {
+                    tooltip.hide();
+                }
+            });
+        }
     });
 
     // Do not initialize modals here - we'll handle them individually when needed
+}
+
+/**
+ * Dynamic Content Update Functions
+ * These functions allow updating specific parts of the page without a full reload
+ */
+
+/**
+ * Show a temporary notification message to the user
+ * @param {string} message - The message to display
+ * @param {string} type - The type of message (success, error, info)
+ */
+function showNotification(message, type = 'success') {
+    // Create notification element if it doesn't exist
+    let notificationContainer = document.getElementById('notificationContainer');
+    if (!notificationContainer) {
+        notificationContainer = document.createElement('div');
+        notificationContainer.id = 'notificationContainer';
+        notificationContainer.style.position = 'fixed';
+        notificationContainer.style.top = '20px';
+        notificationContainer.style.right = '20px';
+        notificationContainer.style.zIndex = '9999';
+        document.body.appendChild(notificationContainer);
+    }
+    
+    // Create notification
+    const notification = document.createElement('div');
+    notification.className = `alert alert-${type} alert-dismissible fade show`;
+    notification.role = 'alert';
+    notification.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    `;
+    
+    // Add to container
+    notificationContainer.appendChild(notification);
+    
+    // Auto-remove after 5 seconds
+    setTimeout(() => {
+        notification.classList.remove('show');
+        setTimeout(() => {
+            notification.remove();
+        }, 150);
+    }, 5000);
+}
+
+/**
+ * Update the projects container with fresh data
+ * @returns {Promise} - Promise that resolves when the update is complete
+ */
+function updateProjectsContainer() {
+    return fetch('/api/projects')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to fetch projects');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.status === 'success') {
+                // We need to request the full HTML from the server
+                // as it contains Alpine.js templates that are difficult to replicate client-side
+                return fetch('/?partial=projects')
+                    .then(response => response.text())
+                    .then(html => {
+                        document.getElementById('projectsContainer').innerHTML = html;
+                        // Reinitialize tooltips for new content
+                        initializeBootstrapComponents();
+                    });
+            }
+        })
+        .catch(error => {
+            console.error('Error updating projects:', error);
+            showNotification('Error updating projects. Please refresh the page.', 'error');
+        });
+}
+
+/**
+ * Update a specific sprint container with fresh data
+ * @param {string} sprintId - The ID of the sprint to update
+ * @returns {Promise} - Promise that resolves when the update is complete
+ */
+function updateSprintContainer(sprintId) {
+    return fetch(`/api/sprints/${sprintId}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to fetch sprint');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.status === 'success') {
+                // Request the partial HTML for this sprint
+                return fetch(`/?partial=sprint&sprint_id=${sprintId}`)
+                    .then(response => response.text())
+                    .then(html => {
+                        const sprintCard = document.querySelector(`.sprint-card[data-sprint-id="${sprintId}"]`);
+                        if (sprintCard) {
+                            // Replace the sprint card with new content
+                            sprintCard.outerHTML = html;
+                            // Reinitialize tooltips for new content
+                            initializeBootstrapComponents();
+                        }
+                    });
+            }
+        })
+        .catch(error => {
+            console.error(`Error updating sprint ${sprintId}:`, error);
+            showNotification('Error updating sprint. Please refresh the page.', 'error');
+        });
+}
+
+/**
+ * Update all sprints for a specific project
+ * @param {string} projectId - The ID of the project
+ * @returns {Promise} - Promise that resolves when the update is complete
+ */
+function updateProjectSprints(projectId) {
+    return fetch(`/api/projects/${projectId}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to fetch project');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.status === 'success') {
+                // Request the partial HTML for this project's sprints
+                return fetch(`/?partial=project_sprints&project_id=${projectId}`)
+                    .then(response => response.text())
+                    .then(html => {
+                        const sprintsContainer = document.querySelector(`.project-card[data-project-id="${projectId}"] .sprints-container`);
+                        if (sprintsContainer) {
+                            // Replace the sprints container with new content
+                            sprintsContainer.innerHTML = html;
+                            // Reinitialize tooltips for new content
+                            initializeBootstrapComponents();
+                        }
+                    });
+            }
+        })
+        .catch(error => {
+            console.error(`Error updating project ${projectId} sprints:`, error);
+            showNotification('Error updating sprints. Please refresh the page.', 'error');
+        });
+}
+
+/**
+ * Update tasks and issues for a specific sprint
+ * @param {string} sprintId - The ID of the sprint
+ * @returns {Promise} - Promise that resolves when the update is complete
+ */
+function updateSprintTasksAndIssues(sprintId) {
+    // Fetch tasks
+    const tasksPromise = fetch(`/api/tasks?sprint_id=${sprintId}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to fetch tasks');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.status === 'success') {
+                // Request the partial HTML for this sprint's tasks
+                return fetch(`/?partial=sprint_tasks&sprint_id=${sprintId}`)
+                    .then(response => response.text())
+                    .then(html => {
+                        const tasksContainer = document.querySelector(`.sprint-card[data-sprint-id="${sprintId}"] .tasks-container`);
+                        if (tasksContainer) {
+                            // Replace the tasks container with new content
+                            tasksContainer.innerHTML = html;
+                        }
+                    });
+            }
+        })
+        .catch(error => {
+            console.error(`Error updating sprint ${sprintId} tasks:`, error);
+            showNotification('Error updating tasks. Please refresh the page.', 'error');
+        });
+    
+    // Fetch issues
+    const issuesPromise = fetch(`/api/issues?sprint_id=${sprintId}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to fetch issues');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.status === 'success') {
+                // Request the partial HTML for this sprint's issues
+                return fetch(`/?partial=sprint_issues&sprint_id=${sprintId}`)
+                    .then(response => response.text())
+                    .then(html => {
+                        const issuesContainer = document.querySelector(`.sprint-card[data-sprint-id="${sprintId}"] .issues-container`);
+                        if (issuesContainer) {
+                            // Replace the issues container with new content
+                            issuesContainer.innerHTML = html;
+                        }
+                    });
+            }
+        })
+        .catch(error => {
+            console.error(`Error updating sprint ${sprintId} issues:`, error);
+            showNotification('Error updating issues. Please refresh the page.', 'error');
+        });
+    
+    // Wait for both updates to complete
+    return Promise.all([tasksPromise, issuesPromise])
+        .then(() => {
+            // Reinitialize tooltips for new content
+            initializeBootstrapComponents();
+        });
 }
 
 /**
@@ -153,34 +388,32 @@ function initializeTaskEventListeners() {
         saveTask();
     });
     
-    // Edit task button click
-    document.querySelectorAll('.edit-task-btn').forEach(button => {
-        button.addEventListener('click', function(e) {
+    // Edit task button click - Using event delegation for dynamically added elements
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.edit-task-btn')) {
             e.stopPropagation();
             e.preventDefault();
-            const taskId = this.dataset.taskId;
+            const taskId = e.target.closest('.edit-task-btn').dataset.taskId;
             editTask(taskId);
-        });
+        }
     });
     
-    // Delete task button click
-    document.querySelectorAll('.delete-task-btn').forEach(button => {
-        button.addEventListener('click', function(e) {
+    // Delete task button click - Using event delegation for dynamically added elements
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.delete-task-btn')) {
             e.stopPropagation();
             e.preventDefault();
-            const taskId = this.dataset.taskId;
+            const taskId = e.target.closest('.delete-task-btn').dataset.taskId;
             confirmDeleteTask(taskId);
-        });
+        }
     });
     
-    // Task checkbox change
-    document.querySelectorAll('.task-check').forEach(checkbox => {
-        checkbox.addEventListener('change', function(e) {
-            e.stopPropagation();
-            const taskId = this.dataset.taskId;
-            const completed = this.checked;
-            toggleTaskCompletion(taskId, completed);
-        });
+    // Task checkbox change - Using event delegation for dynamically added elements
+    document.addEventListener('change', function(e) {
+        if (e.target.classList.contains('task-check')) {
+            const taskId = e.target.dataset.taskId;
+            toggleTaskCompletion(e, taskId);
+        }
     });
 }
 
@@ -205,34 +438,62 @@ function initializeIssueEventListeners() {
         saveIssue();
     });
     
-    // Edit issue button click
-    document.querySelectorAll('.edit-issue-btn').forEach(button => {
-        button.addEventListener('click', function(e) {
+    // Edit issue button click - Using event delegation for dynamically added elements
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.edit-issue-btn')) {
             e.stopPropagation();
             e.preventDefault();
-            const issueId = this.dataset.issueId;
+            const issueId = e.target.closest('.edit-issue-btn').dataset.issueId;
             editIssue(issueId);
-        });
+        }
     });
     
-    // Delete issue button click
-    document.querySelectorAll('.delete-issue-btn').forEach(button => {
-        button.addEventListener('click', function(e) {
+    // Delete issue button click - Using event delegation for dynamically added elements
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.delete-issue-btn')) {
             e.stopPropagation();
             e.preventDefault();
-            const issueId = this.dataset.issueId;
+            const issueId = e.target.closest('.delete-issue-btn').dataset.issueId;
             confirmDeleteIssue(issueId);
-        });
+        }
     });
     
-    // Issue checkbox change
-    document.querySelectorAll('.issue-check').forEach(checkbox => {
-        checkbox.addEventListener('change', function(e) {
-            e.stopPropagation();
-            const issueId = this.dataset.issueId;
-            const completed = this.checked;
-            toggleIssueCompletion(issueId, completed);
-        });
+    // Issue checkbox change - Using event delegation for dynamically added elements
+    document.addEventListener('change', function(e) {
+        if (e.target.classList.contains('issue-check')) {
+            const issueId = e.target.dataset.issueId;
+            toggleIssueCompletion(e, issueId);
+        }
+    });
+}
+
+/**
+ * Initialize keyboard shortcuts for the application
+ */
+function initializeKeyboardShortcuts() {
+    // Add global keydown event listener for modal save shortcuts (Cmd/Ctrl + Enter)
+    document.addEventListener('keydown', function(e) {
+        // Check if Cmd (Mac) or Ctrl (Windows/Linux) key is pressed along with Enter
+        if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+            // Check which modal is currently active and trigger the appropriate save button
+            if (document.getElementById('projectModal').classList.contains('show')) {
+                // Project modal is active, trigger save project
+                e.preventDefault();
+                document.getElementById('saveProjectBtn').click();
+            } else if (document.getElementById('sprintModal').classList.contains('show')) {
+                // Sprint modal is active, trigger save sprint
+                e.preventDefault();
+                document.getElementById('saveSprintBtn').click();
+            } else if (document.getElementById('taskModal').classList.contains('show')) {
+                // Task modal is active, trigger save task
+                e.preventDefault();
+                document.getElementById('saveTaskBtn').click();
+            } else if (document.getElementById('issueModal').classList.contains('show')) {
+                // Issue modal is active, trigger save issue
+                e.preventDefault();
+                document.getElementById('saveIssueBtn').click();
+            }
+        }
     });
 }
 
@@ -302,8 +563,10 @@ function saveProject() {
         const projectModal = bootstrap.Modal.getInstance(document.getElementById('projectModal'));
         projectModal.hide();
         
-        // Refresh page to show changes
-        window.location.reload();
+        // Update the projects container instead of reloading the page
+        updateProjectsContainer().then(() => {
+            showNotification('Project saved successfully!');
+        });
     })
     .catch(error => {
         console.error('Error saving project:', error);
@@ -388,8 +651,10 @@ function deleteProject(projectId) {
         const confirmationModal = bootstrap.Modal.getInstance(document.getElementById('confirmationModal'));
         confirmationModal.hide();
         
-        // Refresh page to show changes
-        window.location.reload();
+        // Update the projects container instead of reloading the page
+        updateProjectsContainer().then(() => {
+            showNotification('Project deleted successfully!');
+        });
     })
     .catch(error => {
         console.error('Error deleting project:', error);
@@ -502,8 +767,10 @@ function saveSprint() {
         const sprintModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('sprintModal'));
         sprintModal.hide();
         
-        // Refresh page to show changes
-        window.location.reload();
+        // Update the project's sprints instead of reloading the page
+        updateProjectSprints(sprintData.project_id).then(() => {
+            showNotification('Sprint saved successfully!');
+        });
     })
     .catch(error => {
         console.error('Error saving sprint:', error);
@@ -601,8 +868,10 @@ function deleteSprint(sprintId) {
         const confirmationModal = bootstrap.Modal.getInstance(document.getElementById('confirmationModal'));
         confirmationModal.hide();
         
-        // Refresh page to show changes
-        window.location.reload();
+        // Update the projects container instead of reloading the page
+        updateProjectsContainer().then(() => {
+            showNotification('Sprint deleted successfully!');
+        });
     })
     .catch(error => {
         console.error('Error deleting sprint:', error);
@@ -670,7 +939,7 @@ function saveTask() {
         },
         body: JSON.stringify({
             name: taskId ? 'update_task' : 'create_task',
-            parameters: taskId ? { ...taskData, task_id: parseInt(taskId) } : taskData
+            parameters: taskId ? { ...taskData, id: parseInt(taskId) } : taskData
         })
     })
     .then(response => {
@@ -684,8 +953,10 @@ function saveTask() {
         const taskModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('taskModal'));
         taskModal.hide();
         
-        // Refresh page to show changes
-        window.location.reload();
+        // Update the sprint's tasks and issues instead of reloading the page
+        updateSprintTasksAndIssues(taskData.sprint_id).then(() => {
+            showNotification('Task saved successfully!');
+        });
     })
     .catch(error => {
         console.error('Error saving task:', error);
@@ -786,8 +1057,13 @@ function deleteTask(taskId) {
         const confirmationModal = bootstrap.Modal.getInstance(document.getElementById('confirmationModal'));
         confirmationModal.hide();
         
-        // Refresh page to show changes
-        window.location.reload();
+        // Get the sprint ID from the task before it's deleted
+        const sprintId = document.querySelector(`.task-item[data-task-id="${taskId}"]`).closest('.sprint-card').dataset.sprintId;
+        
+        // Update the sprint's tasks and issues instead of reloading the page
+        updateSprintTasksAndIssues(sprintId).then(() => {
+            showNotification('Task deleted successfully!');
+        });
     })
     .catch(error => {
         console.error('Error deleting task:', error);
@@ -797,22 +1073,29 @@ function deleteTask(taskId) {
 
 /**
  * Toggle task completion status
+ * @param {Event} event - The click event
  * @param {string} taskId - The ID of the task
- * @param {boolean} completed - Whether the task is completed
  */
-function toggleTaskCompletion(taskId, completed) {
-    // Get the label element
-    const checkbox = document.querySelector(`.task-check[data-task-id="${taskId}"]`);
-    const label = checkbox.nextElementSibling;
+function toggleTaskCompletion(event, taskId) {
+    // Get the checkbox element
+    const checkbox = event.target;
     
-    // Update label style
-    if (completed) {
-        label.classList.add('text-decoration-line-through');
-    } else {
-        label.classList.remove('text-decoration-line-through');
-    }
+    // Get the current completion status
+    const completed = checkbox.checked;
     
-    // Send update request
+    // Get the task details
+    const taskItem = checkbox.closest('.task-item');
+    const details = taskItem.querySelector('.form-check-label').textContent.trim();
+    const sprintId = taskItem.closest('.sprint-card').dataset.sprintId;
+    
+    console.log('Updating task:', {
+        id: parseInt(taskId),
+        details: details,
+        completed: completed,
+        sprint_id: parseInt(sprintId)
+    });
+    
+    // Update the task through MCP
     fetch('/mcp/execute', {
         method: 'POST',
         headers: {
@@ -821,10 +1104,10 @@ function toggleTaskCompletion(taskId, completed) {
         body: JSON.stringify({
             name: 'update_task',
             parameters: {
-                task_id: parseInt(taskId),
-                details: label.textContent.trim(),
+                id: parseInt(taskId),
+                details: details,
                 completed: completed,
-                sprint_id: parseInt(checkbox.closest('.sprint-card').dataset.sprintId)
+                sprint_id: parseInt(sprintId)
             }
         })
     })
@@ -834,16 +1117,18 @@ function toggleTaskCompletion(taskId, completed) {
         }
         return response.json();
     })
+    .then(data => {
+        console.log('Task update response:', data);
+        
+        // Refresh the page to show updated state
+        window.location.reload();
+    })
     .catch(error => {
-        console.error('Error updating task completion:', error);
-        // Revert checkbox state on error
+        console.error('Error updating task:', error);
+        showNotification('Error updating task. Please try again.', 'error');
+        
+        // Revert the checkbox state
         checkbox.checked = !completed;
-        if (!completed) {
-            label.classList.add('text-decoration-line-through');
-        } else {
-            label.classList.remove('text-decoration-line-through');
-        }
-        alert('Error updating task. Please try again.');
     });
 }
 
@@ -907,7 +1192,7 @@ function saveIssue() {
         },
         body: JSON.stringify({
             name: issueId ? 'update_issue' : 'create_issue',
-            parameters: issueId ? { ...issueData, issue_id: parseInt(issueId) } : issueData
+            parameters: issueId ? { ...issueData, id: parseInt(issueId) } : issueData
         })
     })
     .then(response => {
@@ -921,8 +1206,10 @@ function saveIssue() {
         const issueModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('issueModal'));
         issueModal.hide();
         
-        // Refresh page to show changes
-        window.location.reload();
+        // Update the sprint's tasks and issues instead of reloading the page
+        updateSprintTasksAndIssues(issueData.sprint_id).then(() => {
+            showNotification('Issue saved successfully!');
+        });
     })
     .catch(error => {
         console.error('Error saving issue:', error);
@@ -1023,8 +1310,13 @@ function deleteIssue(issueId) {
         const confirmationModal = bootstrap.Modal.getInstance(document.getElementById('confirmationModal'));
         confirmationModal.hide();
         
-        // Refresh page to show changes
-        window.location.reload();
+        // Get the sprint ID from the issue before it's deleted
+        const sprintId = document.querySelector(`.issue-item[data-issue-id="${issueId}"]`).closest('.sprint-card').dataset.sprintId;
+        
+        // Update the sprint's tasks and issues instead of reloading the page
+        updateSprintTasksAndIssues(sprintId).then(() => {
+            showNotification('Issue deleted successfully!');
+        });
     })
     .catch(error => {
         console.error('Error deleting issue:', error);
@@ -1034,22 +1326,29 @@ function deleteIssue(issueId) {
 
 /**
  * Toggle issue completion status
+ * @param {Event} event - The click event
  * @param {string} issueId - The ID of the issue
- * @param {boolean} completed - Whether the issue is completed
  */
-function toggleIssueCompletion(issueId, completed) {
-    // Get the label element
-    const checkbox = document.querySelector(`.issue-check[data-issue-id="${issueId}"]`);
-    const label = checkbox.nextElementSibling;
+function toggleIssueCompletion(event, issueId) {
+    // Get the checkbox element
+    const checkbox = event.target;
     
-    // Update label style
-    if (completed) {
-        label.classList.add('text-decoration-line-through');
-    } else {
-        label.classList.remove('text-decoration-line-through');
-    }
+    // Get the current completion status
+    const completed = checkbox.checked;
     
-    // Send update request
+    // Get the issue details
+    const issueItem = checkbox.closest('.issue-item');
+    const details = issueItem.querySelector('.form-check-label').textContent.trim();
+    const sprintId = issueItem.closest('.sprint-card').dataset.sprintId;
+    
+    console.log('Updating issue:', {
+        id: parseInt(issueId),
+        details: details,
+        completed: completed,
+        sprint_id: parseInt(sprintId)
+    });
+    
+    // Update the issue through MCP
     fetch('/mcp/execute', {
         method: 'POST',
         headers: {
@@ -1058,10 +1357,10 @@ function toggleIssueCompletion(issueId, completed) {
         body: JSON.stringify({
             name: 'update_issue',
             parameters: {
-                issue_id: parseInt(issueId),
-                details: label.textContent.trim(),
+                id: parseInt(issueId),
+                details: details,
                 completed: completed,
-                sprint_id: parseInt(checkbox.closest('.sprint-card').dataset.sprintId)
+                sprint_id: parseInt(sprintId)
             }
         })
     })
@@ -1071,71 +1370,17 @@ function toggleIssueCompletion(issueId, completed) {
         }
         return response.json();
     })
-    .catch(error => {
-        console.error('Error updating issue completion:', error);
-        // Revert checkbox state on error
-        checkbox.checked = !completed;
-        if (!completed) {
-            label.classList.add('text-decoration-line-through');
-        } else {
-            label.classList.remove('text-decoration-line-through');
-        }
-        alert('Error updating issue. Please try again.');
-    });
-}
-
-/**
- * Save a sprint (create new or update existing)
- */
-function saveSprint() {
-    // Get form values
-    const sprintId = document.getElementById('sprintId').value;
-    const projectId = document.getElementById('sprintProjectId').value;
-    const name = document.getElementById('sprintName').value;
-    const description = document.getElementById('sprintDescription').value;
-    const status = document.getElementById('sprintStatus').value;
-    
-    // Validate form
-    if (!name) {
-        alert('Sprint name is required');
-        return;
-    }
-    
-    // Prepare sprint data
-    const sprintData = {
-        name: name,
-        description: description,
-        status: status,
-        project_id: parseInt(projectId)
-    };
-    
-    // Send request through MCP
-    fetch('/mcp/execute', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            name: sprintId ? 'update_sprint' : 'create_sprint',
-            parameters: sprintId ? { ...sprintData, sprint_id: parseInt(sprintId), project_id: parseInt(projectId) } : sprintData
-        })
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return response.json();
-    })
     .then(data => {
-        // Close modal using getOrCreateInstance
-        const sprintModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('sprintModal'));
-        sprintModal.hide();
+        console.log('Issue update response:', data);
         
-        // Refresh page to show changes
+        // Refresh the page to show updated state
         window.location.reload();
     })
     .catch(error => {
-        console.error('Error saving sprint:', error);
-        alert('Error saving sprint. Please try again.');
+        console.error('Error updating issue:', error);
+        showNotification('Error updating issue. Please try again.', 'error');
+        
+        // Revert the checkbox state
+        checkbox.checked = !completed;
     });
 }

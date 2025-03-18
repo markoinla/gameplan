@@ -134,6 +134,12 @@ def handle_tools_call(message):
     
     print(f"Executing tool: {tool_name} with params: {tool_params}", file=sys.stderr)
     
+    # Convert boolean values from strings to actual booleans if needed
+    # This fixes issues with completed parameter for tasks and issues
+    for key, value in tool_params.items():
+        if isinstance(value, str) and value.lower() in ['true', 'false']:
+            tool_params[key] = value.lower() == 'true'
+    
     try:
         response = requests.post(
             urljoin(base_url, "/mcp/execute"),

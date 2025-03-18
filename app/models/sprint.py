@@ -55,10 +55,44 @@ class Sprint(db.Model):
             'status': self.status,
             'project_id': self.project_id,
             'created_at': self.created_at.isoformat() if self.created_at else None,
-            'updated_at': self.updated_at.isoformat() if self.updated_at else None,
-            'tasks': [task.to_dict() for task in self.tasks],
-            'issues': [issue.to_dict() for issue in self.issues]
+            'updated_at': self.updated_at.isoformat() if self.updated_at else None
         }
+        
+    def get_sorted_tasks(self):
+        """
+        Get tasks sorted by completion status and creation date
+        - Incomplete tasks first (oldest to newest)
+        - Completed tasks last (oldest to newest)
+        """
+        # Get all tasks for this sprint
+        all_tasks = self.tasks.all()
+        
+        # Sort tasks: incomplete tasks first (oldest to newest), then completed tasks (oldest to newest)
+        incomplete_tasks = sorted([task for task in all_tasks if not task.completed], 
+                                 key=lambda task: task.created_at)
+        completed_tasks = sorted([task for task in all_tasks if task.completed], 
+                                key=lambda task: task.created_at)
+        
+        # Combine the sorted lists
+        return incomplete_tasks + completed_tasks
+    
+    def get_sorted_issues(self):
+        """
+        Get issues sorted by completion status and creation date
+        - Incomplete issues first (oldest to newest)
+        - Completed issues last (oldest to newest)
+        """
+        # Get all issues for this sprint
+        all_issues = self.issues.all()
+        
+        # Sort issues: incomplete issues first (oldest to newest), then completed issues (oldest to newest)
+        incomplete_issues = sorted([issue for issue in all_issues if not issue.completed], 
+                                  key=lambda issue: issue.created_at)
+        completed_issues = sorted([issue for issue in all_issues if issue.completed], 
+                                 key=lambda issue: issue.created_at)
+        
+        # Combine the sorted lists
+        return incomplete_issues + completed_issues
     
     def to_dict_simple(self):
         """Convert sprint to dictionary without related objects for API responses"""

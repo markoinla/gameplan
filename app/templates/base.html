@@ -23,25 +23,12 @@
             <a class="navbar-brand" href="{{ url_for('main.index') }}">
                 <i class="fas fa-project-diagram me-2"></i>GamePlan
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('main.index') }}">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#" id="createProjectBtn">New Project</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link theme-toggle" href="#" 
-                           @click.prevent="darkMode = !darkMode; localStorage.setItem('darkMode', darkMode)">
-                            <i class="fas" :class="darkMode ? 'fa-sun' : 'fa-moon'"></i>
-                            <span class="ms-1 d-none d-lg-inline" x-text="darkMode ? 'Light Mode' : 'Dark Mode'"></span>
-                        </a>
-                    </li>
-                </ul>
+            <div class="ms-auto">
+                <a class="nav-link theme-toggle" href="#" 
+                   @click.prevent="darkMode = !darkMode; localStorage.setItem('darkMode', darkMode)">
+                    <i class="fas" :class="darkMode ? 'fa-sun' : 'fa-moon'"></i>
+                    <span class="ms-1 d-none d-lg-inline" x-text="darkMode ? 'Light Mode' : 'Dark Mode'"></span>
+                </a>
             </div>
         </div>
     </nav>

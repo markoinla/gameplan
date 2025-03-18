@@ -5,24 +5,24 @@
 
 :root {
   /* Main color palette */
-  --gp-bg-dark: #1e1e2e;         /* Dark background */
-  --gp-bg-darker: #181825;       /* Darker background for contrast */
-  --gp-bg-lighter: #2a2a3c;      /* Slightly lighter background for cards, etc. */
-  --gp-primary: #7aa2f7;         /* Primary accent color - soft blue */
-  --gp-secondary: #565f89;       /* Secondary color - muted blue-grey */
-  --gp-text: #c0caf5;            /* Main text color - light blue-grey */
-  --gp-text-muted: #9aa5ce;      /* Muted text - lighter blue-grey */
+  --gp-bg-dark: #1e1e1e;         /* Dark background - simplified */
+  --gp-bg-darker: #181818;       /* Darker background for contrast - simplified */
+  --gp-bg-lighter: #252525;      /* Slightly lighter background for cards, etc. - simplified */
+  --gp-primary: #3794ff;         /* Primary accent color - cleaner blue */
+  --gp-secondary: #5a5a5a;       /* Secondary color - simplified grey */
+  --gp-text: #cccccc;            /* Main text color - simplified light grey */
+  --gp-text-muted: #8a8a8a;      /* Muted text - simplified */
   --gp-text-bright: #ffffff;     /* Bright text for emphasis */
-  --gp-text-body: #e0e0f0;       /* Body text - slightly darker white for better readability */
-  --gp-border: #414868;          /* Border color */
-  --gp-success: #9ece6a;         /* Success color - soft green */
-  --gp-warning: #e0af68;         /* Warning color - soft orange */
-  --gp-danger: #f7768e;          /* Danger color - soft red */
-  --gp-info: #7dcfff;            /* Info color - soft cyan */
+  --gp-text-body: #e0e0e0;       /* Body text - slightly darker white for better readability */
+  --gp-border: #3a3a3a;          /* Border color - simplified */
+  --gp-success: #89d185;         /* Success color - simplified green */
+  --gp-warning: #cca700;         /* Warning color - simplified orange */
+  --gp-danger: #f14c4c;          /* Danger color - simplified red */
+  --gp-info: #3794ff;            /* Info color - same as primary for simplicity */
   
-  /* Shadows */
-  --gp-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-  --gp-shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.4);
+  /* Shadows - minimized */
+  --gp-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  --gp-shadow-lg: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 /* Base styles */
@@ -42,11 +42,11 @@ body {
   color: var(--gp-text-bright) !important;
 }
 
-/* Cards and containers */
+/* Cards and containers - simplified */
 .card, .sprint-card {
   background-color: var(--gp-bg-lighter);
   border: 1px solid var(--gp-border);
-  box-shadow: var(--gp-shadow);
+  box-shadow: none; /* Removed shadow for minimalist look */
 }
 
 .card-header, .sprint-header {
@@ -59,11 +59,12 @@ body {
   background-color: var(--gp-bg-lighter);
 }
 
-/* Project cards */
+/* Project cards - simplified */
 .project-card {
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: transform 0.2s;
   background-color: var(--gp-bg-lighter);
   border: 1px solid var(--gp-border);
+  box-shadow: none; /* Removed shadow for minimalist look */
 }
 
 /* Sprint sections */
@@ -72,7 +73,7 @@ body {
   cursor: pointer;
 }
 
-/* Task and issue items */
+/* Task and issue items - simplified */
 .task-item, .issue-item {
   border-bottom: 1px solid var(--gp-border);
   background-color: var(--gp-bg-lighter);
@@ -83,17 +84,18 @@ body {
   background-color: var(--gp-bg-darker);
 }
 
-/* Form elements */
+/* Form elements - simplified */
 .form-control, .form-select {
   background-color: var(--gp-bg-darker);
   border: 1px solid var(--gp-border);
   color: var(--gp-text);
+  border-radius: 2px; /* Reduced border radius */
 }
 
 .form-control:focus, .form-select:focus {
   background-color: var(--gp-bg-darker);
   border-color: var(--gp-primary);
-  box-shadow: 0 0 0 0.25rem rgba(122, 162, 247, 0.25);
+  box-shadow: 0 0 0 1px var(--gp-primary); /* Simplified focus shadow */
   color: var(--gp-text-bright);
 }
 
@@ -112,46 +114,53 @@ body {
   color: var(--gp-text-muted);
 }
 
-/* Buttons */
+/* Buttons - simplified */
 .btn-primary {
   background-color: var(--gp-primary);
   border-color: var(--gp-primary);
   color: var(--gp-bg-darker);
+  border-radius: 2px; /* Reduced border radius */
 }
 
 .btn-secondary {
   background-color: var(--gp-secondary);
   border-color: var(--gp-secondary);
+  border-radius: 2px; /* Reduced border radius */
 }
 
 .btn-success {
   background-color: var(--gp-success);
   border-color: var(--gp-success);
   color: var(--gp-bg-darker);
+  border-radius: 2px; /* Reduced border radius */
 }
 
 .btn-danger {
   background-color: var(--gp-danger);
   border-color: var(--gp-danger);
   color: var(--gp-bg-darker);
+  border-radius: 2px; /* Reduced border radius */
 }
 
 .btn-warning {
   background-color: var(--gp-warning);
   border-color: var(--gp-warning);
   color: var(--gp-bg-darker);
+  border-radius: 2px; /* Reduced border radius */
 }
 
 .btn-info {
   background-color: var(--gp-info);
   border-color: var(--gp-info);
   color: var(--gp-bg-darker);
+  border-radius: 2px; /* Reduced border radius */
 }
 
-/* Modals */
+/* Modals - simplified */
 .modal-content {
   background-color: var(--gp-bg-lighter);
   border: 1px solid var(--gp-border);
+  border-radius: 4px; /* Reduced border radius */
 }
 
 .modal-header {
@@ -272,7 +281,7 @@ html.dark-mode .card,
 html.dark-mode .sprint-card {
   background-color: var(--gp-bg-lighter);
   border: 1px solid var(--gp-border);
-  box-shadow: var(--gp-shadow);
+  box-shadow: none; /* Removed shadow for minimalist look */
 }
 
 html.dark-mode .card-header,
@@ -290,6 +299,7 @@ html.dark-mode .card-body {
 html.dark-mode .project-card {
   background-color: var(--gp-bg-lighter);
   border: 1px solid var(--gp-border);
+  box-shadow: none; /* Removed shadow for minimalist look */
 }
 
 html.dark-mode .sprint-header {
@@ -318,7 +328,7 @@ html.dark-mode .form-control:focus,
 html.dark-mode .form-select:focus {
   background-color: var(--gp-bg-darker);
   border-color: var(--gp-primary);
-  box-shadow: 0 0 0 0.25rem rgba(122, 162, 247, 0.25);
+  box-shadow: 0 0 0 1px var(--gp-primary); /* Simplified focus shadow */
   color: var(--gp-text-bright);
 }
 

@@ -1,7 +1,7 @@
 {
   "mcpServers": {
     "gameplan": {
-      "command": "${workspaceRoot}/run_mcp.sh",
+      "command": "/Users/marko.stankovic/Desktop/WEBDEV/PROJECTS/GAMEPLAN/run_mcp.sh",
       "args": [],
       "env": {
         "PYTHONUNBUFFERED": "1",

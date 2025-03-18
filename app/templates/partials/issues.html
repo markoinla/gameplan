@@ -1,0 +1,24 @@
+{% if issues %}
+    {% for issue in issues %}
+        <div class="issue-item {% if issue.completed %}completed{% endif %}" data-issue-id="{{ issue.id }}">
+            <div class="form-check">
+                <input class="form-check-input issue-check" type="checkbox" 
+                       {% if issue.completed %}checked{% endif %} 
+                       data-issue-id="{{ issue.id }}">
+                <label class="form-check-label" data-bs-toggle="tooltip" title="Issue #{{ issue.id }}">
+                    Issue #{{ issue.id }}: {{ issue.details }}
+                </label>
+                <div class="issue-actions">
+                    <button class="btn btn-sm btn-link edit-issue-btn p-0 me-2" data-issue-id="{{ issue.id }}">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn btn-sm btn-link delete-issue-btn p-0" data-issue-id="{{ issue.id }}">
+                        <i class="fas fa-trash text-danger"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+{% else %}
+    <p class="text-muted">No issues yet.</p>
+{% endif %}
