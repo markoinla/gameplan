@@ -1085,7 +1085,12 @@ function toggleTaskCompletion(event, taskId) {
     
     // Get the task details
     const taskItem = checkbox.closest('.task-item');
-    const details = taskItem.querySelector('.form-check-label').textContent.trim();
+    let details = taskItem.querySelector('.form-check-label').textContent.trim();
+    
+    // Remove "Task #X: " prefix from details if present
+    const taskPrefix = new RegExp(`^Task #${taskId}:\\s*`, 'i');
+    details = details.replace(taskPrefix, '');
+    
     const sprintId = taskItem.closest('.sprint-card').dataset.sprintId;
     
     console.log('Updating task:', {
@@ -1338,7 +1343,12 @@ function toggleIssueCompletion(event, issueId) {
     
     // Get the issue details
     const issueItem = checkbox.closest('.issue-item');
-    const details = issueItem.querySelector('.form-check-label').textContent.trim();
+    let details = issueItem.querySelector('.form-check-label').textContent.trim();
+    
+    // Remove "Issue #X: " prefix from details if present
+    const issuePrefix = new RegExp(`^Issue #${issueId}:\\s*`, 'i');
+    details = details.replace(issuePrefix, '');
+    
     const sprintId = issueItem.closest('.sprint-card').dataset.sprintId;
     
     console.log('Updating issue:', {
