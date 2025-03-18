@@ -17,4 +17,4 @@ export GAMEPLAN_BASE_URL=http://127.0.0.1:5001
 
 # Run the MCP server
 echo "Starting MCP server..."
-python3 "$SCRIPT_DIR/app/mcp/mcp_server.py"
+python3 "$SCRIPT_DIR/mcp_server.py"

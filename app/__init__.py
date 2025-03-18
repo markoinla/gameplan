@@ -42,6 +42,10 @@ def create_app(config_class=Config):
     app.register_blueprint(main_bp)
     app.register_blueprint(htmx_bp)
     
+    # Register MCP API blueprint
+    from app.api.mcp_endpoints import mcp_api_bp
+    app.register_blueprint(mcp_api_bp)
+    
     # Initialize MCP server
     from app.mcp import setup_mcp_server
     app = setup_mcp_server(app)
