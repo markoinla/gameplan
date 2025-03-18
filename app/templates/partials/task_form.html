@@ -1,0 +1,19 @@
+<form id="htmx-task-form" 
+      hx-post="/htmx/tasks/create" 
+      hx-target="#task-list-{{ sprint_id }}" 
+      hx-swap="innerHTML"
+      hx-on::after-request="if(event.detail.successful) { closeTaskForm('{{ sprint_id }}'); }">
+    <input type="hidden" name="sprint_id" value="{{ sprint_id }}">
+    <div class="mb-3">
+        <label for="task-details-{{ sprint_id }}" class="form-label">Task Details <span class="text-danger">*</span></label>
+        <textarea class="form-control" id="task-details-{{ sprint_id }}" name="details" rows="3" required></textarea>
+    </div>
+    <div class="mb-3 form-check">
+        <input type="checkbox" class="form-check-input" id="task-completed-{{ sprint_id }}" name="completed">
+        <label class="form-check-label" for="task-completed-{{ sprint_id }}">Mark as Completed</label>
+    </div>
+    <div class="d-flex justify-content-end">
+        <button type="button" class="btn btn-secondary me-2" onclick="closeTaskForm('{{ sprint_id }}')">Cancel</button>
+        <button type="submit" class="btn btn-primary">Save Task</button>
+    </div>
+</form>

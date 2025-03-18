@@ -143,7 +143,11 @@
                                                         <div class="d-flex justify-content-between align-items-center mb-2 collapsible-header" @click="tasksOpen{{ sprint.id }} = !tasksOpen{{ sprint.id }}">
                                                             <h5 class="mb-0">Tasks</h5>
                                                             <div>
-                                                                <button class="btn btn-sm btn-outline-primary add-task-btn me-2" data-sprint-id="{{ sprint.id }}" @click.stop>
+                                                                <button class="btn btn-sm btn-outline-primary me-2" 
+                                                                        hx-get="/htmx/tasks/form/{{ sprint.id }}"
+                                                                        hx-target="#task-form-container-{{ sprint.id }}"
+                                                                        hx-swap="innerHTML"
+                                                                        @click.stop>
                                                                     <i class="fas fa-plus me-1"></i>Add Task
                                                                 </button>
                                                                 <button class="btn btn-sm btn-link p-0" @click.stop="tasksOpen{{ sprint.id }} = !tasksOpen{{ sprint.id }}">
@@ -158,35 +162,11 @@
                                                              x-transition:leave="transition ease-in duration-150"
                                                              x-transition:leave-start="opacity-100 transform translate-y-0"
                                                              x-transition:leave-end="opacity-0 transform -translate-y-4">
-                                                            <div class="task-list">
-                                                                {% if sprint.get_sorted_tasks() %}
-                                                                    {% for task in sprint.get_sorted_tasks() %}
-                                                                        <div class="task-item p-2 d-flex justify-content-between align-items-center" 
-                                                                             data-task-id="{{ task.id }}">
-                                                                            <div class="form-check">
-                                                                                <input class="form-check-input task-check" type="checkbox" value="" id="task{{ task.id }}" 
-                                                                                    {% if task.completed %}checked{% endif %} data-task-id="{{ task.id }}">
-                                                                                <label class="form-check-label {% if task.completed %}text-muted{% endif %}" for="task{{ task.id }}"
-                                                                                       data-bs-toggle="tooltip" data-bs-placement="top" title="Task #{{ task.id }}">
-                                                                                    Task #{{ task.id }}: {{ task.details }}
-                                                                                </label>
-                                                                            </div>
-                                                                            <div class="task-actions">
-                                                                                <button class="btn btn-sm btn-link edit-task-btn" data-task-id="{{ task.id }}">
-                                                                                    <i class="fas fa-edit"></i>
-                                                                                </button>
-                                                                                <button class="btn btn-sm btn-link text-danger delete-task-btn" data-task-id="{{ task.id }}">
-                                                                                    <i class="fas fa-trash"></i>
-                                                                                </button>
-                                                                            </div>
-                                                                        </div>
-                                                                    {% endfor %}
-                                                                {% else %}
-                                                                    <div class="text-center py-3 text-muted">
-                                                                        <p>No tasks created yet for this sprint.</p>
-                                                                    </div>
-                                                                {% endif %}
-                                                            </div>
+                                                            <!-- Task Form Container -->
+                                                            <div id="task-form-container-{{ sprint.id }}" class="mb-3"></div>
+                                                            
+                                                            <!-- Task List -->
+                                                            {% include 'partials/task_list.html' %}
                                                         </div>
                                                     </div>
                                                     
@@ -195,7 +175,11 @@
                                                         <div class="d-flex justify-content-between align-items-center mb-2 collapsible-header" @click="issuesOpen{{ sprint.id }} = !issuesOpen{{ sprint.id }}">
                                                             <h5 class="mb-0">Issues</h5>
                                                             <div>
-                                                                <button class="btn btn-sm btn-outline-primary add-issue-btn me-2" data-sprint-id="{{ sprint.id }}" @click.stop>
+                                                                <button class="btn btn-sm btn-outline-primary me-2" 
+                                                                        hx-get="/htmx/issues/form/{{ sprint.id }}"
+                                                                        hx-target="#issue-form-container-{{ sprint.id }}"
+                                                                        hx-swap="innerHTML"
+                                                                        @click.stop>
                                                                     <i class="fas fa-plus me-1"></i>Add Issue
                                                                 </button>
                                                                 <button class="btn btn-sm btn-link p-0" @click.stop="issuesOpen{{ sprint.id }} = !issuesOpen{{ sprint.id }}">
@@ -205,40 +189,16 @@
                                                         </div>
                                                         <div x-show="issuesOpen{{ sprint.id }}" 
                                                              x-transition:enter="transition ease-out duration-200"
-                                                             x-transition:enter-start="transform translateY(-100%)"
-                                                             x-transition:enter-end="transform translateY(0)"
+                                                             x-transition:enter-start="opacity-0 transform -translate-y-4"
+                                                             x-transition:enter-end="opacity-100 transform translate-y-0"
                                                              x-transition:leave="transition ease-in duration-150"
-                                                             x-transition:leave-start="transform translateY(0)"
-                                                             x-transition:leave-end="transform translateY(-100%)">
-                                                            <div class="issue-list">
-                                                                {% if sprint.get_sorted_issues() %}
-                                                                    {% for issue in sprint.get_sorted_issues() %}
-                                                                        <div class="issue-item p-2 d-flex justify-content-between align-items-center" 
-                                                                             data-issue-id="{{ issue.id }}">
-                                                                            <div class="form-check">
-                                                                                <input class="form-check-input issue-check" type="checkbox" value="" id="issue{{ issue.id }}" 
-                                                                                    {% if issue.completed %}checked{% endif %} data-issue-id="{{ issue.id }}">
-                                                                                <label class="form-check-label {% if issue.completed %}text-muted{% endif %}" for="issue{{ issue.id }}"
-                                                                                       data-bs-toggle="tooltip" data-bs-placement="top" title="Issue #{{ issue.id }}">
-                                                                                    Issue #{{ issue.id }}: {{ issue.details }}
-                                                                                </label>
-                                                                            </div>
-                                                                            <div class="issue-actions">
-                                                                                <button class="btn btn-sm btn-link edit-issue-btn" data-issue-id="{{ issue.id }}">
-                                                                                    <i class="fas fa-edit"></i>
-                                                                                </button>
-                                                                                <button class="btn btn-sm btn-link text-danger delete-issue-btn" data-issue-id="{{ issue.id }}">
-                                                                                    <i class="fas fa-trash"></i>
-                                                                                </button>
-                                                                            </div>
-                                                                        </div>
-                                                                    {% endfor %}
-                                                                {% else %}
-                                                                    <div class="text-center py-3 text-muted">
-                                                                        <p>No issues created yet for this sprint.</p>
-                                                                    </div>
-                                                                {% endif %}
-                                                            </div>
+                                                             x-transition:leave-start="opacity-100 transform translate-y-0"
+                                                             x-transition:leave-end="opacity-0 transform -translate-y-4">
+                                                            <!-- Issue Form Container -->
+                                                            <div id="issue-form-container-{{ sprint.id }}" class="mb-3"></div>
+                                                            
+                                                            <!-- Issue List -->
+                                                            {% include 'partials/issue_list.html' %}
                                                         </div>
                                                     </div>
                                                 </div>

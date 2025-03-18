@@ -45,8 +45,6 @@ function initializeBootstrapComponents() {
             });
         }
     });
-
-    // Do not initialize modals here - we'll handle them individually when needed
 }
 
 /**
@@ -91,6 +89,44 @@ function showNotification(message, type = 'success') {
             notification.remove();
         }, 150);
     }, 5000);
+}
+
+/**
+ * Format a date string as a relative time (e.g., "2 days ago")
+ * @param {string} dateString - The date string to format
+ * @returns {string} - The formatted relative time
+ */
+function formatRelativeTime(dateString) {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffInSeconds = Math.floor((now - date) / 1000);
+    
+    if (diffInSeconds < 60) {
+        return 'just now';
+    }
+    
+    const diffInMinutes = Math.floor(diffInSeconds / 60);
+    if (diffInMinutes < 60) {
+        return diffInMinutes === 1 ? '1 minute ago' : `${diffInMinutes} minutes ago`;
+    }
+    
+    const diffInHours = Math.floor(diffInMinutes / 60);
+    if (diffInHours < 24) {
+        return diffInHours === 1 ? '1 hour ago' : `${diffInHours} hours ago`;
+    }
+    
+    const diffInDays = Math.floor(diffInHours / 24);
+    if (diffInDays < 30) {
+        return diffInDays === 1 ? '1 day ago' : `${diffInDays} days ago`;
+    }
+    
+    const diffInMonths = Math.floor(diffInDays / 30);
+    if (diffInMonths < 12) {
+        return diffInMonths === 1 ? '1 month ago' : `${diffInMonths} months ago`;
+    }
+    
+    const diffInYears = Math.floor(diffInMonths / 12);
+    return diffInYears === 1 ? '1 year ago' : `${diffInYears} years ago`;
 }
 
 /**
@@ -388,33 +424,8 @@ function initializeTaskEventListeners() {
         saveTask();
     });
     
-    // Edit task button click - Using event delegation for dynamically added elements
-    document.addEventListener('click', function(e) {
-        if (e.target.closest('.edit-task-btn')) {
-            e.stopPropagation();
-            e.preventDefault();
-            const taskId = e.target.closest('.edit-task-btn').dataset.taskId;
-            editTask(taskId);
-        }
-    });
-    
-    // Delete task button click - Using event delegation for dynamically added elements
-    document.addEventListener('click', function(e) {
-        if (e.target.closest('.delete-task-btn')) {
-            e.stopPropagation();
-            e.preventDefault();
-            const taskId = e.target.closest('.delete-task-btn').dataset.taskId;
-            confirmDeleteTask(taskId);
-        }
-    });
-    
-    // Task checkbox change - Using event delegation for dynamically added elements
-    document.addEventListener('change', function(e) {
-        if (e.target.classList.contains('task-check')) {
-            const taskId = e.target.dataset.taskId;
-            toggleTaskCompletion(e, taskId);
-        }
-    });
+    // Note: Task checkbox change event listener has been removed
+    // Task completion toggling is now handled by HTMX in the task_item.html partial
 }
 
 /**
@@ -432,39 +443,12 @@ function initializeIssueEventListeners() {
     });
     
     // Save issue button click
-    document.getElementById('saveIssueBtn').addEventListener('click', function(e) {
-        e.stopPropagation();
-        e.preventDefault();
+    document.getElementById('saveIssueBtn').addEventListener('click', function() {
         saveIssue();
     });
     
-    // Edit issue button click - Using event delegation for dynamically added elements
-    document.addEventListener('click', function(e) {
-        if (e.target.closest('.edit-issue-btn')) {
-            e.stopPropagation();
-            e.preventDefault();
-            const issueId = e.target.closest('.edit-issue-btn').dataset.issueId;
-            editIssue(issueId);
-        }
-    });
-    
-    // Delete issue button click - Using event delegation for dynamically added elements
-    document.addEventListener('click', function(e) {
-        if (e.target.closest('.delete-issue-btn')) {
-            e.stopPropagation();
-            e.preventDefault();
-            const issueId = e.target.closest('.delete-issue-btn').dataset.issueId;
-            confirmDeleteIssue(issueId);
-        }
-    });
-    
-    // Issue checkbox change - Using event delegation for dynamically added elements
-    document.addEventListener('change', function(e) {
-        if (e.target.classList.contains('issue-check')) {
-            const issueId = e.target.dataset.issueId;
-            toggleIssueCompletion(e, issueId);
-        }
-    });
+    // Note: Issue checkbox change event listener has been removed
+    // Issue completion toggling is now handled by HTMX in the issue_item.html partial
 }
 
 /**
@@ -493,6 +477,75 @@ function initializeKeyboardShortcuts() {
                 e.preventDefault();
                 document.getElementById('saveIssueBtn').click();
             }
+        }
+    });
+}
+
+// Initialize when the document is ready
+$(document).ready(function() {
+    // Initialize tooltips
+    initTooltips();
+    
+    // Initialize Alpine.js components - commented out as function is not defined
+    // initAlpine();
+    
+    // Initialize event listeners
+    initEventListeners();
+    
+    // Initialize MCP
+    initMCP();
+});
+
+/**
+ * Initialize Bootstrap popovers
+ */
+function initPopovers() {
+    // Enable popovers everywhere
+    const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]');
+    [...popoverTriggerList].forEach(popoverTriggerEl => {
+        const popover = new bootstrap.Popover(popoverTriggerEl, {
+            trigger: 'focus',
+            html: true,
+            content: function() {
+                const taskId = $(this).data('task-id');
+                return `
+                    <p>Are you sure you want to delete this task?</p>
+                    <div class="d-flex justify-content-end">
+                        <button class="btn btn-sm btn-secondary me-2" onclick="$('[data-bs-toggle=popover]').popover('hide')">Cancel</button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteTask(${taskId}); $('[data-bs-toggle=popover]').popover('hide')">Delete</button>
+                    </div>
+                `;
+            }
+        });
+    });
+}
+
+/**
+ * Initialize tooltips
+ */
+function initTooltips() {
+    // Initialize all tooltips with custom configuration to prevent multiple tooltips
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl, {
+            trigger: 'hover',  // Only trigger on hover, not on focus
+            container: 'body', // Append tooltips to body to manage z-index better
+            template: '<div class="tooltip" role="tooltip"><div class="tooltip-inner"></div></div>', // Remove arrow
+            animation: false,  // Disable animation for cleaner appearance
+            delay: { show: 50, hide: 0 } // Quick show, immediate hide
+        });
+    });
+
+    // Ensure only one tooltip is shown at a time
+    document.addEventListener('mouseover', function(e) {
+        if (!e.target.hasAttribute('data-bs-toggle') && !e.target.closest('[data-bs-toggle="tooltip"]')) {
+            // Hide all tooltips when mouse is not over a tooltip trigger
+            tooltipTriggerList.forEach(function(tooltipTriggerEl) {
+                const tooltip = bootstrap.Tooltip.getInstance(tooltipTriggerEl);
+                if (tooltip) {
+                    tooltip.hide();
+                }
+            });
         }
     });
 }
@@ -882,6 +935,34 @@ function deleteSprint(sprintId) {
 // ===== TASK FUNCTIONS =====
 
 /**
+ * Initialize task-related functionality
+ */
+function initTaskFunctions() {
+    // This function is intentionally left empty
+    // Task editing and deletion is now handled by HTMX
+}
+
+/**
+ * Initialize popovers for task deletion confirmation
+ */
+function initDeleteTaskPopovers() {
+    // This function is intentionally left empty
+    // Task deletion confirmation is now handled by HTMX
+}
+
+/**
+ * Close the task form and clear the container
+ * @param {string} sprintId - The ID of the sprint
+ */
+function closeTaskForm(sprintId) {
+    // Clear the task form container
+    const taskFormContainer = document.getElementById(`task-form-container-${sprintId}`);
+    if (taskFormContainer) {
+        taskFormContainer.innerHTML = '';
+    }
+}
+
+/**
  * Open the task modal for creating a new task or editing an existing one
  * @param {string} sprintId - The ID of the sprint to add the task to
  * @param {string} taskId - Optional, the ID of the task to edit
@@ -1031,43 +1112,23 @@ function confirmDeleteTask(taskId) {
 }
 
 /**
- * Delete a task
+ * Delete a task via AJAX
  * @param {string} taskId - The ID of the task to delete
  */
 function deleteTask(taskId) {
-    // Send delete request through MCP
-    fetch('/mcp/execute', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
+    $.ajax({
+        url: `/htmx/tasks/${taskId}/delete`,
+        type: 'POST',
+        success: function() {
+            // Remove the task from the DOM
+            $(`#task-${taskId}`).fadeOut('fast', function() {
+                $(this).remove();
+            });
         },
-        body: JSON.stringify({
-            name: 'delete_task',
-            parameters: { task_id: parseInt(taskId) }
-        })
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
+        error: function(xhr) {
+            console.error('Error deleting task:', xhr.responseText);
+            alert('Error deleting task. Please try again.');
         }
-        return response.json();
-    })
-    .then(data => {
-        // Close confirmation modal
-        const confirmationModal = bootstrap.Modal.getInstance(document.getElementById('confirmationModal'));
-        confirmationModal.hide();
-        
-        // Get the sprint ID from the task before it's deleted
-        const sprintId = document.querySelector(`.task-item[data-task-id="${taskId}"]`).closest('.sprint-card').dataset.sprintId;
-        
-        // Update the sprint's tasks and issues instead of reloading the page
-        updateSprintTasksAndIssues(sprintId).then(() => {
-            showNotification('Task deleted successfully!');
-        });
-    })
-    .catch(error => {
-        console.error('Error deleting task:', error);
-        alert('Error deleting task. Please try again.');
     });
 }
 
@@ -1075,69 +1136,37 @@ function deleteTask(taskId) {
  * Toggle task completion status
  * @param {Event} event - The click event
  * @param {string} taskId - The ID of the task
+ * 
+ * Note: This function has been replaced by HTMX functionality.
+ * Task completion is now handled by the /htmx/toggle-task/{task_id} endpoint
+ * which updates the task status and returns the updated HTML fragment.
  */
-function toggleTaskCompletion(event, taskId) {
-    // Get the checkbox element
-    const checkbox = event.target;
-    
-    // Get the current completion status
-    const completed = checkbox.checked;
-    
-    // Get the task details
-    const taskItem = checkbox.closest('.task-item');
-    let details = taskItem.querySelector('.form-check-label').textContent.trim();
-    
-    // Remove "Task #X: " prefix from details if present
-    const taskPrefix = new RegExp(`^Task #${taskId}:\\s*`, 'i');
-    details = details.replace(taskPrefix, '');
-    
-    const sprintId = taskItem.closest('.sprint-card').dataset.sprintId;
-    
-    console.log('Updating task:', {
-        id: parseInt(taskId),
-        details: details,
-        completed: completed,
-        sprint_id: parseInt(sprintId)
-    });
-    
-    // Update the task through MCP
-    fetch('/mcp/execute', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            name: 'update_task',
-            parameters: {
-                id: parseInt(taskId),
-                details: details,
-                completed: completed,
-                sprint_id: parseInt(sprintId)
-            }
-        })
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return response.json();
-    })
-    .then(data => {
-        console.log('Task update response:', data);
-        
-        // Refresh the page to show updated state
-        window.location.reload();
-    })
-    .catch(error => {
-        console.error('Error updating task:', error);
-        showNotification('Error updating task. Please try again.', 'error');
-        
-        // Revert the checkbox state
-        checkbox.checked = !completed;
-    });
-}
+// Function toggleTaskCompletion has been removed as it's now handled by HTMX
+
+/**
+ * Toggle issue completion status
+ * @param {Event} event - The click event
+ * @param {string} issueId - The ID of the issue
+ * 
+ * Note: This function has been replaced by HTMX functionality.
+ * Issue completion is now handled by the /htmx/toggle-issue/{issue_id} endpoint
+ * which updates the issue status and returns the updated HTML fragment.
+ */
+// Function toggleIssueCompletion has been removed as it's now handled by HTMX
 
 // ===== ISSUE FUNCTIONS =====
+
+/**
+ * Close the issue form and clear the container
+ * @param {string} sprintId - The ID of the sprint
+ */
+function closeIssueForm(sprintId) {
+    // Clear the issue form container
+    const issueFormContainer = document.getElementById(`issue-form-container-${sprintId}`);
+    if (issueFormContainer) {
+        issueFormContainer.innerHTML = '';
+    }
+}
 
 /**
  * Open the issue modal for creating a new issue or editing an existing one
@@ -1326,71 +1355,5 @@ function deleteIssue(issueId) {
     .catch(error => {
         console.error('Error deleting issue:', error);
         alert('Error deleting issue. Please try again.');
-    });
-}
-
-/**
- * Toggle issue completion status
- * @param {Event} event - The click event
- * @param {string} issueId - The ID of the issue
- */
-function toggleIssueCompletion(event, issueId) {
-    // Get the checkbox element
-    const checkbox = event.target;
-    
-    // Get the current completion status
-    const completed = checkbox.checked;
-    
-    // Get the issue details
-    const issueItem = checkbox.closest('.issue-item');
-    let details = issueItem.querySelector('.form-check-label').textContent.trim();
-    
-    // Remove "Issue #X: " prefix from details if present
-    const issuePrefix = new RegExp(`^Issue #${issueId}:\\s*`, 'i');
-    details = details.replace(issuePrefix, '');
-    
-    const sprintId = issueItem.closest('.sprint-card').dataset.sprintId;
-    
-    console.log('Updating issue:', {
-        id: parseInt(issueId),
-        details: details,
-        completed: completed,
-        sprint_id: parseInt(sprintId)
-    });
-    
-    // Update the issue through MCP
-    fetch('/mcp/execute', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            name: 'update_issue',
-            parameters: {
-                id: parseInt(issueId),
-                details: details,
-                completed: completed,
-                sprint_id: parseInt(sprintId)
-            }
-        })
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return response.json();
-    })
-    .then(data => {
-        console.log('Issue update response:', data);
-        
-        // Refresh the page to show updated state
-        window.location.reload();
-    })
-    .catch(error => {
-        console.error('Error updating issue:', error);
-        showNotification('Error updating issue. Please try again.', 'error');
-        
-        // Revert the checkbox state
-        checkbox.checked = !completed;
     });
 }

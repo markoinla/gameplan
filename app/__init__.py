@@ -33,12 +33,14 @@ def create_app(config_class=Config):
     from app.routes.task_routes import task_bp
     from app.routes.issue_routes import issue_bp
     from app.routes.main_routes import main_bp
+    from app.routes.htmx_routes import htmx_bp
     
     app.register_blueprint(project_bp)
     app.register_blueprint(sprint_bp)
     app.register_blueprint(task_bp)
     app.register_blueprint(issue_bp)
     app.register_blueprint(main_bp)
+    app.register_blueprint(htmx_bp)
     
     # Initialize MCP server
     from app.mcp import setup_mcp_server
