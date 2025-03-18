@@ -1,176 +1,91 @@
-# GamePlan - AI Project Management Application
+# GamePlan
 
-GamePlan is a single-page project management application built with Python and Flask for managing AI coding projects. The application uses server-side rendering with Jinja2 templates for the user interface and exposes a RESTful API for AI agent interaction.
+A Flask-based project management application specially designed for AI coding projects, with full Model Context Protocol (MCP) support for integration with AI assistants like Windsurf.
 
 ## Features
 
-- **Project Management**: Create, view, update, and delete AI coding projects
-- **Sprint Planning**: Organize work into sprints with different statuses (Planned, Active, Completed)
-- **Task Tracking**: Add tasks to sprints and mark them as completed
-- **Issue Management**: Track issues within sprints and mark them as resolved
-- **RESTful API**: Full API support for programmatic access and AI agent interaction
-- **Single-Page Layout**: Intuitive UI with expandable/collapsible sprints
+- Create and manage projects with requirements
+- Organize work into sprints
+- Track tasks and issues
+- RESTful API for all operations
+- MCP server for AI assistant integration
+- Responsive single-page UI
 
-## Technology Stack
+## Setup
 
-- **Backend**: Python with Flask framework
-- **Database**: SQLite with SQLAlchemy ORM
-- **Frontend**: HTML, CSS, JavaScript with Bootstrap 5
-- **Template Engine**: Jinja2
-- **API**: RESTful architecture with JSON responses
-- **Form Validation**: Server-side validation with Marshmallow
-
-## Setup Instructions
-
-### Prerequisites
-
-- Python 3.8 or higher
-- pip (Python package installer)
-
-### Installation
-
-1. **Clone the repository**
-
-```bash
-git clone <repository-url>
-cd GAMEPLAN
+1. Create and activate a virtual environment:
 ```
-
-2. **Create a virtual environment (recommended)**
-
-```bash
 python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
 ```
 
-3. **Activate the virtual environment**
-
-On macOS/Linux:
-```bash
-source venv/bin/activate
+2. Install dependencies:
 ```
-
-On Windows:
-```bash
-venv\Scripts\activate
-```
-
-4. **Install dependencies**
-
-```bash
 pip install -r requirements.txt
 ```
 
-5. **Initialize the database**
-
-```bash
+3. Initialize the database:
+```
 flask init-db
 ```
 
-6. **Create sample data (optional)**
-
-```bash
+4. Create sample data (optional):
+```
 flask create-sample-data
 ```
 
-7. **Run the application**
-
-```bash
+5. Run the application:
+```
 flask run
 ```
 
-8. **Access the application**
+The application will be available at http://127.0.0.1:5001 by default.
 
-Open your web browser and navigate to:
+## API Documentation
+
+The application provides a RESTful API for all CRUD operations:
+
+- Projects: `/api/projects`
+- Sprints: `/api/sprints`
+- Tasks: `/api/tasks`
+- Issues: `/api/issues`
+
+Each endpoint supports:
+- GET (list all or get by ID)
+- POST (create)
+- PUT (update)
+- DELETE (delete)
+
+## MCP Integration
+
+GamePlan includes MCP (Model Context Protocol) support for integration with AI assistants like Windsurf. This allows AI assistants to interact with the application programmatically.
+
+### Setting Up MCP with Windsurf
+
+1. Start the GamePlan application:
 ```
-http://127.0.0.1:5000/
+flask run
 ```
 
-## API Endpoints
+2. Configure Windsurf by copying the `mcp_config.json` file to your Windsurf configuration directory.
 
-### Projects
+3. In Windsurf, select "GamePlan" as your MCP provider.
 
-- `GET /api/projects` - Get all projects
-- `GET /api/projects/<project_id>` - Get a specific project
-- `POST /api/projects` - Create a new project
-- `PUT /api/projects/<project_id>` - Update a project
-- `DELETE /api/projects/<project_id>` - Delete a project
-
-### Sprints
-
-- `GET /api/sprints` - Get all sprints (optional query param: project_id)
-- `GET /api/sprints/<sprint_id>` - Get a specific sprint
-- `POST /api/sprints` - Create a new sprint
-- `PUT /api/sprints/<sprint_id>` - Update a sprint
-- `DELETE /api/sprints/<sprint_id>` - Delete a sprint
-
-### Tasks
-
-- `GET /api/tasks` - Get all tasks (optional query param: sprint_id)
-- `GET /api/tasks/<task_id>` - Get a specific task
-- `POST /api/tasks` - Create a new task
-- `PUT /api/tasks/<task_id>` - Update a task
-- `DELETE /api/tasks/<task_id>` - Delete a task
-
-### Issues
-
-- `GET /api/issues` - Get all issues (optional query param: sprint_id)
-- `GET /api/issues/<issue_id>` - Get a specific issue
-- `POST /api/issues` - Create a new issue
-- `PUT /api/issues/<issue_id>` - Update an issue
-- `DELETE /api/issues/<issue_id>` - Delete an issue
-
-## Project Structure
-
-```
-GAMEPLAN/
-├── app/                      # Application package
-│   ├── __init__.py           # Application factory
-│   ├── models/               # Database models
-│   │   ├── __init__.py
-│   │   ├── project.py
-│   │   ├── sprint.py
-│   │   ├── task.py
-│   │   └── issue.py
-│   ├── routes/               # API and view routes
-│   │   ├── main_routes.py
-│   │   ├── project_routes.py
-│   │   ├── sprint_routes.py
-│   │   ├── task_routes.py
-│   │   └── issue_routes.py
-│   ├── static/               # Static files
-│   │   ├── css/
-│   │   │   └── style.css
-│   │   └── js/
-│   │       └── main.js
-│   └── templates/            # Jinja2 templates
-│       ├── base.html
-│       └── index.html
-├── migrations/               # Database migrations
-├── tests/                    # Test directory
-├── app.py                    # Application entry point
-├── config.py                 # Configuration settings
-├── requirements.txt          # Dependencies
-├── gameplan.md               # Project planning document
-└── README.md                 # This file
-```
+The MCP server provides tools for all CRUD operations on projects, sprints, tasks, and issues.
 
 ## Development
 
-### Adding Database Migrations
+- Database schema changes: Use Flask-Migrate
+  ```
+  flask db migrate -m "Description of changes"
+  flask db upgrade
+  ```
 
-If you make changes to the database models, create a migration:
-
-```bash
-flask db migrate -m "Description of changes"
-flask db upgrade
-```
-
-### Running Tests
-
-```bash
-pytest
-```
+- Running tests:
+  ```
+  python -m pytest tests/
+  ```
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+MIT
