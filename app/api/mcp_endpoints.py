@@ -13,367 +13,14 @@ from app.models.task import Task
 from app.models.issue import Issue
 from app import db
 
+# Import shared tool definitions
+from app.mcp.tool_definitions import TOOLS, get_tool_definition, get_tool_parameters
+
 # Create a blueprint for MCP API endpoints
 mcp_api_bp = Blueprint('mcp_api', __name__, url_prefix='/mcp')
 
-# Define the tools available to the MCP server
-TOOLS = [
-    {
-        "name": "list_projects",
-        "description": "List all projects in the GamePlan application",
-        "parameters": {
-            "type": "object",
-            "properties": {},
-            "required": []
-        }
-    },
-    {
-        "name": "get_project",
-        "description": "Get details of a specific project by ID",
-        "parameters": {
-            "type": "object",
-            "properties": {
-                "project_id": {
-                    "type": "integer",
-                    "description": "ID of the project to retrieve"
-                }
-            },
-            "required": ["project_id"]
-        }
-    },
-    {
-        "name": "create_project",
-        "description": "Create a new project",
-        "parameters": {
-            "type": "object",
-            "properties": {
-                "name": {
-                    "type": "string",
-                    "description": "Name of the project"
-                },
-                "description": {
-                    "type": "string",
-                    "description": "Description of the project"
-                }
-            },
-            "required": ["name"]
-        }
-    },
-    {
-        "name": "update_project",
-        "description": "Update an existing project",
-        "parameters": {
-            "type": "object",
-            "properties": {
-                "project_id": {
-                    "type": "integer",
-                    "description": "ID of the project to update"
-                },
-                "name": {
-                    "type": "string",
-                    "description": "New name for the project"
-                },
-                "description": {
-                    "type": "string",
-                    "description": "New description for the project"
-                }
-            },
-            "required": ["project_id"]
-        }
-    },
-    {
-        "name": "delete_project",
-        "description": "Delete a project by ID",
-        "parameters": {
-            "type": "object",
-            "properties": {
-                "project_id": {
-                    "type": "integer",
-                    "description": "ID of the project to delete"
-                }
-            },
-            "required": ["project_id"]
-        }
-    },
-    {
-        "name": "list_sprints",
-        "description": "List all sprints, optionally filtered by project ID",
-        "parameters": {
-            "type": "object",
-            "properties": {
-                "project_id": {
-                    "type": "integer",
-                    "description": "Optional project ID to filter sprints"
-                }
-            },
-            "required": []
-        }
-    },
-    {
-        "name": "get_sprint",
-        "description": "Get details of a specific sprint by ID",
-        "parameters": {
-            "type": "object",
-            "properties": {
-                "sprint_id": {
-                    "type": "integer",
-                    "description": "ID of the sprint to retrieve"
-                }
-            },
-            "required": ["sprint_id"]
-        }
-    },
-    {
-        "name": "create_sprint",
-        "description": "Create a new sprint",
-        "parameters": {
-            "type": "object",
-            "properties": {
-                "name": {
-                    "type": "string",
-                    "description": "Name of the sprint"
-                },
-                "start_date": {
-                    "type": "string",
-                    "description": "Start date of the sprint (YYYY-MM-DD)"
-                },
-                "end_date": {
-                    "type": "string",
-                    "description": "End date of the sprint (YYYY-MM-DD)"
-                },
-                "project_id": {
-                    "type": "integer",
-                    "description": "ID of the project this sprint belongs to"
-                }
-            },
-            "required": ["name", "project_id"]
-        }
-    },
-    {
-        "name": "update_sprint",
-        "description": "Update an existing sprint",
-        "parameters": {
-            "type": "object",
-            "properties": {
-                "sprint_id": {
-                    "type": "integer",
-                    "description": "ID of the sprint to update"
-                },
-                "name": {
-                    "type": "string",
-                    "description": "New name for the sprint"
-                },
-                "start_date": {
-                    "type": "string",
-                    "description": "New start date for the sprint (YYYY-MM-DD)"
-                },
-                "end_date": {
-                    "type": "string",
-                    "description": "New end date for the sprint (YYYY-MM-DD)"
-                },
-                "project_id": {
-                    "type": "integer",
-                    "description": "New project ID for the sprint"
-                }
-            },
-            "required": ["sprint_id"]
-        }
-    },
-    {
-        "name": "delete_sprint",
-        "description": "Delete a sprint by ID",
-        "parameters": {
-            "type": "object",
-            "properties": {
-                "sprint_id": {
-                    "type": "integer",
-                    "description": "ID of the sprint to delete"
-                }
-            },
-            "required": ["sprint_id"]
-        }
-    },
-    {
-        "name": "list_tasks",
-        "description": "List all tasks, optionally filtered by sprint ID",
-        "parameters": {
-            "type": "object",
-            "properties": {
-                "sprint_id": {
-                    "type": "integer",
-                    "description": "Optional sprint ID to filter tasks"
-                }
-            },
-            "required": []
-        }
-    },
-    {
-        "name": "get_task",
-        "description": "Get details of a specific task by ID",
-        "parameters": {
-            "type": "object",
-            "properties": {
-                "task_id": {
-                    "type": "integer",
-                    "description": "ID of the task to retrieve"
-                }
-            },
-            "required": ["task_id"]
-        }
-    },
-    {
-        "name": "create_task",
-        "description": "Create a new task",
-        "parameters": {
-            "type": "object",
-            "properties": {
-                "details": {
-                    "type": "string",
-                    "description": "Details of the task"
-                },
-                "sprint_id": {
-                    "type": "integer",
-                    "description": "ID of the sprint this task belongs to"
-                },
-                "completed": {
-                    "type": "boolean",
-                    "description": "Whether the task is completed"
-                }
-            },
-            "required": ["details", "sprint_id"]
-        }
-    },
-    {
-        "name": "update_task",
-        "description": "Update an existing task. Note: When setting 'completed' to true or false, ensure it's passed as a boolean value (not a string). Example: use 'completed': true (not 'completed': 'true'). If using curl directly: curl -X PUT http://127.0.0.1:5000/api/tasks/{id} -H 'Content-Type: application/json' -d '{\"completed\": true, \"details\": \"Task details\", \"sprint_id\": 2}'",
-        "parameters": {
-            "type": "object",
-            "properties": {
-                "task_id": {
-                    "type": "integer",
-                    "description": "ID of the task to update"
-                },
-                "details": {
-                    "type": "string",
-                    "description": "New details for the task"
-                },
-                "sprint_id": {
-                    "type": "integer",
-                    "description": "New sprint ID for the task"
-                },
-                "completed": {
-                    "type": "boolean",
-                    "description": "New completion status for the task"
-                }
-            },
-            "required": ["task_id"]
-        }
-    },
-    {
-        "name": "delete_task",
-        "description": "Delete a task by ID",
-        "parameters": {
-            "type": "object",
-            "properties": {
-                "task_id": {
-                    "type": "integer",
-                    "description": "ID of the task to delete"
-                }
-            },
-            "required": ["task_id"]
-        }
-    },
-    {
-        "name": "list_issues",
-        "description": "List all issues, optionally filtered by sprint ID",
-        "parameters": {
-            "type": "object",
-            "properties": {
-                "sprint_id": {
-                    "type": "integer",
-                    "description": "Optional sprint ID to filter issues"
-                }
-            },
-            "required": []
-        }
-    },
-    {
-        "name": "get_issue",
-        "description": "Get details of a specific issue by ID",
-        "parameters": {
-            "type": "object",
-            "properties": {
-                "issue_id": {
-                    "type": "integer",
-                    "description": "ID of the issue to retrieve"
-                }
-            },
-            "required": ["issue_id"]
-        }
-    },
-    {
-        "name": "create_issue",
-        "description": "Create a new issue",
-        "parameters": {
-            "type": "object",
-            "properties": {
-                "details": {
-                    "type": "string",
-                    "description": "Details of the issue"
-                },
-                "sprint_id": {
-                    "type": "integer",
-                    "description": "ID of the sprint this issue belongs to"
-                },
-                "completed": {
-                    "type": "boolean",
-                    "description": "Whether the issue is completed"
-                }
-            },
-            "required": ["details", "sprint_id"]
-        }
-    },
-    {
-        "name": "update_issue",
-        "description": "Update an existing issue. Note: When setting 'completed' to true or false, ensure it's passed as a boolean value (not a string). Example: use 'completed': true (not 'completed': 'true'). If using curl directly: curl -X PUT http://127.0.0.1:5000/api/issues/{id} -H 'Content-Type: application/json' -d '{\"completed\": true, \"details\": \"Issue details\", \"sprint_id\": 2}'",
-        "parameters": {
-            "type": "object",
-            "properties": {
-                "issue_id": {
-                    "type": "integer",
-                    "description": "ID of the issue to update"
-                },
-                "details": {
-                    "type": "string",
-                    "description": "New details for the issue"
-                },
-                "sprint_id": {
-                    "type": "integer",
-                    "description": "New sprint ID for the issue"
-                },
-                "completed": {
-                    "type": "boolean",
-                    "description": "New completion status for the issue"
-                }
-            },
-            "required": ["issue_id"]
-        }
-    },
-    {
-        "name": "delete_issue",
-        "description": "Delete an issue by ID",
-        "parameters": {
-            "type": "object",
-            "properties": {
-                "issue_id": {
-                    "type": "integer",
-                    "description": "ID of the issue to delete"
-                }
-            },
-            "required": ["issue_id"]
-        }
-    }
-]
+# Use the imported TOOLS from tool_definitions.py
+# This ensures consistency between the standalone and integrated MCP servers
 
 @mcp_api_bp.route('/', methods=['GET'])
 def mcp_root():
@@ -480,27 +127,41 @@ def tool_get_sprint(sprint_id):
         return {"error": f"Sprint with ID {sprint_id} not found"}
     return sprint.to_dict()
 
-def tool_create_sprint(name, project_id, start_date=None, end_date=None):
+def tool_create_sprint(name, project_id, description=None, status="Planned"):
     """Create a new sprint"""
-    sprint = Sprint(name=name, project_id=project_id, start_date=start_date, end_date=end_date)
+    # Validate status if provided
+    if status and status not in Sprint.VALID_STATUSES:
+        return {"error": f"Invalid status: {status}. Must be one of {Sprint.VALID_STATUSES}"}
+        
+    sprint = Sprint(name=name, project_id=project_id)
+    
+    if description is not None:
+        sprint.description = description
+    if status is not None:
+        sprint.status = status
+        
     db.session.add(sprint)
     db.session.commit()
     return sprint.to_dict()
 
-def tool_update_sprint(sprint_id, name=None, project_id=None, start_date=None, end_date=None):
+def tool_update_sprint(sprint_id, name=None, project_id=None, description=None, status=None):
     """Update an existing sprint"""
     sprint = Sprint.query.get(sprint_id)
     if not sprint:
         return {"error": f"Sprint with ID {sprint_id} not found"}
     
+    # Validate status if provided
+    if status and status not in Sprint.VALID_STATUSES:
+        return {"error": f"Invalid status: {status}. Must be one of {Sprint.VALID_STATUSES}"}
+    
     if name is not None:
         sprint.name = name
     if project_id is not None:
         sprint.project_id = project_id
-    if start_date is not None:
-        sprint.start_date = start_date
-    if end_date is not None:
-        sprint.end_date = end_date
+    if description is not None:
+        sprint.description = description
+    if status is not None:
+        sprint.status = status
     
     db.session.commit()
     return sprint.to_dict()
