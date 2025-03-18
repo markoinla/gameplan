@@ -1,19 +1,15 @@
 {
   "mcpServers": {
     "gameplan": {
-      "command": "python3",
-      "args": [
-        "${workspaceRoot}/mcp/new_mcp_server.py"
-      ],
+      "command": "${workspaceRoot}/run_mcp.sh",
+      "args": [],
       "env": {
         "PYTHONUNBUFFERED": "1",
         "PYTHONIOENCODING": "utf-8",
         "GAMEPLAN_BASE_URL": "http://127.0.0.1:5001"
       },
-      "windowsCommand": "python",
-      "windowsArgs": [
-        "${workspaceRoot}\\mcp\\new_mcp_server.py"
-      ]
+      "windowsCommand": "${workspaceRoot}\\run_mcp.bat",
+      "windowsArgs": []
     }
   }
 }
