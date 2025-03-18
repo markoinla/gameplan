@@ -133,6 +133,17 @@ def handle_tools_call(message):
     base_url = get_base_url()
     
     print(f"Executing tool: {tool_name} with params: {tool_params}", file=sys.stderr)
+    print(f"Tool name type: {type(tool_name)}, Tool params type: {type(tool_params)}", file=sys.stderr)
+    
+    # Check if tool_name has a prefix and remove it if needed
+    if tool_name and "_" in tool_name:
+        prefix, actual_name = tool_name.split("_", 1)
+        print(f"Tool name may have prefix: '{prefix}', actual name: '{actual_name}'", file=sys.stderr)
+        # If the tool name has a prefix like 'mcp0_', remove it
+        if prefix.startswith("mcp"):
+            original_tool_name = tool_name
+            tool_name = actual_name
+            print(f"Removed prefix from tool name: {original_tool_name} -> {tool_name}", file=sys.stderr)
     
     # Convert boolean values from strings to actual booleans if needed
     # This fixes issues with completed parameter for tasks and issues

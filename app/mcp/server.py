@@ -311,7 +311,7 @@ TOOLS = [
         "parameters": {
             "type": "object",
             "properties": {
-                "id": {
+                "task_id": {
                     "type": "integer",
                     "description": "ID of the task to update"
                 },
@@ -328,7 +328,7 @@ TOOLS = [
                     "description": "New sprint ID for the task"
                 }
             },
-            "required": ["id"]
+            "required": ["task_id"]
         }
     },
     {
@@ -401,7 +401,7 @@ TOOLS = [
         "parameters": {
             "type": "object",
             "properties": {
-                "id": {
+                "issue_id": {
                     "type": "integer",
                     "description": "ID of the issue to update"
                 },
@@ -418,7 +418,7 @@ TOOLS = [
                     "description": "New sprint ID for the issue"
                 }
             },
-            "required": ["id"]
+            "required": ["issue_id"]
         }
     },
     {
@@ -610,11 +610,11 @@ def tool_create_task(details: str, sprint_id: int, completed: bool = False):
     db.session.commit()
     return task.to_dict()
 
-def tool_update_task(id: int, details: str = None, completed: bool = None, sprint_id: int = None):
+def tool_update_task(task_id: int, details: str = None, completed: bool = None, sprint_id: int = None):
     """Update an existing task"""
-    task = Task.query.get(id)
+    task = Task.query.get(task_id)
     if not task:
-        raise ValueError(f"Task with ID {id} not found")
+        raise ValueError(f"Task with ID {task_id} not found")
     
     if details is not None:
         task.details = details
@@ -667,11 +667,11 @@ def tool_create_issue(details: str, sprint_id: int, completed: bool = False):
     db.session.commit()
     return issue.to_dict()
 
-def tool_update_issue(id: int, details: str = None, completed: bool = None, sprint_id: int = None):
+def tool_update_issue(issue_id: int, details: str = None, completed: bool = None, sprint_id: int = None):
     """Update an existing issue"""
-    issue = Issue.query.get(id)
+    issue = Issue.query.get(issue_id)
     if not issue:
-        raise ValueError(f"Issue with ID {id} not found")
+        raise ValueError(f"Issue with ID {issue_id} not found")
     
     if details is not None:
         issue.details = details
