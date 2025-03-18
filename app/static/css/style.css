@@ -1,0 +1,111 @@
+/* GamePlan Custom Styles */
+
+/* General Styles */
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: #f8f9fa;
+}
+
+main {
+    flex: 1;
+}
+
+/* Project Card Styles */
+.project-card {
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.project-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.project-card .card-header {
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
+/* Sprint Card Styles */
+.sprint-card {
+    border-radius: 6px;
+    background-color: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.125);
+    margin-bottom: 1rem;
+}
+
+.sprint-header {
+    cursor: pointer;
+    background-color: #f1f3f5;
+    transition: background-color 0.2s;
+}
+
+.sprint-header:hover {
+    background-color: #e9ecef;
+}
+
+.toggle-icon {
+    transition: transform 0.3s;
+}
+
+.collapsed .toggle-icon {
+    transform: rotate(-90deg);
+}
+
+/* Task and Issue Item Styles */
+.task-item, .issue-item {
+    transition: background-color 0.2s;
+}
+
+.task-item:hover, .issue-item:hover {
+    background-color: rgba(0, 123, 255, 0.05);
+}
+
+.task-actions, .issue-actions {
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0.2s, opacity 0.2s;
+}
+
+.task-item:hover .task-actions,
+.issue-item:hover .issue-actions {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* Button Styles */
+.btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+}
+
+/* Form Styles */
+.form-check-input:checked + .form-check-label {
+    text-decoration: line-through;
+    color: #6c757d;
+}
+
+/* Empty State Styles */
+.text-muted {
+    color: #6c757d;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .task-actions, .issue-actions {
+        visibility: visible;
+        opacity: 1;
+    }
+    
+    .project-actions, .sprint-actions {
+        display: flex;
+        flex-wrap: wrap;
+    }
+    
+    .project-actions .btn, .sprint-actions .btn {
+        margin-bottom: 0.5rem;
+    }
+}
