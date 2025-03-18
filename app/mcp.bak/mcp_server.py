@@ -185,6 +185,7 @@ def handle_tools_call(message):
     logger.debug(f"[{request_log_id}] Tool parameters: {json.dumps(tool_params)}")
     
     # Handle tool name prefixes (e.g., mcp0_, mcp1_, etc.)
+    # This is necessary because Windsurf adds these prefixes to distinguish between different MCP servers
     original_tool_name = tool_name
     if tool_name and "_" in tool_name:
         prefix, actual_name = tool_name.split("_", 1)

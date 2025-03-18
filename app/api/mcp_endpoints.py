@@ -43,7 +43,7 @@ def execute_tool():
     print(f"MCP execute tool: {tool_name} with parameters: {parameters}")
     
     # Find the tool implementation
-    tool_impl = globals().get(f"tool_{tool_name}")
+    tool_impl = globals().get(tool_name)
     if not tool_impl:
         return jsonify({"error": f"Tool '{tool_name}' not found"})
     
@@ -69,26 +69,26 @@ def execute_tool():
 
 # Tool implementations
 
-def tool_list_projects():
+def list_projects():
     """List all projects"""
     projects = Project.query.all()
     return [project.to_dict() for project in projects]
 
-def tool_get_project(project_id):
+def get_project(project_id):
     """Get a project by ID"""
     project = Project.query.get(project_id)
     if not project:
         return {"error": f"Project with ID {project_id} not found"}
     return project.to_dict()
 
-def tool_create_project(name, description=""):
+def create_project(name, description=""):
     """Create a new project"""
     project = Project(name=name, description=description)
     db.session.add(project)
     db.session.commit()
     return project.to_dict()
 
-def tool_update_project(project_id, name=None, description=None):
+def update_project(project_id, name=None, description=None):
     """Update an existing project"""
     project = Project.query.get(project_id)
     if not project:
@@ -102,7 +102,7 @@ def tool_update_project(project_id, name=None, description=None):
     db.session.commit()
     return project.to_dict()
 
-def tool_delete_project(project_id):
+def delete_project(project_id):
     """Delete a project by ID"""
     project = Project.query.get(project_id)
     if not project:
@@ -112,7 +112,7 @@ def tool_delete_project(project_id):
     db.session.commit()
     return {"success": True, "message": f"Project with ID {project_id} deleted"}
 
-def tool_list_sprints(project_id=None):
+def list_sprints(project_id=None):
     """List all sprints, optionally filtered by project ID"""
     if project_id:
         sprints = Sprint.query.filter_by(project_id=project_id).all()
@@ -120,14 +120,14 @@ def tool_list_sprints(project_id=None):
         sprints = Sprint.query.all()
     return [sprint.to_dict() for sprint in sprints]
 
-def tool_get_sprint(sprint_id):
+def get_sprint(sprint_id):
     """Get a sprint by ID"""
     sprint = Sprint.query.get(sprint_id)
     if not sprint:
         return {"error": f"Sprint with ID {sprint_id} not found"}
     return sprint.to_dict()
 
-def tool_create_sprint(name, project_id, description=None, status="Planned"):
+def create_sprint(name, project_id, description=None, status="Planned"):
     """Create a new sprint"""
     # Validate status if provided
     if status and status not in Sprint.VALID_STATUSES:
@@ -144,7 +144,7 @@ def tool_create_sprint(name, project_id, description=None, status="Planned"):
     db.session.commit()
     return sprint.to_dict()
 
-def tool_update_sprint(sprint_id, name=None, project_id=None, description=None, status=None):
+def update_sprint(sprint_id, name=None, project_id=None, description=None, status=None):
     """Update an existing sprint"""
     sprint = Sprint.query.get(sprint_id)
     if not sprint:
@@ -166,7 +166,7 @@ def tool_update_sprint(sprint_id, name=None, project_id=None, description=None, 
     db.session.commit()
     return sprint.to_dict()
 
-def tool_delete_sprint(sprint_id):
+def delete_sprint(sprint_id):
     """Delete a sprint by ID"""
     sprint = Sprint.query.get(sprint_id)
     if not sprint:
@@ -176,7 +176,7 @@ def tool_delete_sprint(sprint_id):
     db.session.commit()
     return {"success": True, "message": f"Sprint with ID {sprint_id} deleted"}
 
-def tool_list_tasks(sprint_id=None):
+def list_tasks(sprint_id=None):
     """List all tasks, optionally filtered by sprint ID"""
     if sprint_id:
         tasks = Task.query.filter_by(sprint_id=sprint_id).all()
@@ -184,21 +184,21 @@ def tool_list_tasks(sprint_id=None):
         tasks = Task.query.all()
     return [task.to_dict() for task in tasks]
 
-def tool_get_task(task_id):
+def get_task(task_id):
     """Get a task by ID"""
     task = Task.query.get(task_id)
     if not task:
         return {"error": f"Task with ID {task_id} not found"}
     return task.to_dict()
 
-def tool_create_task(details, sprint_id, completed=False):
+def create_task(details, sprint_id, completed=False):
     """Create a new task"""
     task = Task(details=details, sprint_id=sprint_id, completed=completed)
     db.session.add(task)
     db.session.commit()
     return task.to_dict()
 
-def tool_update_task(task_id, details=None, sprint_id=None, completed=None):
+def update_task(task_id, details=None, sprint_id=None, completed=None):
     """Update an existing task"""
     task = Task.query.get(task_id)
     if not task:
@@ -214,7 +214,7 @@ def tool_update_task(task_id, details=None, sprint_id=None, completed=None):
     db.session.commit()
     return task.to_dict()
 
-def tool_delete_task(task_id):
+def delete_task(task_id):
     """Delete a task by ID"""
     task = Task.query.get(task_id)
     if not task:
@@ -224,7 +224,7 @@ def tool_delete_task(task_id):
     db.session.commit()
     return {"success": True, "message": f"Task with ID {task_id} deleted"}
 
-def tool_list_issues(sprint_id=None):
+def list_issues(sprint_id=None):
     """List all issues, optionally filtered by sprint ID"""
     if sprint_id:
         issues = Issue.query.filter_by(sprint_id=sprint_id).all()
@@ -232,21 +232,21 @@ def tool_list_issues(sprint_id=None):
         issues = Issue.query.all()
     return [issue.to_dict() for issue in issues]
 
-def tool_get_issue(issue_id):
+def get_issue(issue_id):
     """Get an issue by ID"""
     issue = Issue.query.get(issue_id)
     if not issue:
         return {"error": f"Issue with ID {issue_id} not found"}
     return issue.to_dict()
 
-def tool_create_issue(details, sprint_id, completed=False):
+def create_issue(details, sprint_id, completed=False):
     """Create a new issue"""
     issue = Issue(details=details, sprint_id=sprint_id, completed=completed)
     db.session.add(issue)
     db.session.commit()
     return issue.to_dict()
 
-def tool_update_issue(issue_id, details=None, sprint_id=None, completed=None):
+def update_issue(issue_id, details=None, sprint_id=None, completed=None):
     """Update an existing issue"""
     issue = Issue.query.get(issue_id)
     if not issue:
@@ -262,7 +262,7 @@ def tool_update_issue(issue_id, details=None, sprint_id=None, completed=None):
     db.session.commit()
     return issue.to_dict()
 
-def tool_delete_issue(issue_id):
+def delete_issue(issue_id):
     """Delete an issue by ID"""
     issue = Issue.query.get(issue_id)
     if not issue:

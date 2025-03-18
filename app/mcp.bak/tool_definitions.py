@@ -6,6 +6,13 @@ the integrated MCP server and the standalone MCP server bridge.
 
 By centralizing these definitions, we ensure consistency between the two servers
 and reduce the potential for mismatches in tool names or parameters.
+
+IMPORTANT USAGE NOTE FOR AI ASSISTANTS:
+When calling these tools through Windsurf or other MCP clients, you must prefix
+the tool name with "mcp0_" (or another prefix specified by the client).
+For example, to call the "list_projects" tool, use "mcp0_list_projects".
+The prefix is automatically assigned by the MCP client and may vary depending
+on the installation.
 """
 
 # Define the tools available to the MCP server

@@ -22,6 +22,16 @@ The GamePlan MCP implementation consists of two main components:
 4. The integrated MCP server handles these requests and performs the requested operations
 5. Results are translated back to the MCP protocol format for Windsurf
 
+## Tool Naming Convention
+
+**IMPORTANT FOR AI ASSISTANTS**: When calling GamePlan MCP tools through Windsurf or other MCP clients, you must prefix the tool name with "mcp0_" (or another prefix specified by the client). For example:
+
+- To call `list_projects`, use `mcp0_list_projects`
+- To call `get_project`, use `mcp0_get_project`
+- To call `create_task`, use `mcp0_create_task`
+
+The prefix is automatically assigned by the MCP client and may vary depending on the installation. If you encounter errors when calling tools without a prefix, try adding the "mcp0_" prefix to the tool name.
+
 ## Prerequisites
 
 - Python 3.x

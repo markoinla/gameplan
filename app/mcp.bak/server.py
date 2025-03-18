@@ -136,12 +136,12 @@ async def execute_tool(request: Request):
             return {"error": error_msg}
         
         # Find the tool implementation
-        tool_impl_name = f"tool_{tool_name}"
+        tool_impl_name = f"{tool_name}"
         tool_impl = globals().get(tool_impl_name)
         if not tool_impl:
             error_msg = f"Tool '{tool_name}' not found (implementation '{tool_impl_name}' not found in globals)"
             logger.error(f"[{request_id}] {error_msg}")
-            logger.debug(f"[{request_id}] Available tools: {[name for name in globals().keys() if name.startswith('tool_')]}")
+            logger.debug(f"[{request_id}] Available tools: {[name for name in globals().keys() if name.startswith('')]}")
             return {"error": error_msg}
         
         # Execute the tool with the provided parameters
@@ -200,26 +200,26 @@ async def execute_tool(request: Request):
         return {"error": error_msg}
 
 # Tool implementations
-def tool_list_projects():
+def list_projects():
     """List all projects"""
     projects = Project.query.all()
     return [project.to_dict() for project in projects]
 
-def tool_get_project(project_id: int):
+def get_project(project_id: int):
     """Get a project by ID"""
     project = Project.query.get(project_id)
     if not project:
         raise ValueError(f"Project with ID {project_id} not found")
     return project.to_dict()
 
-def tool_create_project(name: str, description: str = None, requirements: str = None):
+def create_project(name: str, description: str = None, requirements: str = None):
     """Create a new project"""
     project = Project(name=name, description=description, requirements=requirements)
     db.session.add(project)
     db.session.commit()
     return project.to_dict()
 
-def tool_update_project(project_id: int, name: str = None, description: str = None, requirements: str = None):
+def update_project(project_id: int, name: str = None, description: str = None, requirements: str = None):
     """Update an existing project"""
     project = Project.query.get(project_id)
     if not project:
@@ -235,7 +235,7 @@ def tool_update_project(project_id: int, name: str = None, description: str = No
     db.session.commit()
     return project.to_dict()
 
-def tool_delete_project(project_id: int):
+def delete_project(project_id: int):
     """Delete a project by ID"""
     project = Project.query.get(project_id)
     if not project:
@@ -245,7 +245,7 @@ def tool_delete_project(project_id: int):
     db.session.commit()
     return {"message": f"Project with ID {project_id} deleted successfully"}
 
-def tool_list_sprints(project_id: int = None):
+def list_sprints(project_id: int = None):
     """List all sprints, optionally filtered by project ID"""
     if project_id:
         sprints = Sprint.query.filter_by(project_id=project_id).all()
@@ -253,14 +253,14 @@ def tool_list_sprints(project_id: int = None):
         sprints = Sprint.query.all()
     return [sprint.to_dict() for sprint in sprints]
 
-def tool_get_sprint(sprint_id: int):
+def get_sprint(sprint_id: int):
     """Get a sprint by ID"""
     sprint = Sprint.query.get(sprint_id)
     if not sprint:
         raise ValueError(f"Sprint with ID {sprint_id} not found")
     return sprint.to_dict()
 
-def tool_create_sprint(name: str, project_id: int, description: str = None, status: str = "Planned"):
+def create_sprint(name: str, project_id: int, description: str = None, status: str = "Planned"):
     """Create a new sprint"""
     # Verify project exists
     project = Project.query.get(project_id)
@@ -272,8 +272,8 @@ def tool_create_sprint(name: str, project_id: int, description: str = None, stat
     db.session.commit()
     return sprint.to_dict()
 
-def tool_update_sprint(sprint_id: int, name: str = None, description: str = None, 
-                      status: str = None, project_id: int = None):
+def update_sprint(sprint_id: int, name: str = None, description: str = None, 
+                       status: str = None, project_id: int = None):
     """Update an existing sprint"""
     sprint = Sprint.query.get(sprint_id)
     if not sprint:
@@ -295,7 +295,7 @@ def tool_update_sprint(sprint_id: int, name: str = None, description: str = None
     db.session.commit()
     return sprint.to_dict()
 
-def tool_delete_sprint(sprint_id: int):
+def delete_sprint(sprint_id: int):
     """Delete a sprint by ID"""
     sprint = Sprint.query.get(sprint_id)
     if not sprint:
@@ -305,7 +305,7 @@ def tool_delete_sprint(sprint_id: int):
     db.session.commit()
     return {"message": f"Sprint with ID {sprint_id} deleted successfully"}
 
-def tool_list_tasks(sprint_id: int = None):
+def list_tasks(sprint_id: int = None):
     """List all tasks, optionally filtered by sprint ID"""
     if sprint_id:
         tasks = Task.query.filter_by(sprint_id=sprint_id).all()
@@ -313,14 +313,14 @@ def tool_list_tasks(sprint_id: int = None):
         tasks = Task.query.all()
     return [task.to_dict() for task in tasks]
 
-def tool_get_task(task_id: int):
+def get_task(task_id: int):
     """Get a task by ID"""
     task = Task.query.get(task_id)
     if not task:
         raise ValueError(f"Task with ID {task_id} not found")
     return task.to_dict()
 
-def tool_create_task(details: str, sprint_id: int, completed: bool = False):
+def create_task(details: str, sprint_id: int, completed: bool = False):
     """Create a new task"""
     # Verify sprint exists
     sprint = Sprint.query.get(sprint_id)
@@ -332,7 +332,7 @@ def tool_create_task(details: str, sprint_id: int, completed: bool = False):
     db.session.commit()
     return task.to_dict()
 
-def tool_update_task(task_id: int, details: str = None, completed: bool = None, sprint_id: int = None):
+def update_task(task_id: int, details: str = None, completed: bool = None, sprint_id: int = None):
     """Update an existing task"""
     task = Task.query.get(task_id)
     if not task:
@@ -352,7 +352,7 @@ def tool_update_task(task_id: int, details: str = None, completed: bool = None, 
     db.session.commit()
     return task.to_dict()
 
-def tool_delete_task(task_id: int):
+def delete_task(task_id: int):
     """Delete a task by ID"""
     task = Task.query.get(task_id)
     if not task:
@@ -360,9 +360,9 @@ def tool_delete_task(task_id: int):
     
     db.session.delete(task)
     db.session.commit()
-    return {"message": f"Task with ID {task_id} deleted successfully"}
+    return {"message": f"Task with ID {task_id} deleted successfully", "success": True}
 
-def tool_list_issues(sprint_id: int = None):
+def list_issues(sprint_id: int = None):
     """List all issues, optionally filtered by sprint ID"""
     if sprint_id:
         issues = Issue.query.filter_by(sprint_id=sprint_id).all()
@@ -370,14 +370,14 @@ def tool_list_issues(sprint_id: int = None):
         issues = Issue.query.all()
     return [issue.to_dict() for issue in issues]
 
-def tool_get_issue(issue_id: int):
+def get_issue(issue_id: int):
     """Get an issue by ID"""
     issue = Issue.query.get(issue_id)
     if not issue:
         raise ValueError(f"Issue with ID {issue_id} not found")
     return issue.to_dict()
 
-def tool_create_issue(details: str, sprint_id: int, completed: bool = False):
+def create_issue(details: str, sprint_id: int, completed: bool = False):
     """Create a new issue"""
     # Verify sprint exists
     sprint = Sprint.query.get(sprint_id)
@@ -389,7 +389,7 @@ def tool_create_issue(details: str, sprint_id: int, completed: bool = False):
     db.session.commit()
     return issue.to_dict()
 
-def tool_update_issue(issue_id: int, details: str = None, completed: bool = None, sprint_id: int = None):
+def update_issue(issue_id: int, details: str = None, completed: bool = None, sprint_id: int = None):
     """Update an existing issue"""
     issue = Issue.query.get(issue_id)
     if not issue:
@@ -409,7 +409,7 @@ def tool_update_issue(issue_id: int, details: str = None, completed: bool = None
     db.session.commit()
     return issue.to_dict()
 
-def tool_delete_issue(issue_id: int):
+def delete_issue(issue_id: int):
     """Delete an issue by ID"""
     issue = Issue.query.get(issue_id)
     if not issue:
@@ -456,13 +456,8 @@ def setup_mcp_server(app):
         # Log the received parameters for debugging
         print(f"MCP execute tool: {tool_name} with parameters: {parameters}", file=sys.stderr)
         
-        # Create a mapping of tool names to function names
-        # This allows us to handle the mismatch between tool names in tool_definitions.py
-        # and function names in server.py
-        tool_function_prefix = "tool_"
-        
-        # Find the tool implementation
-        tool_impl = globals().get(f"{tool_function_prefix}{tool_name}")
+        # Find the tool implementation directly by name (no prefix needed)
+        tool_impl = globals().get(tool_name)
         if not tool_impl:
             return {"error": f"Tool '{tool_name}' not found"}
         
