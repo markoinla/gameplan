@@ -42,10 +42,6 @@ body {
   color: var(--gp-text-bright) !important;
 }
 
-.nav-link:hover {
-  color: var(--gp-primary) !important;
-}
-
 /* Cards and containers */
 .card, .sprint-card {
   background-color: var(--gp-bg-lighter);
@@ -70,20 +66,10 @@ body {
   border: 1px solid var(--gp-border);
 }
 
-.project-card:hover {
-  transform: translateY(-5px);
-  box-shadow: var(--gp-shadow-lg);
-  border-color: var(--gp-primary);
-}
-
 /* Sprint sections */
 .sprint-header {
   background-color: var(--gp-bg-darker);
   cursor: pointer;
-}
-
-.sprint-header:hover {
-  background-color: var(--gp-secondary);
 }
 
 /* Task and issue items */
@@ -131,12 +117,6 @@ body {
   background-color: var(--gp-primary);
   border-color: var(--gp-primary);
   color: var(--gp-bg-darker);
-}
-
-.btn-primary:hover {
-  background-color: var(--gp-primary);
-  filter: brightness(110%);
-  border-color: var(--gp-primary);
 }
 
 .btn-secondary {
@@ -197,11 +177,6 @@ body {
 
 .table tbody td {
   border-color: var(--gp-border);
-}
-
-.table-hover tbody tr:hover {
-  background-color: var(--gp-bg-darker);
-  color: var(--gp-text-bright);
 }
 
 /* Footer */
@@ -289,34 +264,8 @@ html.dark-mode .nav-link {
   color: var(--gp-text-bright) !important;
 }
 
-html.dark-mode .nav-link:hover {
-  color: var(--gp-primary) !important;
-}
-
-/* Theme toggle button specific styles */
-html.dark-mode .theme-toggle {
-  color: var(--gp-text-bright) !important;
-  transition: color 0.2s ease;
-}
-
-html.dark-mode .theme-toggle:hover {
-  color: var(--gp-primary) !important;
-  background-color: transparent !important; /* Prevent any background color on hover */
-}
-
-/* Hamburger menu button styles */
-html.dark-mode .navbar-toggler {
-  border-color: var(--gp-border);
-  color: var(--gp-text-bright);
-  background-color: transparent;
-}
-
-html.dark-mode .navbar-toggler:hover,
-html.dark-mode .navbar-toggler:focus {
-  outline: none;
-  box-shadow: none;
-  border-color: var(--gp-primary);
-  background-color: transparent !important;
+html.dark-mode .task-item:hover, html.dark-mode .issue-item:hover {
+  background-color: var(--gp-bg-darker);
 }
 
 html.dark-mode .card, 
@@ -343,29 +292,14 @@ html.dark-mode .project-card {
   border: 1px solid var(--gp-border);
 }
 
-html.dark-mode .project-card:hover {
-  transform: translateY(-5px);
-  box-shadow: var(--gp-shadow-lg);
-  border-color: var(--gp-primary);
-}
-
 html.dark-mode .sprint-header {
   background-color: var(--gp-bg-darker);
-}
-
-html.dark-mode .sprint-header:hover {
-  background-color: var(--gp-secondary);
 }
 
 html.dark-mode .task-item, 
 html.dark-mode .issue-item {
   border-bottom: 1px solid var(--gp-border);
   background-color: var(--gp-bg-lighter);
-}
-
-html.dark-mode .task-item:hover, 
-html.dark-mode .issue-item:hover {
-  background-color: var(--gp-bg-darker);
 }
 
 html.dark-mode .bg-light {
@@ -409,12 +343,6 @@ html.dark-mode .btn-primary {
   color: var(--gp-bg-darker);
 }
 
-html.dark-mode .btn-primary:hover {
-  background-color: var(--gp-primary);
-  filter: brightness(110%);
-  border-color: var(--gp-primary);
-}
-
 html.dark-mode .btn-secondary {
   background-color: var(--gp-secondary);
   border-color: var(--gp-secondary);
@@ -444,24 +372,6 @@ html.dark-mode .btn-info {
   color: var(--gp-bg-darker);
 }
 
-html.dark-mode .btn-outline-primary,
-html.dark-mode .btn-outline-secondary,
-html.dark-mode .btn-outline-success,
-html.dark-mode .btn-outline-danger,
-html.dark-mode .btn-outline-warning,
-html.dark-mode .btn-outline-info {
-  color: var(--gp-text);
-}
-
-html.dark-mode .btn-outline-primary:hover,
-html.dark-mode .btn-outline-secondary:hover,
-html.dark-mode .btn-outline-success:hover,
-html.dark-mode .btn-outline-danger:hover,
-html.dark-mode .btn-outline-warning:hover,
-html.dark-mode .btn-outline-info:hover {
-  color: var(--gp-text-bright);
-}
-
 html.dark-mode .modal-content {
   background-color: var(--gp-bg-lighter);
   border: 1px solid var(--gp-border);
@@ -489,11 +399,6 @@ html.dark-mode .table thead th {
 
 html.dark-mode .table tbody td {
   border-color: var(--gp-border);
-}
-
-html.dark-mode .table-hover tbody tr:hover {
-  background-color: var(--gp-bg-darker);
-  color: var(--gp-text-bright);
 }
 
 html.dark-mode footer {
@@ -526,29 +431,7 @@ html.dark-mode .text-info {
   color: var(--gp-info) !important;
 }
 
-/* Collapsible sections styling for dark mode */
-html.dark-mode .collapsible-header:hover {
-  background-color: var(--gp-bg-darker);
-}
-
-html.dark-mode .collapsible-header .btn-link {
-  color: var(--gp-text-muted);
-}
-
-html.dark-mode .collapsible-header .btn-link:hover {
-  color: var(--gp-text-bright);
-}
-
-/* Sprint header collapsible styling for dark mode */
-html.dark-mode .sprint-header .toggle-icon {
-  color: var(--gp-text-muted);
-}
-
-html.dark-mode .sprint-header:hover .toggle-icon {
-  color: var(--gp-text-bright);
-}
-
-/* Theme toggle button styling */
+/* Theme toggle button specific styles */
 .theme-toggle {
   cursor: pointer;
   padding: 0.5rem;

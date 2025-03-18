@@ -127,6 +127,7 @@ def handle_tools_list(message):
 def handle_tools_call(message):
     """Handle tools/call request"""
     params = message.get("params", {})
+    print(f"handle_tools_call message: {message}", file=sys.stderr)
     tool_name = params.get("name")
     tool_params = params.get("arguments", {})
     base_url = get_base_url()
@@ -139,6 +140,7 @@ def handle_tools_call(message):
             json={"name": tool_name, "parameters": tool_params},
             timeout=DEFAULT_TIMEOUT
         )
+        print(f"handle_tools_call response: {response.status_code} {response.text}", file=sys.stderr)
         
         if response.status_code == 200:
             result = response.json().get("result")

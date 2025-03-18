@@ -416,6 +416,35 @@ function openSprintModal(projectId, sprintId = null) {
     if (sprintId) {
         document.getElementById('sprintId').value = sprintId;
         modalTitle.textContent = 'Edit Sprint';
+        
+        // Fetch sprint data from MCP
+        fetch('/mcp/execute', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                name: 'get_sprint',
+                parameters: { sprint_id: parseInt(sprintId) }
+            })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Populate form fields with sprint data
+            document.getElementById('sprintName').value = data.result.name;
+            document.getElementById('sprintDescription').value = data.result.description;
+            document.getElementById('sprintStatus').value = data.result.status;
+            document.getElementById('sprintProjectId').value = data.result.project_id;
+        })
+        .catch(error => {
+            console.error('Error fetching sprint:', error);
+            alert('Error fetching sprint. Please try again.');
+        });
     } else {
         document.getElementById('sprintId').value = '';
         modalTitle.textContent = 'Create Sprint';
@@ -459,7 +488,7 @@ function saveSprint() {
         },
         body: JSON.stringify({
             name: sprintId ? 'update_sprint' : 'create_sprint',
-            parameters: sprintId ? { ...sprintData, sprint_id: parseInt(sprintId) } : sprintData
+            parameters: sprintId ? { ...sprintData, sprint_id: parseInt(sprintId), project_id: parseInt(projectId) } : sprintData
         })
     })
     .then(response => {
@@ -1052,5 +1081,61 @@ function toggleIssueCompletion(issueId, completed) {
             label.classList.remove('text-decoration-line-through');
         }
         alert('Error updating issue. Please try again.');
+    });
+}
+
+/**
+ * Save a sprint (create new or update existing)
+ */
+function saveSprint() {
+    // Get form values
+    const sprintId = document.getElementById('sprintId').value;
+    const projectId = document.getElementById('sprintProjectId').value;
+    const name = document.getElementById('sprintName').value;
+    const description = document.getElementById('sprintDescription').value;
+    const status = document.getElementById('sprintStatus').value;
+    
+    // Validate form
+    if (!name) {
+        alert('Sprint name is required');
+        return;
+    }
+    
+    // Prepare sprint data
+    const sprintData = {
+        name: name,
+        description: description,
+        status: status,
+        project_id: parseInt(projectId)
+    };
+    
+    // Send request through MCP
+    fetch('/mcp/execute', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            name: sprintId ? 'update_sprint' : 'create_sprint',
+            parameters: sprintId ? { ...sprintData, sprint_id: parseInt(sprintId), project_id: parseInt(projectId) } : sprintData
+        })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        // Close modal using getOrCreateInstance
+        const sprintModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('sprintModal'));
+        sprintModal.hide();
+        
+        // Refresh page to show changes
+        window.location.reload();
+    })
+    .catch(error => {
+        console.error('Error saving sprint:', error);
+        alert('Error saving sprint. Please try again.');
     });
 }

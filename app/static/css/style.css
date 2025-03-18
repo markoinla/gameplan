@@ -19,9 +19,9 @@ main {
     transition: transform 0.2s, box-shadow 0.2s;
 }
 
-.project-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+.project-card {
+    transform: translateY(0px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .project-card .card-header {
@@ -43,8 +43,8 @@ main {
     transition: background-color 0.2s;
 }
 
-.sprint-header:hover {
-    background-color: #e9ecef;
+.sprint-header {
+    background-color: #f1f3f5;
 }
 
 .toggle-icon {
@@ -63,8 +63,8 @@ main {
     transition: background-color 0.2s ease;
 }
 
-.collapsible-header:hover {
-    background-color: rgba(0, 0, 0, 0.03);
+.collapsible-header {
+    background-color: transparent;
 }
 
 .collapsible-header h5 {
@@ -76,8 +76,8 @@ main {
     transition: transform 0.2s ease;
 }
 
-.collapsible-header .btn-link:hover {
-    color: #495057;
+.collapsible-header .btn-link {
+    color: #6c757d;
 }
 
 /* Sprint header collapsible styling */
@@ -101,7 +101,7 @@ main {
 }
 
 .task-item:hover, .issue-item:hover {
-    background-color: rgba(0, 123, 255, 0.05);
+    background-color: #f8f9fa;
 }
 
 .task-actions, .issue-actions {
@@ -110,9 +110,12 @@ main {
     transition: visibility 0.2s, opacity 0.2s;
 }
 
-.task-item:hover .task-actions,
 .issue-item:hover .issue-actions {
     visibility: visible;
+    opacity: 1;
+}
+
+.task-item:hover .task-actions {
     opacity: 1;
 }
 
