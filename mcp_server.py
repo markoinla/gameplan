@@ -10,6 +10,7 @@ correct URL for the GamePlan server.
 import sys
 import json
 import os
+import socket
 try:
     import requests
 except ImportError:
@@ -21,6 +22,14 @@ from urllib.parse import urljoin
 DEFAULT_BASE_URL = "http://127.0.0.1:5001"
 # Default timeout for HTTP requests (in seconds)
 DEFAULT_TIMEOUT = 10
+
+def find_available_port():
+    """Find an available port on the system"""
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.bind(('localhost', 0))
+    port = sock.getsockname()[1]
+    sock.close()
+    return port
 
 def read_message():
     """Read a JSON-RPC message from stdin"""
@@ -170,6 +179,10 @@ def main():
     """Main function to handle MCP protocol communication"""
     # Print startup message to stderr (won't interfere with JSON-RPC)
     print(f"GamePlan MCP Bridge starting, connecting to {get_base_url()}", file=sys.stderr)
+    
+    # Find an available port
+    port = find_available_port()
+    print(f"Starting MCP server on port {port}", file=sys.stderr)
     
     while True:
         message = read_message()

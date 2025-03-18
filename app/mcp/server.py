@@ -453,7 +453,7 @@ async def execute_tool(request: Request):
     """Execute a tool based on the request"""
     data = await request.json()
     tool_name = data.get("name")
-    parameters = data.get("parameters", {})
+    parameters = data.get("parameters", {}) or data.get("arguments", {})
     
     # Find the tool implementation
     tool_impl = globals().get(f"tool_{tool_name}")
@@ -694,6 +694,11 @@ def setup_mcp_server(app):
     Args:
         app: Flask application instance
     """
+    import sys
+    print("Setting up MCP server routes", file=sys.stderr)
+    from flask_cors import CORS
+    CORS(app, resources={r"/mcp/*": {"origins": "*"}})
+    
     # Instead of using WSGIMiddleware, we'll use Flask's route registration
     # to add MCP endpoints directly to the Flask app
     
@@ -714,7 +719,7 @@ def setup_mcp_server(app):
         from flask import request
         data = request.get_json()
         tool_name = data.get("name")
-        parameters = data.get("parameters", {})
+        parameters = data.get("parameters", {}) or data.get("arguments", {})
         
         # Find the tool implementation
         tool_impl = globals().get(f"tool_{tool_name}")
@@ -729,3 +734,57 @@ def setup_mcp_server(app):
             return {"error": str(e)}
     
     return app
+
+def handle_tools_call(message):
+    print("handle_tools_call was called", file=sys.stderr)
+    """Handle tools/call request"""
+    # Support both forms: parameters sent in 'params' with 'arguments' or as 'parameters' directly
+    params = message.get("params") or message
+    tool_name = params.get("name")
+    tool_params = params.get("arguments") or params.get("parameters", {})
+
+    print(f"Executing tool: {tool_name} with params: {tool_params}", file=sys.stderr)
+
+    base_url = get_base_url()
+
+    try:
+        response = requests.post(
+            urljoin(base_url, "/mcp/execute"),
+            json={"name": tool_name, "parameters": tool_params},
+            timeout=DEFAULT_TIMEOUT
+        )
+
+        if response.status_code == 200:
+            result = response.json().get("result")
+            return {
+                "jsonrpc": "2.0",
+                "id": message.get("id"),
+                "result": {
+                    "content": [
+                        {
+                            "type": "text",
+                            "text": json.dumps(result)
+                        }
+                    ]
+                }
+            }
+        else:
+            print(f"Error executing tool: Status code {response.status_code}", file=sys.stderr)
+            return {
+                "jsonrpc": "2.0",
+                "id": message.get("id"),
+                "error": {
+                    "code": -32000,
+                    "message": f"Error from GamePlan MCP server: {response.status_code}"
+                }
+            }
+    except requests.RequestException as e:
+        print(f"Error executing tool: {str(e)}", file=sys.stderr)
+        return {
+            "jsonrpc": "2.0",
+            "id": message.get("id"),
+            "error": {
+                "code": -32000,
+                "message": f"Error communicating with GamePlan MCP server: {str(e)}"
+            }
+        }
