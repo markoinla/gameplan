@@ -7,8 +7,13 @@
       ],
       "env": {
         "PYTHONUNBUFFERED": "1",
+        "PYTHONIOENCODING": "utf-8",
         "GAMEPLAN_BASE_URL": "http://127.0.0.1:5001"
-      }
+      },
+      "windowsCommand": "python",
+      "windowsArgs": [
+        "${workspaceRoot}\\mcp\\new_mcp_server.py"
+      ]
     }
   }
 }

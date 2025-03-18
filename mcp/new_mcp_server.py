@@ -8,14 +8,20 @@ the application through tools.
 
 It implements the JSON-RPC based MCP protocol required by Windsurf.
 """
-import asyncio
 import json
 import sys
 import os
 import socket
-import requests
 from urllib.parse import urljoin
 from http.server import BaseHTTPRequestHandler, HTTPServer
+
+# Try to import requests, and provide a helpful error if it's not available
+try:
+    import requests
+except ImportError:
+    print("Error: The 'requests' package is required but not installed.", file=sys.stderr)
+    print("Please install it using: pip install requests", file=sys.stderr)
+    sys.exit(1)
 
 # Default base URL for the GamePlan API
 DEFAULT_BASE_URL = "http://127.0.0.1:5001"
@@ -183,48 +189,72 @@ def main():
     # Print startup message to stderr (won't interfere with JSON-RPC)
     print(f"GamePlan MCP Bridge starting, connecting to {get_base_url()}", file=sys.stderr)
     
+    # Test connection to the GamePlan API
+    try:
+        base_url = get_base_url()
+        response = requests.get(urljoin(base_url, "/mcp"), timeout=DEFAULT_TIMEOUT)
+        if response.status_code != 200:
+            print(f"Warning: GamePlan MCP server at {base_url} returned status code {response.status_code}", file=sys.stderr)
+            print(f"Make sure the Flask application is running and accessible at {base_url}", file=sys.stderr)
+        else:
+            print(f"Successfully connected to GamePlan MCP server at {base_url}", file=sys.stderr)
+    except requests.RequestException as e:
+        print(f"Warning: Could not connect to GamePlan MCP server at {get_base_url()}: {str(e)}", file=sys.stderr)
+        print("Make sure the Flask application is running and the URL is correct", file=sys.stderr)
+        print("The MCP bridge will continue running, but tool execution may fail", file=sys.stderr)
+    
     # Run HTTP server in a separate thread for diagnostic purposes
     import threading
     http_port = find_available_port()
     threading.Thread(target=run_http_server, args=(http_port,), daemon=True).start()
     print(f"HTTP diagnostics available at http://localhost:{http_port}/mcp", file=sys.stderr)
     
+    # Debug info
+    print("MCP stdin/stdout communication starting - waiting for messages from client", file=sys.stderr)
+    
     while True:
-        message = read_message()
-        if not message:
-            print("No message received or invalid JSON, exiting", file=sys.stderr)
-            break
-        
-        method = message.get("method")
-        
-        print(f"Received method: {method}", file=sys.stderr)
-        
-        if method == "initialize":
-            response = handle_initialize(message)
-            write_message(response)
-        elif method == "tools/list":
-            response = handle_tools_list(message)
-            write_message(response)
-        elif method == "tools/call":
-            response = handle_tools_call(message)
-            write_message(response)
-        elif method == "shutdown":
-            write_message({
-                "jsonrpc": "2.0",
-                "id": message.get("id"),
-                "result": None
-            })
-            break
-        else:
-            print(f"Unknown method: {method}", file=sys.stderr)
-            write_message({
-                "jsonrpc": "2.0",
-                "id": message.get("id"),
-                "error": {
-                    "code": -32601,
-                    "message": f"Method not found: {method}"
-                }
-            })
+        try:
+            message = read_message()
+            if not message:
+                print("No message received or invalid JSON, exiting", file=sys.stderr)
+                break
+            
+            method = message.get("method")
+            msg_id = message.get("id")
+            
+            print(f"Received method: {method} with ID: {msg_id}", file=sys.stderr)
+            
+            if method == "initialize":
+                response = handle_initialize(message)
+                write_message(response)
+            elif method == "tools/list":
+                response = handle_tools_list(message)
+                write_message(response)
+            elif method == "tools/call":
+                response = handle_tools_call(message)
+                write_message(response)
+            elif method == "shutdown":
+                write_message({
+                    "jsonrpc": "2.0",
+                    "id": msg_id,
+                    "result": None
+                })
+                print("Received shutdown request, exiting", file=sys.stderr)
+                break
+            else:
+                print(f"Unknown method: {method}", file=sys.stderr)
+                write_message({
+                    "jsonrpc": "2.0",
+                    "id": msg_id,
+                    "error": {
+                        "code": -32601,
+                        "message": f"Method not found: {method}"
+                    }
+                })
+        except Exception as e:
+            print(f"Unexpected error in main loop: {str(e)}", file=sys.stderr)
+            # Try to recover by continuing the loop
+            continue
 
 if __name__ == "__main__":
     main()
