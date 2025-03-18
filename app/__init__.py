@@ -40,6 +40,10 @@ def create_app(config_class=Config):
     app.register_blueprint(issue_bp)
     app.register_blueprint(main_bp)
     
+    # Initialize MCP server
+    from app.mcp import setup_mcp_server
+    app = setup_mcp_server(app)
+    
     return app
 
 # Import models to ensure they are registered with SQLAlchemy

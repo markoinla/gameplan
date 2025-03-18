@@ -7,3 +7,7 @@ WTForms>=3.0.0
 marshmallow>=3.20.0
 pytest>=7.4.0
 python-dotenv>=1.0.0
+# MCP dependencies
+fastapi>=0.100.0
+uvicorn>=0.23.0
+pydantic>=2.0.0
