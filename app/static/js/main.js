@@ -101,92 +101,55 @@ function initializeBootstrapComponents() {
     });
 }
 
+// Project and Sprint Management - Removed in favor of HTMX
+// The following functions were previously causing errors:
+// - openProjectModal
+// - openSprintModal
+// - editProject
+// - confirmDeleteProject
+// These have been replaced with HTMX attributes in the HTML templates
+
 /**
- * Initialize project-related event listeners
+ * Universal utility function to close any form container
+ * @param {string} containerId - The ID of the form container to close
  */
-function initializeProjectEventListeners() {
-    // New project button click
-    document.querySelectorAll('#newProjectBtn, #createProjectBtn, #createFirstProjectBtn').forEach(button => {
-        button.addEventListener('click', function() {
-            openProjectModal();
-        });
-    });
-    
-    // Save project button click
-    document.getElementById('saveProjectBtn').addEventListener('click', function() {
-        saveProject();
-    });
-    
-    // Edit project button click
-    document.addEventListener('click', function(e) {
-        if (e.target.closest('.edit-project-btn')) {
-            const projectId = e.target.closest('.edit-project-btn').dataset.projectId;
-            editProject(projectId);
-        }
-    });
-    
-    // Delete project button click
-    document.addEventListener('click', function(e) {
-        if (e.target.closest('.delete-project-btn')) {
-            const projectId = e.target.closest('.delete-project-btn').dataset.projectId;
-            confirmDeleteProject(projectId);
-        }
-    });
+function closeFormContainer(containerId) {
+    // Clear the form container
+    const formContainer = document.getElementById(containerId);
+    if (formContainer) {
+        formContainer.innerHTML = '';
+    }
 }
 
 /**
- * Initialize sprint-related event listeners
+ * Close the task form for a specific sprint
+ * @param {string} sprintId - The ID of the sprint
  */
-function initializeSprintEventListeners() {
-    // Add sprint button click
-    document.querySelectorAll('.add-sprint-btn, .add-first-sprint-btn').forEach(button => {
-        button.addEventListener('click', function(e) {
-            e.stopPropagation();
-            e.preventDefault();
-            const projectId = this.dataset.projectId;
-            openSprintModal(projectId);
-        });
-    });
-    
-    // Save sprint button click
-    document.getElementById('saveSprintBtn').addEventListener('click', function(e) {
-        e.stopPropagation();
-        e.preventDefault();
-        saveSprint();
-    });
-    
-    // Edit sprint button click
-    document.querySelectorAll('.edit-sprint-btn').forEach(button => {
-        button.addEventListener('click', function(e) {
-            e.stopPropagation();
-            e.preventDefault();
-            const sprintId = this.dataset.sprintId;
-            editSprint(sprintId);
-        });
-    });
-    
-    // Delete sprint button click
-    document.querySelectorAll('.delete-sprint-btn').forEach(button => {
-        button.addEventListener('click', function(e) {
-            e.stopPropagation();
-            e.preventDefault();
-            const sprintId = this.dataset.sprintId;
-            confirmDeleteSprint(sprintId);
-        });
-    });
-    
-    // Sprint header click (collapse/expand)
-    document.addEventListener('click', function(e) {
-        if (e.target.closest('.sprint-header') && !e.target.closest('.edit-sprint-btn') && !e.target.closest('.delete-sprint-btn')) {
-            const header = e.target.closest('.sprint-header');
-            const toggleIcon = header.querySelector('.toggle-icon');
-            if (header.getAttribute('aria-expanded') === 'true') {
-                toggleIcon.style.transform = 'rotate(-90deg)';
-            } else {
-                toggleIcon.style.transform = 'rotate(0deg)';
-            }
-        }
-    });
+function closeTaskForm(sprintId) {
+    closeFormContainer(`task-form-container-${sprintId}`);
+}
+
+/**
+ * Close the issue form for a specific sprint
+ * @param {string} sprintId - The ID of the sprint
+ */
+function closeIssueForm(sprintId) {
+    closeFormContainer(`issue-form-container-${sprintId}`);
+}
+
+/**
+ * Close the sprint form for a specific project
+ * @param {string} projectId - The ID of the project
+ */
+function closeSprintForm(projectId) {
+    closeFormContainer(`sprint-form-container-${projectId}`);
+}
+
+/**
+ * Close the project form
+ */
+function closeProjectForm() {
+    closeFormContainer('project-form-container');
 }
 
 /**
@@ -281,30 +244,6 @@ function initializeIssueEventListeners() {
 }
 
 /**
- * Close the task form for a specific sprint
- * @param {string} sprintId - The ID of the sprint
- */
-function closeTaskForm(sprintId) {
-    // Clear the task form container
-    const taskFormContainer = document.getElementById(`task-form-container-${sprintId}`);
-    if (taskFormContainer) {
-        taskFormContainer.innerHTML = '';
-    }
-}
-
-/**
- * Close the issue form for a specific sprint
- * @param {string} sprintId - The ID of the sprint
- */
-function closeIssueForm(sprintId) {
-    // Clear the issue form container
-    const issueFormContainer = document.getElementById(`issue-form-container-${sprintId}`);
-    if (issueFormContainer) {
-        issueFormContainer.innerHTML = '';
-    }
-}
-
-/**
  * Initialize keyboard shortcuts for the application
  */
 function initializeKeyboardShortcuts() {
@@ -354,12 +293,6 @@ function initializeKeyboardShortcuts() {
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize Bootstrap components
     initializeBootstrapComponents();
-    
-    // Initialize project event listeners
-    initializeProjectEventListeners();
-    
-    // Initialize sprint event listeners
-    initializeSprintEventListeners();
     
     // Initialize task event listeners
     initializeTaskEventListeners();

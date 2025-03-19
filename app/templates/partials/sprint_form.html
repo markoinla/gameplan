@@ -1,0 +1,28 @@
+<div class="sprint-form p-3 border rounded mb-3">
+    <h5 class="mb-3">Add New Sprint</h5>
+    <form hx-post="/htmx/sprints" 
+          hx-target="#project-sprints-{{ project.id }}" 
+          hx-swap="outerHTML"
+          hx-on::after-request="if(event.detail.successful) { closeSprintForm('{{ project.id }}'); }">
+        <input type="hidden" name="project_id" value="{{ project.id }}">
+        <div class="mb-3">
+            <label for="sprintName" class="form-label">Sprint Name</label>
+            <input type="text" class="form-control" id="sprintName" name="name" required>
+        </div>
+        <div class="mb-3">
+            <label for="sprintStatus" class="form-label">Status</label>
+            <select class="form-select" id="sprintStatus" name="status">
+                <option value="Planned">Planned</option>
+                <option value="Active">Active</option>
+                <option value="Completed">Completed</option>
+            </select>
+        </div>
+        <div class="d-flex justify-content-between">
+            <button type="submit" class="btn btn-primary">Save Sprint</button>
+            <button type="button" class="btn btn-outline-secondary" 
+                    onclick="closeSprintForm('{{ project.id }}')">
+                Cancel
+            </button>
+        </div>
+    </form>
+</div>

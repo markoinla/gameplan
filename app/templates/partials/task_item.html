@@ -7,7 +7,7 @@
                hx-target="#task-{{ task.id }}"
                hx-swap="outerHTML">
         <label class="form-check-label" for="task-checkbox-{{ task.id }}">
-            Task #{{ task.id }}: {{ task.details }}
+            <small class="text-muted ms-2">Task #{{ task.id }}:</small> {{ task.details }}
         </label>
     </div>
     <div class="task-actions">

@@ -1,0 +1,23 @@
+<div class="project-form p-3 border rounded mb-3" id="project-edit-form-{{ project.id }}">
+    <h5 class="mb-3">Edit Project</h5>
+    <form hx-post="/htmx/projects/{{ project.id }}" 
+          hx-target="#projectsContainer" 
+          hx-swap="innerHTML"
+          hx-on::after-request="if(event.detail.successful) { closeProjectForm(); }">
+        <div class="mb-3">
+            <label for="projectName" class="form-label">Project Name</label>
+            <input type="text" class="form-control" id="projectName" name="name" value="{{ project.name }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="projectDescription" class="form-label">Description (Optional)</label>
+            <textarea class="form-control" id="projectDescription" name="description" rows="3">{{ project.description }}</textarea>
+        </div>
+        <div class="d-flex justify-content-between">
+            <button type="submit" class="btn btn-primary">Update Project</button>
+            <button type="button" class="btn btn-outline-secondary" 
+                    onclick="closeProjectForm()">
+                Cancel
+            </button>
+        </div>
+    </form>
+</div>
