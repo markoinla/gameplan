@@ -5,15 +5,17 @@
 </div>
 {% if project.get_sorted_sprints() %}
     {% for sprint in project.get_sorted_sprints() %}
-        <div class="card mb-3 sprint-card" data-sprint-id="{{ sprint.id }}">
+        <div class="card mb-3 sprint-card" data-sprint-id="{{ sprint.id }}" 
+             x-data="{ sprintOpen: {% if sprint.status == 'Active' %}true{% else %}false{% endif %} }"
+             :class="{ 'sprint-open': sprintOpen }">
             <!-- Sprint Header - Collapsible with Alpine.js -->
-            <div x-data="{ sprintOpen{{ sprint.id }}: {% if sprint.status == 'Active' %}true{% else %}false{% endif %} }" class="sprint-container">
+            <div class="sprint-container">
                 <div class="card-header d-flex justify-content-between align-items-center sprint-header cursor-pointer" 
-                     @click="sprintOpen{{ sprint.id }} = !sprintOpen{{ sprint.id }}">
+                     @click="sprintOpen = !sprintOpen">
                     <div>
                         <span class="sprint-name">{{ sprint.name }}</span>
                         <small class="text-muted ms-2">(Created: {{ sprint.created_at.strftime('%Y-%m-%d') if sprint.created_at else '' }})</small>
-                        <span class="badge rounded-pill 
+                        <span class="badge 
                             {% if sprint.status == 'Planned' %}bg-secondary
                             {% elif sprint.status == 'Active' %}bg-primary
                             {% elif sprint.status == 'Completed' %}bg-success
@@ -33,7 +35,7 @@
                     </div>
                 </div>
                 <div class="card-body" 
-                     x-show="sprintOpen{{ sprint.id }}" 
+                     x-show="sprintOpen" 
                      id="sprint{{ sprint.id }}Content">
                     
                     <!-- Sprint Description -->
@@ -42,7 +44,13 @@
                     <!-- Tasks Section -->
                     <div class="tasks-section mb-3">
                         <div class="d-flex justify-content-between align-items-center mb-2">
-                            <h5 class="mb-0">Tasks</h5>
+                            <h5 class="mb-0">
+                                Tasks
+                                <small class="text-muted ms-2">
+                                    <span class="badge bg-primary">{{ sprint.tasks.count() - sprint.tasks.filter_by(completed=True).count() }} Open</span>
+                                    <span class="badge bg-success">{{ sprint.tasks.filter_by(completed=True).count() }} Done</span>
+                                </small>
+                            </h5>
                             <button class="btn btn-sm btn-outline-primary add-task-btn" data-sprint-id="{{ sprint.id }}">
                                 <i class="fas fa-plus me-1"></i>Add Task
                             </button>
@@ -78,7 +86,13 @@
                     <!-- Issues Section -->
                     <div class="issues-section">
                         <div class="d-flex justify-content-between align-items-center mb-2">
-                            <h5 class="mb-0">Issues</h5>
+                            <h5 class="mb-0">
+                                Issues
+                                <small class="text-muted ms-2">
+                                    <span class="badge bg-primary">{{ sprint.issues.count() - sprint.issues.filter_by(completed=True).count() }} Open</span>
+                                    <span class="badge bg-success">{{ sprint.issues.filter_by(completed=True).count() }} Done</span>
+                                </small>
+                            </h5>
                             <button class="btn btn-sm btn-outline-primary add-issue-btn" data-sprint-id="{{ sprint.id }}">
                                 <i class="fas fa-plus me-1"></i>Add Issue
                             </button>

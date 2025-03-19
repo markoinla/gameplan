@@ -57,7 +57,7 @@ body {
 
 /* MCP-style Layout Structure */
 .container {
-  max-width: 1200px !important; /* Set to 1200px as requested */
+  max-width: 1000px !important; /* Updated to 1000px as requested */
   padding: 0 1rem !important;
   margin: 0 auto !important;
 }
@@ -85,9 +85,7 @@ body {
 .mcp-content {
   flex: 1;
   margin-left: 19rem;
-  margin-right: 17rem;
   padding: 2rem 3rem;
-  max-width: 54rem;
 }
 
 /* Right sidebar (on this page) */
