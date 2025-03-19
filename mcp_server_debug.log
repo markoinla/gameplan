@@ -1,6 +1,0 @@
-2025-03-18 23:25:19,048 - gameplan_mcp - INFO - Using GamePlan API URL: http://127.0.0.1:5001/mcp
-2025-03-18 23:25:19,048 - gameplan_mcp - INFO - Starting GamePlan MCP Server
-2025-03-18 23:25:19,048 - asyncio - DEBUG - Using selector: KqueueSelector
-2025-03-18 23:25:19,048 - gameplan_mcp - INFO - Starting MCP server main loop
-2025-03-18 23:25:19,048 - gameplan_mcp - INFO - Starting StdioTransport
-2025-03-18 23:25:19,048 - gameplan_mcp - INFO - StdioTransport read thread started
