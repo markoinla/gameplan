@@ -49,7 +49,7 @@
                 </div>
                 <div class="tasks-container">
                     {% if sprint.tasks %}
-                        {% for task in sprint.tasks %}
+                        {% for task in sprint.get_sorted_tasks() %}
                             <div class="task-item {% if task.completed %}completed{% endif %}" data-task-id="{{ task.id }}">
                                 <div class="form-check">
                                     <input class="form-check-input task-check" type="checkbox" 
@@ -91,7 +91,7 @@
                 </div>
                 <div class="issues-container">
                     {% if sprint.issues %}
-                        {% for issue in sprint.issues %}
+                        {% for issue in sprint.get_sorted_issues() %}
                             <div class="issue-item {% if issue.completed %}completed{% endif %}" data-issue-id="{{ issue.id }}">
                                 <div class="form-check">
                                     <input class="form-check-input issue-check" type="checkbox" 

@@ -133,7 +133,7 @@
                                             <div id="task-form-container-{{ sprint.id }}" class="mb-3"></div>
                                             <div x-show="tasksOpen" x-transition class="tasks-container">
                                                 {% if sprint.tasks.count() > 0 %}
-                                                    {% for task in sprint.tasks %}
+                                                    {% for task in sprint.get_sorted_tasks() %}
                                                         {% include 'partials/task_item.html' %}
                                                     {% endfor %}
                                                 {% else %}
@@ -167,7 +167,7 @@
                                             <div id="issue-form-container-{{ sprint.id }}" class="mb-3"></div>
                                             <div x-show="issuesOpen" x-transition class="issues-container">
                                                 {% if sprint.issues.count() > 0 %}
-                                                    {% for issue in sprint.issues %}
+                                                    {% for issue in sprint.get_sorted_issues() %}
                                                         {% include 'partials/issue_item.html' %}
                                                     {% endfor %}
                                                 {% else %}
