@@ -1,0 +1,704 @@
+/**
+ * Modern Dark Theme for GamePlan
+ * 
+ * A clean, modern flat theme inspired by ModelContextProtocol.io design
+ * This theme completely replaces the previous dark theme with a more
+ * professional and minimal aesthetic.
+ */
+
+/* Base Color Palette - Based on ModelContextProtocol.io website */
+:root {
+  /* Primary Background Colors */
+  --gp-bg-dark: #0d1117;       /* Main background color - from MCP site */
+  --gp-bg-darker: #010409;     /* Darker background for contrast elements */
+  --gp-bg-lighter: #161b22;    /* Lighter background for cards, inputs, etc. */
+  --gp-bg-sidebar: rgba(255, 255, 255, 0.05); /* Sidebar background - white/5 */
+  
+  /* Text Colors - From MCP prose-gray inverted colors */
+  --gp-text-primary: rgb(158, 158, 158);  /* Primary text color as requested */
+  --gp-text-secondary: #9ca3af;/* Secondary text (--tw-prose-invert-lead) */
+  --gp-text-muted: #6b7280;    /* Muted text for placeholders, etc. */
+  --gp-text-bright: #fff;      /* Bright text for headings (--tw-prose-invert-headings) */
+  --gp-text-link: #fff;        /* Link text color (--tw-prose-invert-links) */
+  --gp-text-code: #fff;        /* Code text (--tw-prose-invert-code) */
+  
+  /* Border Colors */
+  --gp-border-primary: #374151; /* Primary borders (--tw-prose-invert-hr) */
+  --gp-border-table: #4b5563;   /* Table borders (--tw-prose-invert-th-borders) */
+  
+  /* Accent Colors - Use Sparingly */
+  --gp-primary: #58a6ff;       /* Primary accent color */
+  --gp-success: #3fb950;       /* Success indicators */
+  --gp-warning: #d29922;       /* Warning indicators */
+  --gp-danger: #f85149;        /* Danger/error indicators */
+  
+  /* Border and Shadow Colors */
+  --gp-border: #30363d;        /* Border color for elements */
+  --gp-shadow: rgba(0, 0, 0, 0.3); /* Shadow color with transparency */
+  
+  /* Override Bootstrap Variables */
+  --bs-body-bg: var(--gp-bg-dark);
+  --bs-body-color: var(--gp-text-primary);
+  --bs-primary: var(--gp-primary);
+  --bs-border-color: var(--gp-border);
+  --bs-link-color: var(--gp-text-link);
+  --bs-link-hover-color: var(--gp-primary);
+}
+
+/* Body Styles */
+body {
+  background-color: var(--gp-bg-dark);
+  color: var(--gp-text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  line-height: 1.6;
+  margin: 0;
+  padding: 0;
+}
+
+/* MCP-style Layout Structure */
+.container {
+  max-width: 1200px !important; /* Set to 1200px as requested */
+  padding: 0 1rem !important;
+  margin: 0 auto !important;
+}
+
+/* Create a three-column layout like MCP */
+.mcp-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* Left sidebar */
+.mcp-sidebar {
+  width: 19rem;
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  background-color: var(--gp-bg-sidebar);
+  border-right: 1px solid var(--gp-border-primary);
+  padding: 1.5rem;
+  overflow-y: auto;
+}
+
+/* Main content area */
+.mcp-content {
+  flex: 1;
+  margin-left: 19rem;
+  margin-right: 17rem;
+  padding: 2rem 3rem;
+  max-width: 54rem;
+}
+
+/* Right sidebar (on this page) */
+.mcp-toc {
+  width: 17rem;
+  position: fixed;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  padding: 2rem 1.5rem;
+  overflow-y: auto;
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+  color: #d2d2d2; /* Updated light grey color for all headers */
+  font-weight: 600;
+  margin-bottom: 1rem;
+  line-height: 1.3;
+}
+
+h1 {
+  font-size: 2.25rem;
+  margin-bottom: 1.5rem;
+}
+
+h2 {
+  font-size: 1.75rem;
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--gp-border-primary);
+}
+
+h3 {
+  font-size: 1.5rem;
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+}
+
+h4 {
+  font-size: 1.25rem;
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+p {
+  margin-bottom: 1.2rem;
+}
+
+a {
+  color: var(--gp-primary);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+a:hover {
+  color: #4589d1;
+  text-decoration: none;
+}
+
+code {
+  background-color: rgba(0, 0, 0, 0.5); /* --tw-prose-invert-pre-bg */
+  border-radius: 3px;
+  padding: 0.2em 0.4em;
+  font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+  font-size: 85%;
+  color: var(--gp-text-code);
+}
+
+/* Dark Mode Class */
+.dark-mode {
+  color-scheme: dark;
+}
+
+/* Navigation Bar - Clean, minimal styling like MCP site */
+.navbar {
+  background-color: var(--gp-bg-darker) !important;
+  border-bottom: 1px solid var(--gp-border-primary);
+  padding: 0.8rem 1rem;
+  box-shadow: none;
+}
+
+.navbar-brand {
+  color: var(--gp-text-bright) !important;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.navbar-dark .navbar-nav .nav-link {
+  color: var(--gp-text-secondary);
+  padding: 0.5rem 1rem;
+  transition: color 0.2s ease;
+}
+
+.navbar-dark .navbar-nav .nav-link:hover,
+.navbar-dark .navbar-nav .nav-link:focus {
+  color: var(--gp-text-bright);
+}
+
+.navbar-dark .navbar-nav .active > .nav-link {
+  color: var(--gp-primary);
+}
+
+.theme-toggle {
+  color: var(--gp-text-secondary) !important;
+  transition: color 0.2s ease;
+}
+
+.theme-toggle:hover {
+  color: var(--gp-text-bright) !important;
+}
+
+/* MCP-style flat layout - No cards */
+.project-section, .sprint-section {
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.5rem;
+}
+
+.section-header {
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--gp-border-primary);
+}
+
+.content-block {
+  margin-bottom: 1.5rem;
+}
+
+/* Remove card styling */
+.card {
+  background-color: transparent;
+  border: none;
+  box-shadow: none;
+  margin-bottom: 1.5rem;
+  transition: none;
+}
+
+.card:hover {
+  transform: none;
+}
+
+.card-header {
+  background-color: transparent !important;
+  border-bottom: 1px solid var(--gp-border-primary);
+  padding: 1rem 0;
+}
+
+.card-body {
+  padding: 1rem 0;
+}
+
+.card-footer {
+  background-color: transparent !important;
+  border-top: 1px solid var(--gp-border-primary);
+  padding: 1rem 0;
+}
+
+/* Project and Sprint styling to match MCP */
+.project-card {
+  border-bottom: 1px solid var(--gp-border-primary);
+  padding-bottom: 2rem;
+  margin-bottom: 2rem;
+}
+
+.project-card:last-child {
+  border-bottom: none;
+}
+
+.sprint-card {
+  padding-left: 1rem;
+  margin-bottom: 1.5rem;
+  background-color: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.sprint-card.sprint-open {
+  border-left: 3px solid var(--gp-border-primary);
+}
+
+.sprint-card.active {
+  border-left: 3px solid var(--gp-primary);
+}
+
+.sprint-card.completed {
+  border-left: 3px solid var(--gp-success);
+}
+
+.sprint-header {
+  background-color: transparent;
+  border-bottom: 1px solid var(--gp-border-primary);
+  padding: 0.75rem 0;
+}
+
+.sprint-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-right: 0.5rem;
+}
+
+/* Section styling */
+.section-title {
+  font-size: 1.75rem;
+  color: var(--gp-text-bright);
+  margin-bottom: 1rem;
+}
+
+.subsection-title {
+  font-size: 1.25rem;
+  color: var(--gp-text-bright);
+  margin-bottom: 0.75rem;
+}
+
+/* Buttons - Clean, minimal styling */
+.btn {
+  border-radius: 6px;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  transition: all 0.2s ease;
+}
+
+.btn-primary {
+  background-color: var(--gp-primary);
+  border-color: var(--gp-primary);
+}
+
+.btn-primary:hover, .btn-primary:focus {
+  background-color: #4589d1;
+  border-color: #4589d1;
+  box-shadow: none;
+}
+
+.btn-success {
+  background-color: var(--gp-success);
+  border-color: var(--gp-success);
+}
+
+.btn-success:hover, .btn-success:focus {
+  background-color: #2ea043;
+  border-color: #2ea043;
+  box-shadow: none;
+}
+
+.btn-danger {
+  background-color: var(--gp-danger);
+  border-color: var(--gp-danger);
+}
+
+.btn-danger:hover, .btn-danger:focus {
+  background-color: #da3633;
+  border-color: #da3633;
+  box-shadow: none;
+}
+
+.btn-outline-primary {
+  color: var(--gp-primary);
+  border-color: var(--gp-primary);
+}
+
+.btn-outline-primary:hover, .btn-outline-primary:focus {
+  background-color: var(--gp-primary);
+  color: #fff;
+  box-shadow: none;
+}
+
+.btn-outline-secondary {
+  color: var(--gp-text-secondary);
+  border-color: var(--gp-border-primary);
+}
+
+.btn-outline-secondary:hover, .btn-outline-secondary:focus {
+  background-color: var(--gp-bg-lighter);
+  color: var(--gp-text-bright);
+  border-color: var(--gp-border-primary);
+  box-shadow: none;
+}
+
+.btn-outline-danger {
+  color: var(--gp-danger);
+  border-color: var(--gp-danger);
+}
+
+.btn-outline-danger:hover, .btn-outline-danger:focus {
+  background-color: var(--gp-danger);
+  color: #fff;
+  box-shadow: none;
+}
+
+/* Make trash buttons more subtle */
+.btn-link.text-danger,
+.delete-project-btn,
+.delete-sprint-btn,
+.delete-task-btn,
+.delete-issue-btn {
+  color: var(--gp-text-muted) !important;
+  opacity: 0.7;
+  border-color: transparent;
+}
+
+.btn-link.text-danger:hover,
+.delete-project-btn:hover,
+.delete-sprint-btn:hover,
+.delete-task-btn:hover,
+.delete-issue-btn:hover {
+  color: var(--gp-danger) !important;
+  opacity: 1;
+  background-color: transparent;
+}
+
+/* Form Controls */
+.form-control {
+  background-color: var(--gp-bg-darker);
+  border: 1px solid var(--gp-border-primary);
+  border-radius: 6px;
+  color: var(--gp-text-primary);
+  padding: 0.5rem 0.75rem;
+  transition: border-color 0.2s ease;
+}
+
+.form-control:focus {
+  background-color: var(--gp-bg-darker);
+  border-color: var(--gp-primary);
+  box-shadow: none;
+  color: var(--gp-text-bright);
+}
+
+.form-control::placeholder {
+  color: var(--gp-text-muted);
+}
+
+.form-select {
+  background-color: var(--gp-bg-darker);
+  border: 1px solid var(--gp-border-primary);
+  border-radius: 6px;
+  color: var(--gp-text-primary);
+  padding: 0.5rem 2rem 0.5rem 0.75rem;
+  transition: border-color 0.2s ease;
+}
+
+.form-select:focus {
+  background-color: var(--gp-bg-darker);
+  border-color: var(--gp-primary);
+  box-shadow: none;
+  color: var(--gp-text-bright);
+}
+
+/* Tables */
+.table {
+  color: var(--gp-text-primary);
+}
+
+.table th {
+  border-bottom: 1px solid var(--gp-border-table);
+  color: var(--gp-text-bright);
+  font-weight: 600;
+  padding: 0.75rem;
+}
+
+.table td {
+  border-bottom: 1px solid var(--gp-border-primary);
+  padding: 0.75rem;
+}
+
+.table-hover tbody tr:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Footer */
+footer {
+  background-color: var(--gp-bg-darker) !important;
+  border-top: 1px solid var(--gp-border-primary);
+  color: var(--gp-text-secondary);
+  padding: 1rem 0;
+  margin-top: 2rem;
+}
+
+/* Modals */
+.modal-content {
+  background-color: var(--gp-bg-lighter);
+  border: 1px solid var(--gp-border-primary);
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.modal-header {
+  border-bottom: 1px solid var(--gp-border-primary);
+  padding: 1rem;
+}
+
+.modal-title {
+  color: var(--gp-text-bright);
+}
+
+.modal-body {
+  padding: 1.25rem;
+}
+
+.modal-footer {
+  border-top: 1px solid var(--gp-border-primary);
+  padding: 1rem;
+}
+
+/* Badges */
+.badge {
+  font-weight: 500;
+  padding: 0.35em 0.65em;
+}
+
+/* MCP-style sidebar navigation */
+.sidebar-nav {
+  background-color: var(--gp-bg-sidebar);
+  border-right: 1px solid var(--gp-border-primary);
+  padding: 1.5rem 0;
+  height: 100%;
+}
+
+.sidebar-nav .nav-link {
+  color: var(--gp-text-secondary);
+  padding: 0.5rem 1.5rem;
+  transition: all 0.2s ease;
+}
+
+.sidebar-nav .nav-link:hover,
+.sidebar-nav .nav-link:focus {
+  color: var(--gp-text-bright);
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.sidebar-nav .nav-link.active {
+  color: var(--gp-primary);
+  background-color: rgba(88, 166, 255, 0.1);
+}
+
+/* On this page navigation (like in MCP) */
+.on-this-page {
+  position: sticky;
+  top: 2rem;
+  padding-left: 1rem;
+  border-left: 1px solid var(--gp-border-primary);
+}
+
+.on-this-page-title {
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--gp-text-secondary);
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.on-this-page-link {
+  display: block;
+  font-size: 0.875rem;
+  color: var(--gp-text-secondary);
+  padding: 0.25rem 0;
+  transition: color 0.2s ease;
+}
+
+.on-this-page-link:hover,
+.on-this-page-link:focus {
+  color: var(--gp-text-bright);
+}
+
+.on-this-page-link.active {
+  color: var(--gp-primary);
+  font-weight: 500;
+}
+
+/* Code blocks */
+pre {
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 6px;
+  padding: 1rem;
+  overflow-x: auto;
+}
+
+pre code {
+  background-color: transparent;
+  padding: 0;
+  border-radius: 0;
+}
+
+/* Dividers */
+hr {
+  border: 0;
+  border-top: 1px solid var(--gp-border-primary);
+  margin: 1.5rem 0;
+}
+
+/* Utilities */
+.text-muted {
+  color: var(--gp-text-muted) !important;
+}
+
+.bg-dark {
+  background-color: var(--gp-bg-darker) !important;
+}
+
+.border {
+  border-color: var(--gp-border-primary) !important;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+/* Collapsible sections */
+.collapsible-header {
+  cursor: pointer;
+  padding: 0.5rem 0;
+}
+
+/* Action icons styling - applied to all icons */
+.action-icon,
+.fas,
+button i.fas,
+a i.fas {
+  color: var(--gp-text-muted);
+  transition: color 0.2s ease;
+}
+
+.action-icon:hover,
+button:hover i.fas,
+a:hover i.fas,
+.fas:hover {
+  color: var(--gp-text-secondary);
+}
+
+.action-icon.delete-sprint-btn:hover,
+button.delete-sprint-btn:hover i.fas,
+button.btn-outline-danger:hover i.fas,
+i.fa-trash:hover,
+.fa-trash.text-danger:hover {
+  color: var(--gp-danger) !important;
+  opacity: 0.7;
+}
+
+/* Preserve button text color */
+.btn-primary i.fas,
+.btn-outline-primary i.fas,
+.btn-secondary i.fas,
+.btn-outline-secondary i.fas {
+  color: inherit;
+}
+
+/* Smaller chevron icons */
+.collapsible-header .fas.fa-chevron-up,
+.collapsible-header .fas.fa-chevron-down {
+  font-size: 0.75rem;
+  opacity: 0.7;
+}
+
+/* Remove hover tooltips */
+[title] {
+  position: relative;
+}
+
+[title]:hover::after {
+  display: none !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+  .mcp-sidebar {
+    width: 16rem;
+  }
+  
+  .mcp-content {
+    margin-left: 16rem;
+    margin-right: 0;
+    padding: 2rem;
+  }
+  
+  .mcp-toc {
+    display: none;
+  }
+}
+
+@media (max-width: 992px) {
+  .mcp-sidebar {
+    display: none;
+  }
+  
+  .mcp-content {
+    margin-left: 0;
+    padding: 1.5rem;
+  }
+}
+
+/* Task and issue items */
+.task-item, .issue-item {
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--gp-border-primary);
+}
+
+.task-item:hover, .issue-item:hover {
+  background-color: rgba(255, 255, 255, 0.03); /* Subtle grey hover effect */
+}
+
+.task-item:last-child, .issue-item:last-child {
+  border-bottom: none;
+}
+
+.task-item.completed .task-text, 
+.issue-item.completed .issue-text {
+  text-decoration: line-through;
+  opacity: 0.7;
+}

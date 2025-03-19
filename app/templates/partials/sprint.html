@@ -26,13 +26,7 @@
             </div>
         </div>
         <div class="card-body" 
-             x-show="sprintOpen{{ sprint.id }}"
-             x-transition:enter="transition ease-out duration-200"
-             x-transition:enter-start="opacity-0 transform -translate-y-4"
-             x-transition:enter-end="opacity-100 transform translate-y-0"
-             x-transition:leave="transition ease-in duration-150"
-             x-transition:leave-start="opacity-100 transform translate-y-0"
-             x-transition:leave-end="opacity-0 transform -translate-y-4">
+             x-show="sprintOpen{{ sprint.id }}">
             
             <!-- Sprint Description -->
             <p class="sprint-description mb-3">{{ sprint.description or 'No description provided.' }}</p>
@@ -53,7 +47,7 @@
                                     <input class="form-check-input task-check" type="checkbox" 
                                            {% if task.completed %}checked{% endif %} 
                                            data-task-id="{{ task.id }}">
-                                    <label class="form-check-label" data-bs-toggle="tooltip" title="Task #{{ task.id }}">
+                                    <label class="form-check-label">
                                         {{ task.details }}
                                     </label>
                                     <div class="task-actions">
@@ -89,7 +83,7 @@
                                     <input class="form-check-input issue-check" type="checkbox" 
                                            {% if issue.completed %}checked{% endif %} 
                                            data-issue-id="{{ issue.id }}">
-                                    <label class="form-check-label" data-bs-toggle="tooltip" title="Issue #{{ issue.id }}">
+                                    <label class="form-check-label">
                                         {{ issue.details }}
                                     </label>
                                     <div class="issue-actions">

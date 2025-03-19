@@ -2,10 +2,10 @@
     {% for issue in issues %}
         <div class="issue-item {% if issue.completed %}completed{% endif %}" data-issue-id="{{ issue.id }}">
             <div class="form-check">
-                <input class="form-check-input issue-check" type="checkbox" 
-                       {% if issue.completed %}checked{% endif %} 
+                <input class="form-check-input issue-check" type="checkbox" id="issue-checkbox-{{ issue.id }}" 
+                       {{ 'checked' if issue.completed else '' }}
                        data-issue-id="{{ issue.id }}">
-                <label class="form-check-label" data-bs-toggle="tooltip" title="Issue #{{ issue.id }}">
+                <label class="form-check-label" for="issue-checkbox-{{ issue.id }}">
                     Issue #{{ issue.id }}: {{ issue.details }}
                 </label>
                 <div class="issue-actions">

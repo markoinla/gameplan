@@ -23,30 +23,25 @@
                         <button class="btn btn-sm btn-outline-primary me-2 add-sprint-btn" data-project-id="{{ project.id }}">
                             <i class="fas fa-plus me-1"></i>Add Sprint
                         </button>
-                        <button class="btn btn-sm btn-outline-secondary me-2 edit-project-btn" data-project-id="{{ project.id }}">
+                        <span class="action-icon edit-project-btn me-2" data-project-id="{{ project.id }}">
                             <i class="fas fa-edit"></i>
-                        </button>
-                        <button class="btn btn-sm btn-outline-danger delete-project-btn" data-project-id="{{ project.id }}">
+                        </span>
+                        <span class="action-icon delete-project-btn" data-project-id="{{ project.id }}">
                             <i class="fas fa-trash"></i>
-                        </button>
+                        </span>
                     </div>
                 </div>
                 <div class="card-body">
                     <!-- Description Section - Collapsible with Alpine.js -->
                     <div class="mb-3" x-data="{ descOpen{{ project.id }}: true }">
                         <div class="d-flex justify-content-between align-items-center collapsible-header" @click="descOpen{{ project.id }} = !descOpen{{ project.id }}">
-                            <h5 class="mb-0">Description & Goals:</h5>
-                            <button class="btn btn-sm btn-link p-0" @click.stop="descOpen{{ project.id }} = !descOpen{{ project.id }}">
-                                <i class="fas" :class="descOpen{{ project.id }} ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
-                            </button>
+                            <h5 class="mb-0">
+                                Description & Goals:
+                                <i class="fas ms-2" :class="descOpen{{ project.id }} ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+                            </h5>
+                            <div></div>
                         </div>
-                        <div x-show="descOpen{{ project.id }}" 
-                             x-transition:enter="transition ease-out duration-200"
-                             x-transition:enter-start="opacity-0 transform -translate-y-4"
-                             x-transition:enter-end="opacity-100 transform translate-y-0"
-                             x-transition:leave="transition ease-in duration-150"
-                             x-transition:leave-start="opacity-100 transform translate-y-0"
-                             x-transition:leave-end="opacity-0 transform -translate-y-4">
+                        <div x-show="descOpen{{ project.id }}">
                             <p class="project-description mt-2">{{ project.description or 'No description provided.' }}</p>
                         </div>
                     </div>
@@ -54,40 +49,37 @@
                     <!-- Requirements Section - Collapsible with Alpine.js -->
                     <div class="mb-3" x-data="{ reqOpen{{ project.id }}: true }">
                         <div class="d-flex justify-content-between align-items-center collapsible-header" @click="reqOpen{{ project.id }} = !reqOpen{{ project.id }}">
-                            <h5 class="mb-0">Requirements:</h5>
-                            <button class="btn btn-sm btn-link p-0" @click.stop="reqOpen{{ project.id }} = !reqOpen{{ project.id }}">
-                                <i class="fas" :class="reqOpen{{ project.id }} ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
-                            </button>
+                            <h5 class="mb-0">
+                                Requirements:
+                                <i class="fas ms-2" :class="reqOpen{{ project.id }} ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+                            </h5>
+                            <div></div>
                         </div>
-                        <div x-show="reqOpen{{ project.id }}" 
-                             x-transition:enter="transition ease-out duration-200"
-                             x-transition:enter-start="opacity-0 transform -translate-y-4"
-                             x-transition:enter-end="opacity-100 transform translate-y-0"
-                             x-transition:leave="transition ease-in duration-150"
-                             x-transition:leave-start="opacity-100 transform translate-y-0"
-                             x-transition:leave-end="opacity-0 transform -translate-y-4">
+                        <div x-show="reqOpen{{ project.id }}">
                             <p class="project-requirements mt-2">{{ project.requirements or 'No requirements specified.' }}</p>
                         </div>
                     </div>
                     
                     <!-- Sprints Section -->
                     <div class="sprints-section">
-                        <h4 class="mb-3">Sprints</h4>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h3 class="mb-0">Sprints</h3>
+                            <button class="btn btn-sm btn-outline-primary add-sprint-btn" data-project-id="{{ project.id }}">
+                                <i class="fas fa-plus me-1"></i>Add Sprint
+                            </button>
+                        </div>
                         <div class="sprints-container">
-                            <div class="d-flex justify-content-end mb-3">
-                                <button class="btn btn-sm btn-outline-primary add-sprint-btn" data-project-id="{{ project.id }}">
-                                    <i class="fas fa-plus me-1"></i>Add Sprint
-                                </button>
-                            </div>
                             {% if project.get_sorted_sprints() %}
                                 {% for sprint in project.get_sorted_sprints() %}
-                                    <div class="card mb-3 sprint-card" data-sprint-id="{{ sprint.id }}">
+                                    <div class="card mb-3 sprint-card" 
+                                         data-sprint-id="{{ sprint.id }}"
+                                         :class="{ 'sprint-open': sprintOpen{{ sprint.id }} }">
                                         <!-- Sprint Header - Collapsible with Alpine.js -->
                                         <div x-data="{ sprintOpen{{ sprint.id }}: {% if sprint.status == 'Active' %}true{% else %}false{% endif %} }" class="sprint-container">
                                             <div class="card-header d-flex justify-content-between align-items-center sprint-header cursor-pointer" 
                                                  @click="sprintOpen{{ sprint.id }} = !sprintOpen{{ sprint.id }}">
                                                 <div>
-                                                    <span class="sprint-name">{{ sprint.name }}</span>
+                                                    <span class="sprint-name">Sprint #{{ sprint.id }}: {{ sprint.name }}</span>
                                                     <span class="badge rounded-pill 
                                                         {% if sprint.status == 'Planned' %}bg-secondary
                                                         {% elif sprint.status == 'Active' %}bg-primary
@@ -96,44 +88,33 @@
                                                     <small class="text-muted ms-2">{{ sprint.created_at.strftime('%Y-%m-%d') if sprint.created_at else '' }}</small>
                                                 </div>
                                                 <div class="sprint-actions">
-                                                    <button class="btn btn-sm btn-outline-secondary me-2 edit-sprint-btn" 
-                                                            data-sprint-id="{{ sprint.id }}" 
-                                                            @click.stop>
+                                                    <span class="action-icon edit-sprint-btn me-3" 
+                                                          data-sprint-id="{{ sprint.id }}" 
+                                                          @click.stop>
                                                         <i class="fas fa-edit"></i>
-                                                    </button>
-                                                    <button class="btn btn-sm btn-outline-danger delete-sprint-btn" 
-                                                            data-sprint-id="{{ sprint.id }}" 
-                                                            @click.stop>
+                                                    </span>
+                                                    <span class="action-icon delete-sprint-btn me-3" 
+                                                          data-sprint-id="{{ sprint.id }}" 
+                                                          @click.stop>
                                                         <i class="fas fa-trash"></i>
-                                                    </button>
+                                                    </span>
                                                     <i class="fas" :class="sprintOpen{{ sprint.id }} ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
                                                 </div>
                                             </div>
                                             <!-- Sprint Content - Shown/Hidden based on sprintOpen state -->
                                             <div x-show="sprintOpen{{ sprint.id }}" 
-                                                 x-transition:enter="transition ease-out duration-300"
-                                                 x-transition:enter-start="opacity-0 transform scale-95"
-                                                 x-transition:enter-end="opacity-100 transform scale-100"
-                                                 x-transition:leave="transition ease-in duration-200"
-                                                 x-transition:leave-start="opacity-100 transform scale-100"
-                                                 x-transition:leave-end="opacity-0 transform scale-95"
                                                  id="sprint{{ sprint.id }}Content">
                                                 <div class="card-body">
                                                     <!-- Sprint Description - Collapsible -->
                                                     <div class="mb-3" x-data="{ sprintDescOpen{{ sprint.id }}: true }">
                                                         <div class="d-flex justify-content-between align-items-center collapsible-header" @click="sprintDescOpen{{ sprint.id }} = !sprintDescOpen{{ sprint.id }}">
-                                                            <h5 class="mb-0">Description:</h5>
-                                                            <button class="btn btn-sm btn-link p-0" @click.stop="sprintDescOpen{{ sprint.id }} = !sprintDescOpen{{ sprint.id }}">
-                                                                <i class="fas" :class="sprintDescOpen{{ sprint.id }} ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
-                                                            </button>
+                                                            <h5 class="mb-0">
+                                                                Description:
+                                                                <i class="fas ms-2" :class="sprintDescOpen{{ sprint.id }} ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+                                                            </h5>
+                                                            <div></div>
                                                         </div>
-                                                        <div x-show="sprintDescOpen{{ sprint.id }}" 
-                                                             x-transition:enter="transition ease-out duration-200"
-                                                             x-transition:enter-start="opacity-0 transform -translate-y-4"
-                                                             x-transition:enter-end="opacity-100 transform translate-y-0"
-                                                             x-transition:leave="transition ease-in duration-150"
-                                                             x-transition:leave-start="opacity-100 transform translate-y-0"
-                                                             x-transition:leave-end="opacity-0 transform -translate-y-4">
+                                                        <div x-show="sprintDescOpen{{ sprint.id }}">
                                                             <p class="sprint-description mt-2">{{ sprint.description or 'No description provided.' }}</p>
                                                         </div>
                                                     </div>
@@ -141,7 +122,10 @@
                                                     <!-- Tasks Section -->
                                                     <div class="tasks-section mt-3" x-data="{ tasksOpen{{ sprint.id }}: true }">
                                                         <div class="d-flex justify-content-between align-items-center mb-2 collapsible-header" @click="tasksOpen{{ sprint.id }} = !tasksOpen{{ sprint.id }}">
-                                                            <h5 class="mb-0">Tasks</h5>
+                                                            <h5 class="mb-0">
+                                                                Tasks
+                                                                <i class="fas ms-2" :class="tasksOpen{{ sprint.id }} ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+                                                            </h5>
                                                             <div>
                                                                 <button class="btn btn-sm btn-outline-primary me-2" 
                                                                         hx-get="/htmx/tasks/form/{{ sprint.id }}"
@@ -150,18 +134,9 @@
                                                                         @click.stop>
                                                                     <i class="fas fa-plus me-1"></i>Add Task
                                                                 </button>
-                                                                <button class="btn btn-sm btn-link p-0" @click.stop="tasksOpen{{ sprint.id }} = !tasksOpen{{ sprint.id }}">
-                                                                    <i class="fas" :class="tasksOpen{{ sprint.id }} ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
-                                                                </button>
                                                             </div>
                                                         </div>
-                                                        <div x-show="tasksOpen{{ sprint.id }}" 
-                                                             x-transition:enter="transition ease-out duration-200"
-                                                             x-transition:enter-start="opacity-0 transform -translate-y-4"
-                                                             x-transition:enter-end="opacity-100 transform translate-y-0"
-                                                             x-transition:leave="transition ease-in duration-150"
-                                                             x-transition:leave-start="opacity-100 transform translate-y-0"
-                                                             x-transition:leave-end="opacity-0 transform -translate-y-4">
+                                                        <div x-show="tasksOpen{{ sprint.id }}">
                                                             <!-- Task Form Container -->
                                                             <div id="task-form-container-{{ sprint.id }}" class="mb-3"></div>
                                                             
@@ -173,7 +148,10 @@
                                                     <!-- Issues Section -->
                                                     <div class="issues-section mt-3" x-data="{ issuesOpen{{ sprint.id }}: true }">
                                                         <div class="d-flex justify-content-between align-items-center mb-2 collapsible-header" @click="issuesOpen{{ sprint.id }} = !issuesOpen{{ sprint.id }}">
-                                                            <h5 class="mb-0">Issues</h5>
+                                                            <h5 class="mb-0">
+                                                                Issues
+                                                                <i class="fas ms-2" :class="issuesOpen{{ sprint.id }} ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+                                                            </h5>
                                                             <div>
                                                                 <button class="btn btn-sm btn-outline-primary me-2" 
                                                                         hx-get="/htmx/issues/form/{{ sprint.id }}"
@@ -182,18 +160,9 @@
                                                                         @click.stop>
                                                                     <i class="fas fa-plus me-1"></i>Add Issue
                                                                 </button>
-                                                                <button class="btn btn-sm btn-link p-0" @click.stop="issuesOpen{{ sprint.id }} = !issuesOpen{{ sprint.id }}">
-                                                                    <i class="fas" :class="issuesOpen{{ sprint.id }} ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
-                                                                </button>
                                                             </div>
                                                         </div>
-                                                        <div x-show="issuesOpen{{ sprint.id }}" 
-                                                             x-transition:enter="transition ease-out duration-200"
-                                                             x-transition:enter-start="opacity-0 transform -translate-y-4"
-                                                             x-transition:enter-end="opacity-100 transform translate-y-0"
-                                                             x-transition:leave="transition ease-in duration-150"
-                                                             x-transition:leave-start="opacity-100 transform translate-y-0"
-                                                             x-transition:leave-end="opacity-0 transform -translate-y-4">
+                                                        <div x-show="issuesOpen{{ sprint.id }}">
                                                             <!-- Issue Form Container -->
                                                             <div id="issue-form-container-{{ sprint.id }}" class="mb-3"></div>
                                                             

@@ -2,10 +2,12 @@
     {% for task in tasks %}
         <div class="task-item {% if task.completed %}completed{% endif %}" data-task-id="{{ task.id }}">
             <div class="form-check">
-                <input class="form-check-input task-check" type="checkbox" 
-                       {% if task.completed %}checked{% endif %} 
-                       data-task-id="{{ task.id }}">
-                <label class="form-check-label" data-bs-toggle="tooltip" title="Task #{{ task.id }}">
+                <input class="form-check-input task-check" type="checkbox" id="task-checkbox-{{ task.id }}" 
+                       {{ 'checked' if task.completed else '' }}
+                       hx-post="/htmx/tasks/{{ task.id }}/toggle"
+                       hx-target="#task-{{ task.id }}"
+                       hx-swap="outerHTML">
+                <label class="form-check-label" for="task-checkbox-{{ task.id }}">
                     Task #{{ task.id }}: {{ task.details }}
                 </label>
                 <div class="task-actions">
