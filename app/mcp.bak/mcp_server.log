@@ -8247,3 +8247,449 @@
 
 2025-03-18 16:40:50,925 - INFO - [req_20250318164050_42] Tool executed successfully
 2025-03-18 16:40:50,926 - DEBUG - Sending response: {"jsonrpc": "2.0", "id": 42, "result": {"content": [{"type": "text", "text": "[{\"created_at\": \"2025-03-18T05:50:52.286705\", \"description\": \"# GamePlan: AI-Enhanced Project Management\\n\\nA comprehensive project management application designed for developers and teams. GamePlan helps track projects, sprints, tasks, and issues with a clean, intuitive interface.\\n\\n## Key Features\\n\\n* **Project Organization**: Create and manage multiple projects with detailed descriptions and requirements\\n* **Sprint Planning**: Break down projects into manageable sprints with clear goals and timelines\\n* **Task & Issue Tracking**: Monitor progress with task completion status and issue resolution\\n* **MCP Integration**: Built-in Model Context Protocol support for AI assistants like Windsurf\\n* **Responsive Design**: Works seamlessly on desktop and mobile devices\\n\\n## Current Development Focus\\n\\nOur development is currently focused on three main areas:\\n\\n1. **Refactoring** to reduce complexity while maintaining functionality\\n2. **GitHub Distribution** preparation for easy installation and setup\\n3. **Feature Enhancements** to improve user experience and productivity\\n\\n## Technology Stack\\n\\n```\\nBackend: Flask + SQLAlchemy\\nFrontend: HTML5, CSS3, JavaScript\\nDatabase: SQLite\\nAI Integration: Model Context Protocol (MCP)\\n```\\n\\n> GamePlan is designed to be lightweight yet powerful, making project management accessible for developers of all skill levels.\", \"id\": 1, \"name\": \"Gameplan App\", \"requirements\": \"1. Flask web application framework\\n2. SQLite database for data storage\\n3. RESTful API endpoints for all CRUD operations\\n4. MCP (Model Context Protocol) integration for AI assistants\\n5. User authentication and authorization\\n6. Project, sprint, task, and issue management\\n7. Responsive web interface\\n8. Markdown support for descriptions and notes\\n9. Cross-platform compatibility\\n10. Command-line interface for quick access\\n11. Lightweight implementation with minimal dependencies\\n12. Easy installation and setup process\\n13. Comprehensive documentation for GitHub distribution\", \"sprints\": [{\"created_at\": \"2025-03-18T21:19:32.930736\", \"description\": \"Sprint focused on improving and fixing Model Context Protocol integration and functionality\", \"id\": 8, \"name\": \"MCP Improvements & Fixes\", \"project_id\": 1, \"status\": \"Active\", \"updated_at\": \"2025-03-18T21:19:32.930751\"}, {\"created_at\": \"2025-03-18T22:37:45.705132\", \"description\": \"A sprint created for testing MCP tools functionality\", \"id\": 9, \"name\": \"MCP Testing Sprint\", \"project_id\": 1, \"status\": \"Active\", \"updated_at\": \"2025-03-18T22:37:56.617245\"}, {\"created_at\": \"2025-03-18T12:26:59.377701\", \"description\": \"Sprint for future enhancements and improvements that are planned but not currently in active development.\", \"id\": 4, \"name\": \"Future Improvements\", \"project_id\": 1, \"status\": \"Planned\", \"updated_at\": \"2025-03-18T20:44:11.862951\"}, {\"created_at\": \"2025-03-18T12:33:26.941812\", \"description\": \"Sprint focused on refactoring the codebase to reduce overall size and complexity while maintaining all existing functionality.\", \"id\": 5, \"name\": \"Refactor and Reduce Size\", \"project_id\": 1, \"status\": \"Planned\", \"updated_at\": \"2025-03-18T12:33:26.941817\"}, {\"created_at\": \"2025-03-18T12:38:38.473521\", \"description\": \"Prepare the GamePlan application for distribution through GitHub, ensuring easy installation and setup including the MCP server.\", \"id\": 6, \"name\": \"GitHub Distribution Preparation\", \"project_id\": 1, \"status\": \"Planned\", \"updated_at\": \"2025-03-18T12:38:38.473524\"}, {\"created_at\": \"2025-03-18T06:21:14.145317\", \"description\": \"Sprint focused on fixing and improving the Model Context Protocol integration with Windsurf\", \"id\": 1, \"name\": \"MCP Windsurf Integration\", \"project_id\": 1, \"status\": \"Completed\", \"updated_at\": \"2025-03-18T06:44:04.320647\"}, {\"created_at\": \"2025-03-18T06:50:15.239686\", \"description\": \"Various UX & UI updates.\", \"id\": 2, \"name\": \"UX & UI Updates\", \"project_id\": 1, \"status\": \"Completed\", \"updated_at\": \"2025-03-18T12:31:32.782787\"}, {\"created_at\": \"2025-03-18T07:46:42.159034\", \"description\": \"Investigate and resolve issues with the Model Context Protocol integration, focusing on tool naming, error handling, and Windsurf integration.\", \"id\": 3, \"name\": \"MCP Investigation and Testing\", \"project_id\": 1, \"status\": \"Completed\", \"updated_at\": \"2025-03-18T12:22:40.520695\"}, {\"created_at\": \"2025-03-18T19:24:57.313559\", \"description\": \"Implement HTMX to improve application interactivity, eliminate page reloads for common actions, and reduce JavaScript code size while maintaining MCP compatibility.\", \"id\": 7, \"name\": \"HTMX Integration\", \"project_id\": 1, \"status\": \"Completed\", \"updated_at\": \"2025-03-18T21:18:20.770931\"}], \"updated_at\": \"2025-03-18T12:51:58.251145\"}]"}]}}
+2025-03-18 17:07:47,942 - INFO - Received method: tools/call
+2025-03-18 17:07:47,943 - INFO - [req_20250318170747_43] Received tool call request
+2025-03-18 17:07:47,944 - DEBUG - [req_20250318170747_43] Full message: {"jsonrpc": "2.0", "id": 43, "method": "tools/call", "params": {"name": "list_sprints"}}
+2025-03-18 17:07:47,944 - INFO - [req_20250318170747_43] Executing tool: list_sprints
+2025-03-18 17:07:47,944 - DEBUG - [req_20250318170747_43] Tool parameters: {}
+2025-03-18 17:07:47,944 - DEBUG - [req_20250318170747_43] Tool name has prefix: 'list', actual name: 'sprints'
+2025-03-18 17:07:47,944 - DEBUG - [req_20250318170747_43] Sending request to internal API: POST http://127.0.0.1:5001/mcp/execute
+2025-03-18 17:07:47,944 - DEBUG - [req_20250318170747_43] Request data: {"name": "list_sprints", "parameters": {}}
+2025-03-18 17:07:47,947 - DEBUG - Starting new HTTP connection (1): 127.0.0.1:5001
+2025-03-18 17:07:47,955 - DEBUG - http://127.0.0.1:5001 "POST /mcp/execute HTTP/1.1" 500 12946
+2025-03-18 17:07:47,955 - DEBUG - [req_20250318170747_43] Response status: 500
+2025-03-18 17:07:47,955 - DEBUG - [req_20250318170747_43] Response body: <!doctype html>
+<html lang=en>
+  <head>
+    <title>ModuleNotFoundError: No module named &#39;app.mcp&#39;
+ // Werkzeug Debugger</title>
+    <link rel="stylesheet" href="?__debugger__=yes&amp;cmd=resource&amp;f=style.css">
+    <link rel="shortcut icon"
+        href="?__debugger__=yes&amp;cmd=resource&amp;f=console.png">
+    <script src="?__debugger__=yes&amp;cmd=resource&amp;f=debugger.js"></script>
+    <script>
+      var CONSOLE_MODE = false,
+          EVALEX = true,
+          EVALEX_TRUSTED = false,
+          SECRET = "qPUuwVU9OheLzf5EfcYf";
+    </script>
+  </head>
+  <body style="background-color: #fff">
+    <div class="debugger">
+<h1>ModuleNotFoundError</h1>
+<div class="detail">
+  <p class="errormsg">ModuleNotFoundError: No module named &#39;app.mcp&#39;
+</p>
+</div>
+<h2 class="traceback">Traceback <em>(most recent call last)</em></h2>
+<div class="traceback">
+  <h3></h3>
+  <ul><li><div class="frame" id="frame-4423290304">
+  <h4>File <cite class="filename">"/Users/marko.stankovic/Desktop/WEBDEV/PROJECTS/GAMEPLAN/venv/lib/python3.12/site-packages/flask/cli.py"</cite>,
+      line <em class="line">972</em>,
+      in <code class="function">app</code></h4>
+  <div class="source library"><pre class="line before"><span class="ws">            </span>err = e</pre>
+<pre class="line before"><span class="ws"></span> </pre>
+<pre class="line before"><span class="ws">            </span>def app(</pre>
+<pre class="line before"><span class="ws">                </span>environ: WSGIEnvironment, start_response: StartResponse</pre>
+<pre class="line before"><span class="ws">            </span>) -&gt; cabc.Iterable[bytes]:</pre>
+<pre class="line current"><span class="ws">                </span>raise err from None
+<span class="ws">                </span>^^^^^^^^^^^^^^^^^^^</pre>
+<pre class="line after"><span class="ws"></span> </pre>
+<pre class="line after"><span class="ws">        </span>else:</pre>
+<pre class="line after"><span class="ws">            </span># When not reloading, raise the error immediately so the</pre>
+<pre class="line after"><span class="ws">            </span># command fails.</pre>
+<pre class="line after"><span class="ws">            </span>raise e from None</pre></div>
+</div>
+
+<li><div class="frame" id="frame-4423289584">
+  <h4>File <cite class="filename">"/Users/marko.stankovic/Desktop/WEBDEV/PROJECTS/GAMEPLAN/venv/lib/python3.12/site-packages/flask/cli.py"</cite>,
+      line <em class="line">961</em>,
+      in <code class="function">run_command</code></h4>
+  <div class="source library"><pre class="line before"><span class="ws"></span> </pre>
+<pre class="line before"><span class="ws">    </span>The reloader and debugger are enabled by default with the &#39;--debug&#39;</pre>
+<pre class="line before"><span class="ws">    </span>option.</pre>
+<pre class="line before"><span class="ws">    </span>&#34;&#34;&#34;</pre>
+<pre class="line before"><span class="ws">    </span>try:</pre>
+<pre class="line current"><span class="ws">        </span>app: WSGIApplication = info.load_app()  # pyright: ignore
+<span class="ws">        </span>                       ^^^^^^^^^^^^^^^</pre>
+<pre class="line after"><span class="ws">    </span>except Exception as e:</pre>
+<pre class="line after"><span class="ws">        </span>if is_running_from_reloader():</pre>
+<pre class="line after"><span class="ws">            </span># When reloading, print out the error immediately, but raise</pre>
+<pre class="line after"><span class="ws">            </span># it later so the debugger or server can handle it.</pre>
+<pre class="line after"><span class="ws">            </span>traceback.print_exc()</pre></div>
+</div>
+
+<li><div class="frame" id="frame-4423289296">
+  <h4>File <cite class="filename">"/Users/marko.stankovic/Desktop/WEBDEV/PROJECTS/GAMEPLAN/venv/lib/python3.12/site-packages/flask/cli.py"</cite>,
+      line <em class="line">349</em>,
+      in <code class="function">load_app</code></h4>
+  <div class="source library"><pre class="line before"><span class="ws">            </span>if self.app_import_path:</pre>
+<pre class="line before"><span class="ws">                </span>path, name = (</pre>
+<pre class="line before"><span class="ws">                    </span>re.split(r&#34;:(?![\\/])&#34;, self.app_import_path, maxsplit=1) + [None]</pre>
+<pre class="line before"><span class="ws">                </span>)[:2]</pre>
+<pre class="line before"><span class="ws">                </span>import_name = prepare_import(path)</pre>
+<pre class="line current"><span class="ws">                </span>app = locate_app(import_name, name)
+<span class="ws">                </span>      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</pre>
+<pre class="line after"><span class="ws">            </span>else:</pre>
+<pre class="line after"><span class="ws">                </span>for path in (&#34;wsgi.py&#34;, &#34;app.py&#34;):</pre>
+<pre class="line after"><span class="ws">                    </span>import_name = prepare_import(path)</pre>
+<pre class="line after"><span class="ws">                    </span>app = locate_app(import_name, None, raise_if_not_found=False)</pre>
+<pre class="line after"><span class="ws"></span> </pre></div>
+</div>
+
+<li><div class="frame" id="frame-4423290016">
+  <h4>File <cite class="filename">"/Users/marko.stankovic/Desktop/WEBDEV/PROJECTS/GAMEPLAN/venv/lib/python3.12/site-packages/flask/cli.py"</cite>,
+      line <em class="line">262</em>,
+      in <code class="function">locate_app</code></h4>
+  <div class="source library"><pre class="line before"><span class="ws">            </span>return None</pre>
+<pre class="line before"><span class="ws"></span> </pre>
+<pre class="line before"><span class="ws">    </span>module = sys.modules[module_name]</pre>
+<pre class="line before"><span class="ws"></span> </pre>
+<pre class="line before"><span class="ws">    </span>if app_name is None:</pre>
+<pre class="line current"><span class="ws">        </span>return find_best_app(module)
+<span class="ws">        </span>       ^^^^^^^^^^^^^^^^^^^^^</pre>
+<pre class="line after"><span class="ws">    </span>else:</pre>
+<pre class="line after"><span class="ws">        </span>return find_app_by_string(module, app_name)</pre>
+<pre class="line after"><span class="ws"></span> </pre>
+<pre class="line after"><span class="ws"></span> </pre>
+<pre class="line after"><span class="ws"></span>def get_version(ctx: click.Context, param: click.Parameter, value: t.Any) -&gt; None:</pre></div>
+</div>
+
+<li><div class="frame" id="frame-4423290448">
+  <h4>File <cite class="filename">"/Users/marko.stankovic/Desktop/WEBDEV/PROJECTS/GAMEPLAN/venv/lib/python3.12/site-packages/flask/cli.py"</cite>,
+      line <em class="line">72</em>,
+      in <code class="function">find_best_app</code></h4>
+  <div class="source library"><pre class="line before"><span class="ws">    </span>for attr_name in (&#34;create_app&#34;, &#34;make_app&#34;):</pre>
+<pre class="line before"><span class="ws">        </span>app_factory = getattr(module, attr_name, None)</pre>
+<pre class="line before"><span class="ws"></span> </pre>
+<pre class="line before"><span class="ws">        </span>if inspect.isfunction(app_factory):</pre>
+<pre class="line before"><span class="ws">            </span>try:</pre>
+<pre class="line current"><span class="ws">                </span>app = app_factory()
+<span class="ws">                </span>      ^^^^^^^^^^^^^</pre>
+<pre class="line after"><span class="ws"></span> </pre>
+<pre class="line after"><span class="ws">                </span>if isinstance(app, Flask):</pre>
+<pre class="line after"><span class="ws">                    </span>return app</pre>
+<pre class="line after"><span class="ws">            </span>except TypeError as e:</pre>
+<pre class="line after"><span class="ws">                </span>if not _called_with_wrong_args(app_factory):</pre></div>
+</div>
+
+<li><div class="frame" id="frame-4423290592">
+  <h4>File <cite class="filename">"/Users/marko.stankovic/Desktop/WEBDEV/PROJECTS/GAMEPLAN/app/__init__.py"</cite>,
+      line <em class="line">50</em>,
+      in <code class="function">create_app</code></h4>
+  <div class="source "><pre class="line before"><span class="ws">    </span># Register MCP API blueprint</pre>
+<pre class="line before"><span class="ws">    </span>from app.api.api import mcp_api_bp</pre>
+<pre class="line before"><span class="ws">    </span>app.register_blueprint(mcp_api_bp)</pre>
+<pre class="line before"><span class="ws"></span> </pre>
+<pre class="line before"><span class="ws">    </span># Initialize MCP server</pre>
+<pre class="line current"><span class="ws">    </span>from app.mcp import setup_mcp_server
+<span class="ws">    </span>^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</pre>
+<pre class="line after"><span class="ws">    </span>app = setup_mcp_server(app)</pre>
+<pre class="line after"><span class="ws"></span> </pre>
+<pre class="line after"><span class="ws">    </span>return app</pre>
+<pre class="line after"><span class="ws"></span> </pre>
+<pre class="line after"><span class="ws"></span># Import models to ensure they are registered with SQLAlchemy</pre></div>
+</div>
+</ul>
+  <blockquote>ModuleNotFoundError: No module named &#39;app.mcp&#39;
+</blockquote>
+</div>
+
+<div class="plain">
+    <p>
+      This is the Copy/Paste friendly version of the traceback.
+    </p>
+    <textarea cols="50" rows="10" name="code" readonly>Traceback (most recent call last):
+  File &#34;/Users/marko.stankovic/Desktop/WEBDEV/PROJECTS/GAMEPLAN/venv/lib/python3.12/site-packages/flask/cli.py&#34;, line 972, in app
+    raise err from None
+  File &#34;/Users/marko.stankovic/Desktop/WEBDEV/PROJECTS/GAMEPLAN/venv/lib/python3.12/site-packages/flask/cli.py&#34;, line 961, in run_command
+    app: WSGIApplication = info.load_app()  # pyright: ignore
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &#34;/Users/marko.stankovic/Desktop/WEBDEV/PROJECTS/GAMEPLAN/venv/lib/python3.12/site-packages/flask/cli.py&#34;, line 349, in load_app
+    app = locate_app(import_name, name)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &#34;/Users/marko.stankovic/Desktop/WEBDEV/PROJECTS/GAMEPLAN/venv/lib/python3.12/site-packages/flask/cli.py&#34;, line 262, in locate_app
+    return find_best_app(module)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File &#34;/Users/marko.stankovic/Desktop/WEBDEV/PROJECTS/GAMEPLAN/venv/lib/python3.12/site-packages/flask/cli.py&#34;, line 72, in find_best_app
+    app = app_factory()
+          ^^^^^^^^^^^^^
+  File &#34;/Users/marko.stankovic/Desktop/WEBDEV/PROJECTS/GAMEPLAN/app/__init__.py&#34;, line 50, in create_app
+    from app.mcp import setup_mcp_server
+ModuleNotFoundError: No module named &#39;app.mcp&#39;
+</textarea>
+</div>
+<div class="explanation">
+  The debugger caught an exception in your WSGI application.  You can now
+  look at the traceback which led to the error.  <span class="nojavascript">
+  If you enable JavaScript you can also use additional features such as code
+  execution (if the evalex feature is enabled), automatic pasting of the
+  exceptions and much more.</span>
+</div>
+      <div class="footer">
+        Brought to you by <strong class="arthur">DON'T PANIC</strong>, your
+        friendly Werkzeug powered traceback interpreter.
+      </div>
+    </div>
+
+    <div class="pin-prompt">
+      <div class="inner">
+        <h3>Console Locked</h3>
+        <p>
+          The console is locked and needs to be unlocked by entering the PIN.
+          You can find the PIN printed out on the standard output of your
+          shell that runs the server.
+        <form>
+          <p>PIN:
+            <input type=text name=pin size=14>
+            <input type=submit name=btn value="Confirm Pin">
+        </form>
+      </div>
+    </div>
+  </body>
+</html>
+
+<!--
+
+Traceback (most recent call last):
+  File "/Users/marko.stankovic/Desktop/WEBDEV/PROJECTS/GAMEPLAN/venv/lib/python3.12/site-packages/flask/cli.py", line 972, in app
+    raise err from None
+  File "/Users/marko.stankovic/Desktop/WEBDEV/PROJECTS/GAMEPLAN/venv/lib/python3.12/site-packages/flask/cli.py", line 961, in run_command
+    app: WSGIApplication = info.load_app()  # pyright: ignore
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/marko.stankovic/Desktop/WEBDEV/PROJECTS/GAMEPLAN/venv/lib/python3.12/site-packages/flask/cli.py", line 349, in load_app
+    app = locate_app(import_name, name)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/marko.stankovic/Desktop/WEBDEV/PROJECTS/GAMEPLAN/venv/lib/python3.12/site-packages/flask/cli.py", line 262, in locate_app
+    return find_best_app(module)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/marko.stankovic/Desktop/WEBDEV/PROJECTS/GAMEPLAN/venv/lib/python3.12/site-packages/flask/cli.py", line 72, in find_best_app
+    app = app_factory()
+          ^^^^^^^^^^^^^
+  File "/Users/marko.stankovic/Desktop/WEBDEV/PROJECTS/GAMEPLAN/app/__init__.py", line 50, in create_app
+    from app.mcp import setup_mcp_server
+ModuleNotFoundError: No module named 'app.mcp'
+
+
+-->
+
+2025-03-18 17:07:47,956 - ERROR - [req_20250318170747_43] Error from internal API: 500 - <!doctype html>
+<html lang=en>
+  <head>
+    <title>ModuleNotFoundError: No module named &#39;app.mcp&#39;
+ // Werkzeug Debugger</title>
+    <link rel="stylesheet" href="?__debugger__=yes&amp;cmd=resource&amp;f=style.css">
+    <link rel="shortcut icon"
+        href="?__debugger__=yes&amp;cmd=resource&amp;f=console.png">
+    <script src="?__debugger__=yes&amp;cmd=resource&amp;f=debugger.js"></script>
+    <script>
+      var CONSOLE_MODE = false,
+          EVALEX = true,
+          EVALEX_TRUSTED = false,
+          SECRET = "qPUuwVU9OheLzf5EfcYf";
+    </script>
+  </head>
+  <body style="background-color: #fff">
+    <div class="debugger">
+<h1>ModuleNotFoundError</h1>
+<div class="detail">
+  <p class="errormsg">ModuleNotFoundError: No module named &#39;app.mcp&#39;
+</p>
+</div>
+<h2 class="traceback">Traceback <em>(most recent call last)</em></h2>
+<div class="traceback">
+  <h3></h3>
+  <ul><li><div class="frame" id="frame-4423290304">
+  <h4>File <cite class="filename">"/Users/marko.stankovic/Desktop/WEBDEV/PROJECTS/GAMEPLAN/venv/lib/python3.12/site-packages/flask/cli.py"</cite>,
+      line <em class="line">972</em>,
+      in <code class="function">app</code></h4>
+  <div class="source library"><pre class="line before"><span class="ws">            </span>err = e</pre>
+<pre class="line before"><span class="ws"></span> </pre>
+<pre class="line before"><span class="ws">            </span>def app(</pre>
+<pre class="line before"><span class="ws">                </span>environ: WSGIEnvironment, start_response: StartResponse</pre>
+<pre class="line before"><span class="ws">            </span>) -&gt; cabc.Iterable[bytes]:</pre>
+<pre class="line current"><span class="ws">                </span>raise err from None
+<span class="ws">                </span>^^^^^^^^^^^^^^^^^^^</pre>
+<pre class="line after"><span class="ws"></span> </pre>
+<pre class="line after"><span class="ws">        </span>else:</pre>
+<pre class="line after"><span class="ws">            </span># When not reloading, raise the error immediately so the</pre>
+<pre class="line after"><span class="ws">            </span># command fails.</pre>
+<pre class="line after"><span class="ws">            </span>raise e from None</pre></div>
+</div>
+
+<li><div class="frame" id="frame-4423289584">
+  <h4>File <cite class="filename">"/Users/marko.stankovic/Desktop/WEBDEV/PROJECTS/GAMEPLAN/venv/lib/python3.12/site-packages/flask/cli.py"</cite>,
+      line <em class="line">961</em>,
+      in <code class="function">run_command</code></h4>
+  <div class="source library"><pre class="line before"><span class="ws"></span> </pre>
+<pre class="line before"><span class="ws">    </span>The reloader and debugger are enabled by default with the &#39;--debug&#39;</pre>
+<pre class="line before"><span class="ws">    </span>option.</pre>
+<pre class="line before"><span class="ws">    </span>&#34;&#34;&#34;</pre>
+<pre class="line before"><span class="ws">    </span>try:</pre>
+<pre class="line current"><span class="ws">        </span>app: WSGIApplication = info.load_app()  # pyright: ignore
+<span class="ws">        </span>                       ^^^^^^^^^^^^^^^</pre>
+<pre class="line after"><span class="ws">    </span>except Exception as e:</pre>
+<pre class="line after"><span class="ws">        </span>if is_running_from_reloader():</pre>
+<pre class="line after"><span class="ws">            </span># When reloading, print out the error immediately, but raise</pre>
+<pre class="line after"><span class="ws">            </span># it later so the debugger or server can handle it.</pre>
+<pre class="line after"><span class="ws">            </span>traceback.print_exc()</pre></div>
+</div>
+
+<li><div class="frame" id="frame-4423289296">
+  <h4>File <cite class="filename">"/Users/marko.stankovic/Desktop/WEBDEV/PROJECTS/GAMEPLAN/venv/lib/python3.12/site-packages/flask/cli.py"</cite>,
+      line <em class="line">349</em>,
+      in <code class="function">load_app</code></h4>
+  <div class="source library"><pre class="line before"><span class="ws">            </span>if self.app_import_path:</pre>
+<pre class="line before"><span class="ws">                </span>path, name = (</pre>
+<pre class="line before"><span class="ws">                    </span>re.split(r&#34;:(?![\\/])&#34;, self.app_import_path, maxsplit=1) + [None]</pre>
+<pre class="line before"><span class="ws">                </span>)[:2]</pre>
+<pre class="line before"><span class="ws">                </span>import_name = prepare_import(path)</pre>
+<pre class="line current"><span class="ws">                </span>app = locate_app(import_name, name)
+<span class="ws">                </span>      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</pre>
+<pre class="line after"><span class="ws">            </span>else:</pre>
+<pre class="line after"><span class="ws">                </span>for path in (&#34;wsgi.py&#34;, &#34;app.py&#34;):</pre>
+<pre class="line after"><span class="ws">                    </span>import_name = prepare_import(path)</pre>
+<pre class="line after"><span class="ws">                    </span>app = locate_app(import_name, None, raise_if_not_found=False)</pre>
+<pre class="line after"><span class="ws"></span> </pre></div>
+</div>
+
+<li><div class="frame" id="frame-4423290016">
+  <h4>File <cite class="filename">"/Users/marko.stankovic/Desktop/WEBDEV/PROJECTS/GAMEPLAN/venv/lib/python3.12/site-packages/flask/cli.py"</cite>,
+      line <em class="line">262</em>,
+      in <code class="function">locate_app</code></h4>
+  <div class="source library"><pre class="line before"><span class="ws">            </span>return None</pre>
+<pre class="line before"><span class="ws"></span> </pre>
+<pre class="line before"><span class="ws">    </span>module = sys.modules[module_name]</pre>
+<pre class="line before"><span class="ws"></span> </pre>
+<pre class="line before"><span class="ws">    </span>if app_name is None:</pre>
+<pre class="line current"><span class="ws">        </span>return find_best_app(module)
+<span class="ws">        </span>       ^^^^^^^^^^^^^^^^^^^^^</pre>
+<pre class="line after"><span class="ws">    </span>else:</pre>
+<pre class="line after"><span class="ws">        </span>return find_app_by_string(module, app_name)</pre>
+<pre class="line after"><span class="ws"></span> </pre>
+<pre class="line after"><span class="ws"></span> </pre>
+<pre class="line after"><span class="ws"></span>def get_version(ctx: click.Context, param: click.Parameter, value: t.Any) -&gt; None:</pre></div>
+</div>
+
+<li><div class="frame" id="frame-4423290448">
+  <h4>File <cite class="filename">"/Users/marko.stankovic/Desktop/WEBDEV/PROJECTS/GAMEPLAN/venv/lib/python3.12/site-packages/flask/cli.py"</cite>,
+      line <em class="line">72</em>,
+      in <code class="function">find_best_app</code></h4>
+  <div class="source library"><pre class="line before"><span class="ws">    </span>for attr_name in (&#34;create_app&#34;, &#34;make_app&#34;):</pre>
+<pre class="line before"><span class="ws">        </span>app_factory = getattr(module, attr_name, None)</pre>
+<pre class="line before"><span class="ws"></span> </pre>
+<pre class="line before"><span class="ws">        </span>if inspect.isfunction(app_factory):</pre>
+<pre class="line before"><span class="ws">            </span>try:</pre>
+<pre class="line current"><span class="ws">                </span>app = app_factory()
+<span class="ws">                </span>      ^^^^^^^^^^^^^</pre>
+<pre class="line after"><span class="ws"></span> </pre>
+<pre class="line after"><span class="ws">                </span>if isinstance(app, Flask):</pre>
+<pre class="line after"><span class="ws">                    </span>return app</pre>
+<pre class="line after"><span class="ws">            </span>except TypeError as e:</pre>
+<pre class="line after"><span class="ws">                </span>if not _called_with_wrong_args(app_factory):</pre></div>
+</div>
+
+<li><div class="frame" id="frame-4423290592">
+  <h4>File <cite class="filename">"/Users/marko.stankovic/Desktop/WEBDEV/PROJECTS/GAMEPLAN/app/__init__.py"</cite>,
+      line <em class="line">50</em>,
+      in <code class="function">create_app</code></h4>
+  <div class="source "><pre class="line before"><span class="ws">    </span># Register MCP API blueprint</pre>
+<pre class="line before"><span class="ws">    </span>from app.api.api import mcp_api_bp</pre>
+<pre class="line before"><span class="ws">    </span>app.register_blueprint(mcp_api_bp)</pre>
+<pre class="line before"><span class="ws"></span> </pre>
+<pre class="line before"><span class="ws">    </span># Initialize MCP server</pre>
+<pre class="line current"><span class="ws">    </span>from app.mcp import setup_mcp_server
+<span class="ws">    </span>^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</pre>
+<pre class="line after"><span class="ws">    </span>app = setup_mcp_server(app)</pre>
+<pre class="line after"><span class="ws"></span> </pre>
+<pre class="line after"><span class="ws">    </span>return app</pre>
+<pre class="line after"><span class="ws"></span> </pre>
+<pre class="line after"><span class="ws"></span># Import models to ensure they are registered with SQLAlchemy</pre></div>
+</div>
+</ul>
+  <blockquote>ModuleNotFoundError: No module named &#39;app.mcp&#39;
+</blockquote>
+</div>
+
+<div class="plain">
+    <p>
+      This is the Copy/Paste friendly version of the traceback.
+    </p>
+    <textarea cols="50" rows="10" name="code" readonly>Traceback (most recent call last):
+  File &#34;/Users/marko.stankovic/Desktop/WEBDEV/PROJECTS/GAMEPLAN/venv/lib/python3.12/site-packages/flask/cli.py&#34;, line 972, in app
+    raise err from None
+  File &#34;/Users/marko.stankovic/Desktop/WEBDEV/PROJECTS/GAMEPLAN/venv/lib/python3.12/site-packages/flask/cli.py&#34;, line 961, in run_command
+    app: WSGIApplication = info.load_app()  # pyright: ignore
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &#34;/Users/marko.stankovic/Desktop/WEBDEV/PROJECTS/GAMEPLAN/venv/lib/python3.12/site-packages/flask/cli.py&#34;, line 349, in load_app
+    app = locate_app(import_name, name)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &#34;/Users/marko.stankovic/Desktop/WEBDEV/PROJECTS/GAMEPLAN/venv/lib/python3.12/site-packages/flask/cli.py&#34;, line 262, in locate_app
+    return find_best_app(module)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File &#34;/Users/marko.stankovic/Desktop/WEBDEV/PROJECTS/GAMEPLAN/venv/lib/python3.12/site-packages/flask/cli.py&#34;, line 72, in find_best_app
+    app = app_factory()
+          ^^^^^^^^^^^^^
+  File &#34;/Users/marko.stankovic/Desktop/WEBDEV/PROJECTS/GAMEPLAN/app/__init__.py&#34;, line 50, in create_app
+    from app.mcp import setup_mcp_server
+ModuleNotFoundError: No module named &#39;app.mcp&#39;
+</textarea>
+</div>
+<div class="explanation">
+  The debugger caught an exception in your WSGI application.  You can now
+  look at the traceback which led to the error.  <span class="nojavascript">
+  If you enable JavaScript you can also use additional features such as code
+  execution (if the evalex feature is enabled), automatic pasting of the
+  exceptions and much more.</span>
+</div>
+      <div class="footer">
+        Brought to you by <strong class="arthur">DON'T PANIC</strong>, your
+        friendly Werkzeug powered traceback interpreter.
+      </div>
+    </div>
+
+    <div class="pin-prompt">
+      <div class="inner">
+        <h3>Console Locked</h3>
+        <p>
+          The console is locked and needs to be unlocked by entering the PIN.
+          You can find the PIN printed out on the standard output of your
+          shell that runs the server.
+        <form>
+          <p>PIN:
+            <input type=text name=pin size=14>
+            <input type=submit name=btn value="Confirm Pin">
+        </form>
+      </div>
+    </div>
+  </body>
+</html>
+
+<!--
+
+Traceback (most recent call last):
+  File "/Users/marko.stankovic/Desktop/WEBDEV/PROJECTS/GAMEPLAN/venv/lib/python3.12/site-packages/flask/cli.py", line 972, in app
+    raise err from None
+  File "/Users/marko.stankovic/Desktop/WEBDEV/PROJECTS/GAMEPLAN/venv/lib/python3.12/site-packages/flask/cli.py", line 961, in run_command
+    app: WSGIApplication = info.load_app()  # pyright: ignore
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/marko.stankovic/Desktop/WEBDEV/PROJECTS/GAMEPLAN/venv/lib/python3.12/site-packages/flask/cli.py", line 349, in load_app
+    app = locate_app(import_name, name)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/marko.stankovic/Desktop/WEBDEV/PROJECTS/GAMEPLAN/venv/lib/python3.12/site-packages/flask/cli.py", line 262, in locate_app
+    return find_best_app(module)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/marko.stankovic/Desktop/WEBDEV/PROJECTS/GAMEPLAN/venv/lib/python3.12/site-packages/flask/cli.py", line 72, in find_best_app
+    app = app_factory()
+          ^^^^^^^^^^^^^
+  File "/Users/marko.stankovic/Desktop/WEBDEV/PROJECTS/GAMEPLAN/app/__init__.py", line 50, in create_app
+    from app.mcp import setup_mcp_server
+ModuleNotFoundError: No module named 'app.mcp'
+
+
+-->
+
+2025-03-18 17:07:47,956 - DEBUG - Sending response: {"jsonrpc": "2.0", "id": 43, "error": {"code": -32000, "message": "Error from internal API: 500 - <!doctype html>\n<html lang=en>\n  <head>\n    <title>ModuleNotFoundError: No module named &#39;app.mcp&#39;\n // Werkzeug Debugger</title>\n    <link rel=\"stylesheet\" href=\"?__debugger__=yes&amp;cmd=resource&amp;f=style.css\">\n    <link rel=\"shortcut icon\"\n        href=\"?__debugger__=yes&amp;cmd=resource&amp;f=console.png\">\n    <script src=\"?__debugger__=yes&amp;cmd=resource&amp;f=debugger.js\"></script>\n    <script>\n      var CONSOLE_MODE = false,\n          EVALEX = true,\n          EVALEX_TRUSTED = false,\n          SECRET = \"qPUuwVU9OheLzf5EfcYf\";\n    </script>\n  </head>\n  <body style=\"background-color: #fff\">\n    <div class=\"debugger\">\n<h1>ModuleNotFoundError</h1>\n<div class=\"detail\">\n  <p class=\"errormsg\">ModuleNotFoundError: No module named &#39;app.mcp&#39;\n</p>\n</div>\n<h2 class=\"traceback\">Traceback <em>(most recent call last)</em></h2>\n<div class=\"traceback\">\n  <h3></h3>\n  <ul><li><div class=\"frame\" id=\"frame-4423290304\">\n  <h4>File <cite class=\"filename\">\"/Users/marko.stankovic/Desktop/WEBDEV/PROJECTS/GAMEPLAN/venv/lib/python3.12/site-packages/flask/cli.py\"</cite>,\n      line <em class=\"line\">972</em>,\n      in <code class=\"function\">app</code></h4>\n  <div class=\"source library\"><pre class=\"line before\"><span class=\"ws\">            </span>err = e</pre>\n<pre class=\"line before\"><span class=\"ws\"></span> </pre>\n<pre class=\"line before\"><span class=\"ws\">            </span>def app(</pre>\n<pre class=\"line before\"><span class=\"ws\">                </span>environ: WSGIEnvironment, start_response: StartResponse</pre>\n<pre class=\"line before\"><span class=\"ws\">            </span>) -&gt; cabc.Iterable[bytes]:</pre>\n<pre class=\"line current\"><span class=\"ws\">                </span>raise err from None\n<span class=\"ws\">                </span>^^^^^^^^^^^^^^^^^^^</pre>\n<pre class=\"line after\"><span class=\"ws\"></span> </pre>\n<pre class=\"line after\"><span class=\"ws\">        </span>else:</pre>\n<pre class=\"line after\"><span class=\"ws\">            </span># When not reloading, raise the error immediately so the</pre>\n<pre class=\"line after\"><span class=\"ws\">            </span># command fails.</pre>\n<pre class=\"line after\"><span class=\"ws\">            </span>raise e from None</pre></div>\n</div>\n\n<li><div class=\"frame\" id=\"frame-4423289584\">\n  <h4>File <cite class=\"filename\">\"/Users/marko.stankovic/Desktop/WEBDEV/PROJECTS/GAMEPLAN/venv/lib/python3.12/site-packages/flask/cli.py\"</cite>,\n      line <em class=\"line\">961</em>,\n      in <code class=\"function\">run_command</code></h4>\n  <div class=\"source library\"><pre class=\"line before\"><span class=\"ws\"></span> </pre>\n<pre class=\"line before\"><span class=\"ws\">    </span>The reloader and debugger are enabled by default with the &#39;--debug&#39;</pre>\n<pre class=\"line before\"><span class=\"ws\">    </span>option.</pre>\n<pre class=\"line before\"><span class=\"ws\">    </span>&#34;&#34;&#34;</pre>\n<pre class=\"line before\"><span class=\"ws\">    </span>try:</pre>\n<pre class=\"line current\"><span class=\"ws\">        </span>app: WSGIApplication = info.load_app()  # pyright: ignore\n<span class=\"ws\">        </span>                       ^^^^^^^^^^^^^^^</pre>\n<pre class=\"line after\"><span class=\"ws\">    </span>except Exception as e:</pre>\n<pre class=\"line after\"><span class=\"ws\">        </span>if is_running_from_reloader():</pre>\n<pre class=\"line after\"><span class=\"ws\">            </span># When reloading, print out the error immediately, but raise</pre>\n<pre class=\"line after\"><span class=\"ws\">            </span># it later so the debugger or server can handle it.</pre>\n<pre class=\"line after\"><span class=\"ws\">            </span>traceback.print_exc()</pre></div>\n</div>\n\n<li><div class=\"frame\" id=\"frame-4423289296\">\n  <h4>File <cite class=\"filename\">\"/Users/marko.stankovic/Desktop/WEBDEV/PROJECTS/GAMEPLAN/venv/lib/python3.12/site-packages/flask/cli.py\"</cite>,\n      line <em class=\"line\">349</em>,\n      in <code class=\"function\">load_app</code></h4>\n  <div class=\"source library\"><pre class=\"line before\"><span class=\"ws\">            </span>if self.app_import_path:</pre>\n<pre class=\"line before\"><span class=\"ws\">                </span>path, name = (</pre>\n<pre class=\"line before\"><span class=\"ws\">                    </span>re.split(r&#34;:(?![\\\\/])&#34;, self.app_import_path, maxsplit=1) + [None]</pre>\n<pre class=\"line before\"><span class=\"ws\">                </span>)[:2]</pre>\n<pre class=\"line before\"><span class=\"ws\">                </span>import_name = prepare_import(path)</pre>\n<pre class=\"line current\"><span class=\"ws\">                </span>app = locate_app(import_name, name)\n<span class=\"ws\">                </span>      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</pre>\n<pre class=\"line after\"><span class=\"ws\">            </span>else:</pre>\n<pre class=\"line after\"><span class=\"ws\">                </span>for path in (&#34;wsgi.py&#34;, &#34;app.py&#34;):</pre>\n<pre class=\"line after\"><span class=\"ws\">                    </span>import_name = prepare_import(path)</pre>\n<pre class=\"line after\"><span class=\"ws\">                    </span>app = locate_app(import_name, None, raise_if_not_found=False)</pre>\n<pre class=\"line after\"><span class=\"ws\"></span> </pre></div>\n</div>\n\n<li><div class=\"frame\" id=\"frame-4423290016\">\n  <h4>File <cite class=\"filename\">\"/Users/marko.stankovic/Desktop/WEBDEV/PROJECTS/GAMEPLAN/venv/lib/python3.12/site-packages/flask/cli.py\"</cite>,\n      line <em class=\"line\">262</em>,\n      in <code class=\"function\">locate_app</code></h4>\n  <div class=\"source library\"><pre class=\"line before\"><span class=\"ws\">            </span>return None</pre>\n<pre class=\"line before\"><span class=\"ws\"></span> </pre>\n<pre class=\"line before\"><span class=\"ws\">    </span>module = sys.modules[module_name]</pre>\n<pre class=\"line before\"><span class=\"ws\"></span> </pre>\n<pre class=\"line before\"><span class=\"ws\">    </span>if app_name is None:</pre>\n<pre class=\"line current\"><span class=\"ws\">        </span>return find_best_app(module)\n<span class=\"ws\">        </span>       ^^^^^^^^^^^^^^^^^^^^^</pre>\n<pre class=\"line after\"><span class=\"ws\">    </span>else:</pre>\n<pre class=\"line after\"><span class=\"ws\">        </span>return find_app_by_string(module, app_name)</pre>\n<pre class=\"line after\"><span class=\"ws\"></span> </pre>\n<pre class=\"line after\"><span class=\"ws\"></span> </pre>\n<pre class=\"line after\"><span class=\"ws\"></span>def get_version(ctx: click.Context, param: click.Parameter, value: t.Any) -&gt; None:</pre></div>\n</div>\n\n<li><div class=\"frame\" id=\"frame-4423290448\">\n  <h4>File <cite class=\"filename\">\"/Users/marko.stankovic/Desktop/WEBDEV/PROJECTS/GAMEPLAN/venv/lib/python3.12/site-packages/flask/cli.py\"</cite>,\n      line <em class=\"line\">72</em>,\n      in <code class=\"function\">find_best_app</code></h4>\n  <div class=\"source library\"><pre class=\"line before\"><span class=\"ws\">    </span>for attr_name in (&#34;create_app&#34;, &#34;make_app&#34;):</pre>\n<pre class=\"line before\"><span class=\"ws\">        </span>app_factory = getattr(module, attr_name, None)</pre>\n<pre class=\"line before\"><span class=\"ws\"></span> </pre>\n<pre class=\"line before\"><span class=\"ws\">        </span>if inspect.isfunction(app_factory):</pre>\n<pre class=\"line before\"><span class=\"ws\">            </span>try:</pre>\n<pre class=\"line current\"><span class=\"ws\">                </span>app = app_factory()\n<span class=\"ws\">                </span>      ^^^^^^^^^^^^^</pre>\n<pre class=\"line after\"><span class=\"ws\"></span> </pre>\n<pre class=\"line after\"><span class=\"ws\">                </span>if isinstance(app, Flask):</pre>\n<pre class=\"line after\"><span class=\"ws\">                    </span>return app</pre>\n<pre class=\"line after\"><span class=\"ws\">            </span>except TypeError as e:</pre>\n<pre class=\"line after\"><span class=\"ws\">                </span>if not _called_with_wrong_args(app_factory):</pre></div>\n</div>\n\n<li><div class=\"frame\" id=\"frame-4423290592\">\n  <h4>File <cite class=\"filename\">\"/Users/marko.stankovic/Desktop/WEBDEV/PROJECTS/GAMEPLAN/app/__init__.py\"</cite>,\n      line <em class=\"line\">50</em>,\n      in <code class=\"function\">create_app</code></h4>\n  <div class=\"source \"><pre class=\"line before\"><span class=\"ws\">    </span># Register MCP API blueprint</pre>\n<pre class=\"line before\"><span class=\"ws\">    </span>from app.api.api import mcp_api_bp</pre>\n<pre class=\"line before\"><span class=\"ws\">    </span>app.register_blueprint(mcp_api_bp)</pre>\n<pre class=\"line before\"><span class=\"ws\"></span> </pre>\n<pre class=\"line before\"><span class=\"ws\">    </span># Initialize MCP server</pre>\n<pre class=\"line current\"><span class=\"ws\">    </span>from app.mcp import setup_mcp_server\n<span class=\"ws\">    </span>^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</pre>\n<pre class=\"line after\"><span class=\"ws\">    </span>app = setup_mcp_server(app)</pre>\n<pre class=\"line after\"><span class=\"ws\"></span> </pre>\n<pre class=\"line after\"><span class=\"ws\">    </span>return app</pre>\n<pre class=\"line after\"><span class=\"ws\"></span> </pre>\n<pre class=\"line after\"><span class=\"ws\"></span># Import models to ensure they are registered with SQLAlchemy</pre></div>\n</div>\n</ul>\n  <blockquote>ModuleNotFoundError: No module named &#39;app.mcp&#39;\n</blockquote>\n</div>\n\n<div class=\"plain\">\n    <p>\n      This is the Copy/Paste friendly version of the traceback.\n    </p>\n    <textarea cols=\"50\" rows=\"10\" name=\"code\" readonly>Traceback (most recent call last):\n  File &#34;/Users/marko.stankovic/Desktop/WEBDEV/PROJECTS/GAMEPLAN/venv/lib/python3.12/site-packages/flask/cli.py&#34;, line 972, in app\n    raise err from None\n  File &#34;/Users/marko.stankovic/Desktop/WEBDEV/PROJECTS/GAMEPLAN/venv/lib/python3.12/site-packages/flask/cli.py&#34;, line 961, in run_command\n    app: WSGIApplication = info.load_app()  # pyright: ignore\n                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File &#34;/Users/marko.stankovic/Desktop/WEBDEV/PROJECTS/GAMEPLAN/venv/lib/python3.12/site-packages/flask/cli.py&#34;, line 349, in load_app\n    app = locate_app(import_name, name)\n          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File &#34;/Users/marko.stankovic/Desktop/WEBDEV/PROJECTS/GAMEPLAN/venv/lib/python3.12/site-packages/flask/cli.py&#34;, line 262, in locate_app\n    return find_best_app(module)\n           ^^^^^^^^^^^^^^^^^^^^^\n  File &#34;/Users/marko.stankovic/Desktop/WEBDEV/PROJECTS/GAMEPLAN/venv/lib/python3.12/site-packages/flask/cli.py&#34;, line 72, in find_best_app\n    app = app_factory()\n          ^^^^^^^^^^^^^\n  File &#34;/Users/marko.stankovic/Desktop/WEBDEV/PROJECTS/GAMEPLAN/app/__init__.py&#34;, line 50, in create_app\n    from app.mcp import setup_mcp_server\nModuleNotFoundError: No module named &#39;app.mcp&#39;\n</textarea>\n</div>\n<div class=\"explanation\">\n  The debugger caught an exception in your WSGI application.  You can now\n  look at the traceback which led to the error.  <span class=\"nojavascript\">\n  If you enable JavaScript you can also use additional features such as code\n  execution (if the evalex feature is enabled), automatic pasting of the\n  exceptions and much more.</span>\n</div>\n      <div class=\"footer\">\n        Brought to you by <strong class=\"arthur\">DON'T PANIC</strong>, your\n        friendly Werkzeug powered traceback interpreter.\n      </div>\n    </div>\n\n    <div class=\"pin-prompt\">\n      <div class=\"inner\">\n        <h3>Console Locked</h3>\n        <p>\n          The console is locked and needs to be unlocked by entering the PIN.\n          You can find the PIN printed out on the standard output of your\n          shell that runs the server.\n        <form>\n          <p>PIN:\n            <input type=text name=pin size=14>\n            <input type=submit name=btn value=\"Confirm Pin\">\n        </form>\n      </div>\n    </div>\n  </body>\n</html>\n\n<!--\n\nTraceback (most recent call last):\n  File \"/Users/marko.stankovic/Desktop/WEBDEV/PROJECTS/GAMEPLAN/venv/lib/python3.12/site-packages/flask/cli.py\", line 972, in app\n    raise err from None\n  File \"/Users/marko.stankovic/Desktop/WEBDEV/PROJECTS/GAMEPLAN/venv/lib/python3.12/site-packages/flask/cli.py\", line 961, in run_command\n    app: WSGIApplication = info.load_app()  # pyright: ignore\n                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/marko.stankovic/Desktop/WEBDEV/PROJECTS/GAMEPLAN/venv/lib/python3.12/site-packages/flask/cli.py\", line 349, in load_app\n    app = locate_app(import_name, name)\n          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/marko.stankovic/Desktop/WEBDEV/PROJECTS/GAMEPLAN/venv/lib/python3.12/site-packages/flask/cli.py\", line 262, in locate_app\n    return find_best_app(module)\n           ^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/marko.stankovic/Desktop/WEBDEV/PROJECTS/GAMEPLAN/venv/lib/python3.12/site-packages/flask/cli.py\", line 72, in find_best_app\n    app = app_factory()\n          ^^^^^^^^^^^^^\n  File \"/Users/marko.stankovic/Desktop/WEBDEV/PROJECTS/GAMEPLAN/app/__init__.py\", line 50, in create_app\n    from app.mcp import setup_mcp_server\nModuleNotFoundError: No module named 'app.mcp'\n\n\n-->\n"}}
+2025-03-18 17:09:15,963 - WARNING - Received empty input line
+2025-03-18 17:09:15,965 - WARNING - No message received or invalid JSON, exiting
