@@ -29,9 +29,9 @@
                         <div class="sprint-actions">
                             <button class="btn btn-sm btn-outline-secondary me-2" 
                                     hx-get="/htmx/sprints/{{ sprint.id }}/edit" 
-                                    hx-target="#sprint-form-container-{{ project.id }}" 
+                                    hx-target="#sprint-edit-form-container-{{ sprint.id }}" 
                                     hx-swap="innerHTML"
-                                    @click.stop>
+                                    @click.stop="sprintOpen = true">
                                 <i class="fas fa-edit"></i>
                             </button>
                             <button class="btn btn-sm btn-outline-danger" 
@@ -47,6 +47,9 @@
                     <div class="card-body" 
                          x-show="sprintOpen" 
                          id="sprint{{ sprint.id }}Content">
+                        
+                        <!-- Sprint Edit Form Container -->
+                        <div id="sprint-edit-form-container-{{ sprint.id }}" class="mb-3"></div>
                         
                         <!-- Sprint Description -->
                         <div class="sprint-description mb-3">{{ sprint.description|markdown or 'No description provided.' }}</div>

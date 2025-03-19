@@ -146,6 +146,14 @@ function closeSprintForm(projectId) {
 }
 
 /**
+ * Close the sprint edit form for a specific sprint
+ * @param {string} sprintId - The ID of the sprint
+ */
+function closeSprintEditForm(sprintId) {
+    closeFormContainer(`sprint-edit-form-container-${sprintId}`);
+}
+
+/**
  * Close the project form
  */
 function closeProjectForm() {
@@ -209,18 +217,20 @@ function initializeTaskEventListeners() {
     document.querySelectorAll('.add-task-btn').forEach(button => {
         button.addEventListener('click', function(e) {
             e.stopPropagation();
-            e.preventDefault();
             const sprintId = this.dataset.sprintId;
             openTaskModal(sprintId);
         });
     });
     
-    // Save task button click
-    document.getElementById('saveTaskBtn').addEventListener('click', function(e) {
-        e.stopPropagation();
-        e.preventDefault();
-        saveTask();
-    });
+    // Save task button click - only add if element exists
+    const saveTaskBtn = document.getElementById('saveTaskBtn');
+    if (saveTaskBtn) {
+        saveTaskBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            saveTask();
+        });
+    }
 }
 
 /**
@@ -231,16 +241,20 @@ function initializeIssueEventListeners() {
     document.querySelectorAll('.add-issue-btn').forEach(button => {
         button.addEventListener('click', function(e) {
             e.stopPropagation();
-            e.preventDefault();
             const sprintId = this.dataset.sprintId;
             openIssueModal(sprintId);
         });
     });
     
-    // Save issue button click
-    document.getElementById('saveIssueBtn').addEventListener('click', function() {
-        saveIssue();
-    });
+    // Save issue button click - only add if element exists
+    const saveIssueBtn = document.getElementById('saveIssueBtn');
+    if (saveIssueBtn) {
+        saveIssueBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            saveIssue();
+        });
+    }
 }
 
 /**
@@ -289,11 +303,67 @@ function initializeKeyboardShortcuts() {
     });
 }
 
-// Initialize everything when the document is ready
-document.addEventListener('DOMContentLoaded', function() {
-    // Initialize Bootstrap components
-    initializeBootstrapComponents();
+/**
+ * Auto-expand textareas with the 'auto-expand' class
+ * This function will be called on page load and after HTMX swaps
+ */
+function initAutoExpandTextareas() {
+    // Get all textareas with the auto-expand class
+    const textareas = document.querySelectorAll('textarea.auto-expand');
     
+    // Auto-expand each textarea
+    textareas.forEach(function(textarea) {
+        // Set initial height based on content
+        textarea.style.height = '';
+        textarea.style.height = textarea.scrollHeight + 'px';
+        
+        // Add event listeners if they don't already exist
+        if (!textarea.dataset.autoExpandInitialized) {
+            // Input event for when user types
+            textarea.addEventListener('input', function() {
+                this.style.height = '';
+                this.style.height = this.scrollHeight + 'px';
+            });
+            
+            // Click event for when user clicks
+            textarea.addEventListener('click', function() {
+                this.style.height = '';
+                this.style.height = this.scrollHeight + 'px';
+            });
+            
+            // Focus event for when user tabs into the textarea
+            textarea.addEventListener('focus', function() {
+                this.style.height = '';
+                this.style.height = this.scrollHeight + 'px';
+            });
+            
+            // Mark as initialized
+            textarea.dataset.autoExpandInitialized = 'true';
+        }
+    });
+}
+
+/**
+ * Initialize Alpine.js components after HTMX content swaps
+ * This is necessary because Alpine.js doesn't automatically initialize
+ * components added to the DOM after the initial page load
+ */
+function initAlpineAfterHtmxSwap() {
+    // Check if Alpine.js is available
+    if (window.Alpine) {
+        // Get all elements with x-data attribute that haven't been initialized by Alpine
+        document.querySelectorAll('[x-data]:not([x-data-initialized])').forEach(el => {
+            // Mark as initialized to avoid duplicate initialization
+            el.setAttribute('x-data-initialized', 'true');
+            
+            // Initialize Alpine.js on this element
+            window.Alpine.initTree(el);
+        });
+    }
+}
+
+// Initialize everything when the page loads
+document.addEventListener('DOMContentLoaded', function() {
     // Initialize task event listeners
     initializeTaskEventListeners();
     
@@ -302,4 +372,19 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize keyboard shortcuts
     initializeKeyboardShortcuts();
+    
+    // Initialize auto-expand textareas
+    initAutoExpandTextareas();
+    
+    // Initialize Alpine.js components
+    initAlpineAfterHtmxSwap();
+});
+
+// Initialize Alpine.js components and auto-expand textareas after HTMX content swaps
+document.body.addEventListener('htmx:afterSwap', function() {
+    // Allow a small delay for the DOM to stabilize
+    setTimeout(function() {
+        initAlpineAfterHtmxSwap();
+        initAutoExpandTextareas();
+    }, 10);
 });

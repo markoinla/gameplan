@@ -409,6 +409,7 @@ def update_sprint(sprint_id):
     # Update sprint data
     sprint.name = request.form.get('name', sprint.name)
     sprint.status = request.form.get('status', sprint.status)
+    sprint.description = request.form.get('description', sprint.description)
     
     db.session.commit()
     
@@ -510,6 +511,7 @@ def update_project(project_id):
     # Update project data
     project.name = request.form.get('name', project.name)
     project.description = request.form.get('description', project.description)
+    project.requirements = request.form.get('requirements', project.requirements)
     
     db.session.commit()
     

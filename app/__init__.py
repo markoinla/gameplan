@@ -44,7 +44,7 @@ def create_app(config_class=Config):
     app.register_blueprint(task_bp)
     app.register_blueprint(issue_bp)
     app.register_blueprint(main_bp)
-    app.register_blueprint(htmx_bp)
+    app.register_blueprint(htmx_bp)  # Register the HTMX blueprint
     
     # Register MCP API blueprint
     from app.api.api import mcp_api_bp

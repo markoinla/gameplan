@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Textarea Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        .example {
+            margin-bottom: 30px;
+            padding: 15px;
+            border: 1px solid #eee;
+            border-radius: 5px;
+        }
+        h2 {
+            margin-top: 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Textarea Auto-expansion Test</h1>
+    
+    <div class="example">
+        <h2>Example 1: Simple oninput</h2>
+        <textarea rows="3" 
+                  oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'"
+                  style="overflow: hidden;">Type something here to test auto-expansion...</textarea>
+    </div>
+    
+    <div class="example">
+        <h2>Example 2: With onclick handler</h2>
+        <textarea rows="3" 
+                  oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'"
+                  onclick="this.style.height = ''; this.style.height = this.scrollHeight + 'px'"
+                  style="overflow: hidden;">Type something here to test auto-expansion...</textarea>
+    </div>
+    
+    <div class="example">
+        <h2>Example 3: With JavaScript function</h2>
+        <textarea id="example3" rows="3" style="overflow: hidden;">Type something here to test auto-expansion...</textarea>
+    </div>
+    
+    <script>
+        // Function to auto-expand textarea
+        function autoExpand(element) {
+            element.style.height = '';
+            element.style.height = element.scrollHeight + 'px';
+        }
+        
+        // Get the textarea for Example 3
+        const textarea3 = document.getElementById('example3');
+        
+        // Add event listeners
+        textarea3.addEventListener('input', function() {
+            autoExpand(this);
+        });
+        
+        textarea3.addEventListener('click', function() {
+            autoExpand(this);
+        });
+        
+        // Auto-expand on page load
+        window.addEventListener('load', function() {
+            autoExpand(textarea3);
+        });
+    </script>
+</body>
+</html>
