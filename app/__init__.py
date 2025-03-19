@@ -27,6 +27,10 @@ def create_app(config_class=Config):
     db.init_app(app)
     migrate.init_app(app, db)
     
+    # Register Jinja2 filters
+    from app.utils.markdown_parser import convert_markdown_to_html
+    app.jinja_env.filters['markdown'] = convert_markdown_to_html
+    
     # Register blueprints
     from app.routes.project_routes import project_bp
     from app.routes.sprint_routes import sprint_bp
@@ -50,7 +54,7 @@ def create_app(config_class=Config):
     from app.mcp import setup_mcp_server
     app = setup_mcp_server(app)
     
-    return app
+    # Import models to ensure they are registered with SQLAlchemy
+    from app.models import project, sprint, task, issue
 
-# Import models to ensure they are registered with SQLAlchemy
-from app.models import project, sprint, task, issue
+    return app

@@ -37,7 +37,7 @@
                      id="sprint{{ sprint.id }}Content">
                     
                     <!-- Sprint Description -->
-                    <p class="sprint-description mb-3">{{ sprint.description or 'No description provided.' }}</p>
+                    <div class="sprint-description mb-3">{{ sprint.description|markdown or 'No description provided.' }}</div>
                     
                     <!-- Tasks Section -->
                     <div class="tasks-section mb-3">

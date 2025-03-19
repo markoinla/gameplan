@@ -313,6 +313,9 @@ function initializeEventListeners() {
     
     // Issue-related event listeners
     initializeIssueEventListeners();
+    
+    // Initialize keyboard shortcuts for forms
+    initializeFormKeyboardShortcuts();
 }
 
 /**
@@ -481,6 +484,37 @@ function initializeKeyboardShortcuts() {
     });
 }
 
+/**
+ * Initialize keyboard shortcuts for form submissions
+ * Allows users to submit forms using Ctrl+Enter or Command+Enter
+ */
+function initializeFormKeyboardShortcuts() {
+    // List of forms and their corresponding save functions
+    const formMappings = [
+        { formId: 'projectForm', saveFunction: saveProject },
+        { formId: 'sprintForm', saveFunction: saveSprint },
+        { formId: 'taskForm', saveFunction: saveTask },
+        { formId: 'issueForm', saveFunction: saveIssue }
+    ];
+    
+    // Add keyboard event listeners to each form
+    formMappings.forEach(mapping => {
+        const form = document.getElementById(mapping.formId);
+        if (form) {
+            form.addEventListener('keydown', function(event) {
+                // Check if Ctrl+Enter or Command+Enter was pressed
+                if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') {
+                    event.preventDefault(); // Prevent default form submission
+                    mapping.saveFunction(); // Call the corresponding save function
+                    
+                    // Show a subtle notification to inform the user
+                    showNotification('Form submitted with keyboard shortcut', 'info');
+                }
+            });
+        }
+    });
+}
+
 // Initialize when the document is ready
 $(document).ready(function() {
     // Initialize tooltips
@@ -567,6 +601,9 @@ function openProjectModal(projectId = null) {
     // Show modal
     const projectModal = new bootstrap.Modal(document.getElementById('projectModal'));
     projectModal.show();
+    
+    // Add keyboard shortcut hint to modal footer
+    addKeyboardShortcutHint('projectModal');
 }
 
 /**
@@ -771,6 +808,9 @@ function openSprintModal(projectId, sprintId = null) {
     // Show modal using getOrCreateInstance
     const sprintModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('sprintModal'));
     sprintModal.show();
+    
+    // Add keyboard shortcut hint to modal footer
+    addKeyboardShortcutHint('sprintModal');
 }
 
 /**
@@ -864,8 +904,12 @@ function editSprint(sprintId) {
             document.getElementById('sprintDescription').value = sprint.description || '';
             document.getElementById('sprintStatus').value = sprint.status;
             
-            // Open modal with edit title
-            openSprintModal(sprint.project_id, sprint.id);
+            // Set modal title
+            document.getElementById('sprintModalLabel').textContent = 'Edit Sprint';
+            
+            // Show modal
+            const sprintModal = new bootstrap.Modal(document.getElementById('sprintModal'));
+            sprintModal.show();
         }
     })
     .catch(error => {
@@ -889,8 +933,8 @@ function confirmDeleteSprint(sprintId) {
         deleteSprint(sprintId);
     };
     
-    // Show confirmation modal using getOrCreateInstance
-    const confirmationModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('confirmationModal'));
+    // Show confirmation modal
+    const confirmationModal = new bootstrap.Modal(document.getElementById('confirmationModal'));
     confirmationModal.show();
 }
 
@@ -987,6 +1031,9 @@ function openTaskModal(sprintId, taskId = null) {
     // Show modal using getOrCreateInstance
     const taskModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('taskModal'));
     taskModal.show();
+    
+    // Add keyboard shortcut hint to modal footer
+    addKeyboardShortcutHint('taskModal');
 }
 
 /**
@@ -1193,6 +1240,9 @@ function openIssueModal(sprintId, issueId = null) {
     // Show modal using getOrCreateInstance
     const issueModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('issueModal'));
     issueModal.show();
+    
+    // Add keyboard shortcut hint to modal footer
+    addKeyboardShortcutHint('issueModal');
 }
 
 /**
@@ -1356,4 +1406,25 @@ function deleteIssue(issueId) {
         console.error('Error deleting issue:', error);
         alert('Error deleting issue. Please try again.');
     });
+}
+
+/**
+ * Add keyboard shortcut hint to modal footer
+ * @param {string} modalId - The ID of the modal to add the hint to
+ */
+function addKeyboardShortcutHint(modalId) {
+    const modalFooter = document.querySelector(`#${modalId} .modal-footer`);
+    if (modalFooter && !modalFooter.querySelector('.keyboard-shortcut-hint')) {
+        const hint = document.createElement('small');
+        hint.className = 'text-muted ms-2 keyboard-shortcut-hint';
+        hint.innerHTML = '<i class="fas fa-keyboard me-1"></i>Tip: Use Ctrl+Enter to submit';
+        
+        // Insert hint before the first button in the footer
+        const firstButton = modalFooter.querySelector('button');
+        if (firstButton) {
+            modalFooter.insertBefore(hint, firstButton);
+        } else {
+            modalFooter.appendChild(hint);
+        }
+    }
 }
