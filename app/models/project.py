@@ -11,6 +11,7 @@ class Project(db.Model):
     - name: Project name (required)
     - description: Project description and goals
     - requirements: Project requirements
+    - implementation_details: Project implementation details
     - created_at: Timestamp when the project was created
     - updated_at: Timestamp when the project was last updated
     - sprints: Relationship to Sprint model (one-to-many)
@@ -23,6 +24,7 @@ class Project(db.Model):
     name = db.Column(db.String(100), nullable=False)
     description = db.Column(db.Text, nullable=True)
     requirements = db.Column(db.Text, nullable=True)
+    implementation_details = db.Column(db.Text, nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
@@ -72,6 +74,7 @@ class Project(db.Model):
             'name': self.name,
             'description': self.description,
             'requirements': self.requirements,
+            'implementation_details': self.implementation_details,
             'created_at': self.created_at.isoformat() if self.created_at else None,
             'updated_at': self.updated_at.isoformat() if self.updated_at else None,
             'sprints': sorted_sprints
@@ -84,6 +87,7 @@ class Project(db.Model):
             'name': self.name,
             'description': self.description,
             'requirements': self.requirements,
+            'implementation_details': self.implementation_details,
             'created_at': self.created_at.isoformat() if self.created_at else None,
             'updated_at': self.updated_at.isoformat() if self.updated_at else None
         }

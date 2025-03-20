@@ -47,6 +47,18 @@
                     </div>
                 </div>
 
+                <!-- Implementation Details Section - Collapsible with Alpine.js -->
+                <div x-data="{ implementationDetailsOpen: true }">
+                    <div class="d-flex justify-content-between align-items-center mb-3 cursor-pointer"
+                         @click="implementationDetailsOpen = !implementationDetailsOpen">
+                        <h4 class="mb-0">Implementation Details</h4>
+                        <i class="fas" :class="implementationDetailsOpen ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+                    </div>
+                    <div x-show="implementationDetailsOpen" x-transition class="mb-4">
+                        <p class="project-implementation-details">{{ project.implementation_details|markdown or 'No implementation details provided.' }}</p>
+                    </div>
+                </div>
+
                 <!-- Sprints Section -->
                 <div class="mb-4">
                     <div class="d-flex justify-content-between align-items-center mb-3">

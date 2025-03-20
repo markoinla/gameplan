@@ -433,12 +433,16 @@ def create_project():
     """
     name = request.form.get('name')
     description = request.form.get('description', '')
+    requirements = request.form.get('requirements', '')
+    implementation_details = request.form.get('implementation_details', '')
     
     if name:
         # Create new project
         project = Project(
             name=name,
-            description=description
+            description=description,
+            requirements=requirements,
+            implementation_details=implementation_details
         )
         db.session.add(project)
         db.session.commit()
@@ -466,6 +470,7 @@ def update_project(project_id):
     project.name = request.form.get('name', project.name)
     project.description = request.form.get('description', project.description)
     project.requirements = request.form.get('requirements', project.requirements)
+    project.implementation_details = request.form.get('implementation_details', project.implementation_details)
     
     db.session.commit()
     

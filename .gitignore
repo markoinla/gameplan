@@ -25,12 +25,12 @@ venv/
 ENV/
 
 # Flask
-instance/
+# instance/
 .webassets-cache
 
 # SQLite
-*.sqlite
-*.db
+# *.sqlite
+# *.db
 
 # IDE
 .idea/

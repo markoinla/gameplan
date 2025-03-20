@@ -19,6 +19,11 @@
             <textarea class="form-control auto-expand" id="projectRequirements" name="requirements" rows="3" 
                       style="overflow: hidden;">{{ project.requirements }}</textarea>
         </div>
+        <div class="mb-3">
+            <label for="projectImplementationDetails" class="form-label">Implementation Details (Optional)</label>
+            <textarea class="form-control auto-expand" id="projectImplementationDetails" name="implementation_details" rows="3" 
+                      style="overflow: hidden;">{{ project.implementation_details }}</textarea>
+        </div>
         <div class="d-flex justify-content-end">
             <button type="button" class="btn btn-outline-secondary me-2" 
                     onclick="closeFormContainer('project-edit-form-container-{{ project.id }}')">
