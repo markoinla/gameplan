@@ -7,10 +7,24 @@ main_bp = Blueprint('main', __name__)
 @main_bp.route('/')
 def index():
     """
-    Main route that renders the index page showing all projects
+    Main route that renders the dashboard page showing project cards
+    
+    This loads all projects and passes them to the dashboard template.
+    The dashboard serves as the entry point to the application.
+    """
+    # Query all projects
+    projects = Project.query.order_by(Project.created_at.desc()).all()
+    
+    # Render the dashboard template
+    return render_template('dashboard.html', projects=projects)
+
+@main_bp.route('/projects')
+def projects():
+    """
+    Route that renders the projects page showing detailed project views
     
     This loads all projects and passes them to the index template.
-    The index page serves as the entry point to the application.
+    The projects page shows the full project details including sprints, tasks, and issues.
     
     When called with partial=True, it renders only specific parts of the page
     for AJAX updates without requiring a full page reload.
@@ -51,9 +65,7 @@ def index():
             if sprint_id:
                 sprint = Sprint.query.get(sprint_id)
                 if sprint:
-                    # Use the sorted tasks method
-                    tasks = sprint.get_sorted_tasks()
-                    return render_template('partials/tasks.html', tasks=tasks, sprint=sprint)
+                    return render_template('partials/sprint_tasks.html', sprint=sprint)
             return '', 404
         
         elif partial == 'sprint_issues':
@@ -62,13 +74,22 @@ def index():
             if sprint_id:
                 sprint = Sprint.query.get(sprint_id)
                 if sprint:
-                    # Use the sorted issues method
-                    issues = sprint.get_sorted_issues()
-                    return render_template('partials/issues.html', issues=issues, sprint=sprint)
+                    return render_template('partials/sprint_issues.html', sprint=sprint)
             return '', 404
-        
-        # If partial parameter is invalid, return 404
-        return '', 404
     
-    # Render full index template with projects for normal page load
+    # Render the full index template with all projects
     return render_template('index.html', projects=projects)
+
+@main_bp.route('/project/<int:project_id>')
+def project_detail(project_id):
+    """
+    Route that renders a single project page
+    
+    This loads a specific project by ID and passes it to the project_detail template.
+    If the project is not found, returns a 404 error.
+    """
+    # Query the project by ID
+    project = Project.query.get_or_404(project_id)
+    
+    # Render the project detail template
+    return render_template('project_detail.html', project=project)

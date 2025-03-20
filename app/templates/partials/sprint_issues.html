@@ -1,0 +1,62 @@
+{% if sprint.issues.count() > 0 %}
+    <div class="list-group">
+        {% for issue in sprint.get_sorted_issues() %}
+            <div class="list-group-item issue-item d-flex justify-content-between align-items-start" data-issue-id="{{ issue.id }}">
+                <div class="ms-2 me-auto">
+                    <div class="d-flex align-items-center">
+                        <!-- Checkbox for issue completion -->
+                        <div class="form-check me-2">
+                            <input class="form-check-input issue-checkbox" 
+                                   type="checkbox" 
+                                   id="issue-{{ issue.id }}" 
+                                   {% if issue.completed %}checked{% endif %}
+                                   hx-post="/htmx/issues/{{ issue.id }}/toggle" 
+                                   hx-target="#sprint-issues-{{ sprint.id }}" 
+                                   hx-swap="innerHTML"
+                                   hx-preserve="true">
+                        </div>
+                        
+                        <!-- Issue details with conditional styling -->
+                        <div class="issue-content {% if issue.completed %}text-decoration-line-through text-muted{% endif %}">
+                            {{ issue.details|markdown }}
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center">
+                    <!-- Star button for important issues -->
+                    <span class="action-icon star-issue-btn me-2" 
+                          hx-post="/htmx/issues/{{ issue.id }}/toggle-star" 
+                          hx-target="#sprint-issues-{{ sprint.id }}" 
+                          hx-swap="innerHTML"
+                          hx-preserve="true">
+                        <i class="fas {% if issue.starred %}fa-star text-warning{% else %}fa-star text-muted{% endif %}"></i>
+                    </span>
+                    
+                    <!-- Edit button -->
+                    <span class="action-icon edit-issue-btn me-2" 
+                          hx-get="/htmx/issues/{{ issue.id }}/edit" 
+                          hx-target="#issue-edit-form-container-{{ issue.id }}" 
+                          hx-swap="innerHTML">
+                        <i class="fas fa-edit"></i>
+                    </span>
+                    
+                    <!-- Delete button -->
+                    <span class="action-icon delete-issue-btn" 
+                          hx-confirm="Are you sure you want to delete this issue?" 
+                          hx-post="/htmx/issues/{{ issue.id }}/delete" 
+                          hx-target="#sprint-issues-{{ sprint.id }}" 
+                          hx-swap="innerHTML"
+                          hx-preserve="true">
+                        <i class="fas fa-trash"></i>
+                    </span>
+                </div>
+            </div>
+            <!-- Issue Edit Form Container -->
+            <div id="issue-edit-form-container-{{ issue.id }}" class="mb-3"></div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="text-center p-3 border rounded">
+        <p class="mb-0">No issues yet for this sprint.</p>
+    </div>
+{% endif %}

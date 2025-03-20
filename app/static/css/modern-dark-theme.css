@@ -101,35 +101,12 @@ body {
 
 /* Typography */
 h1, h2, h3, h4, h5, h6 {
-  color: #d2d2d2; /* Updated light grey color for all headers */
-  font-weight: 600;
-  margin-bottom: 1rem;
-  line-height: 1.3;
+  color: var(--gp-text-bright); /* Updated light grey color for all headers */
+  font-weight: 400;
+  margin-bottom: .5rem;
+  line-height: 1.2;
 }
 
-h1 {
-  font-size: 2.25rem;
-  margin-bottom: 1.5rem;
-}
-
-h2 {
-  font-size: 1.75rem;
-  margin-top: 2.5rem;
-  margin-bottom: 1rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 1px solid var(--gp-border-primary);
-}
-
-h3 {
-  font-size: 1.5rem;
-  margin-top: 2rem;
-  margin-bottom: 0.75rem;
-}
-
-h4 {
-  font-size: 1.25rem;
-  margin-bottom: 0.5rem;
-}
 
 p {
   margin-bottom: 1.2rem;
@@ -216,44 +193,51 @@ code {
   margin-bottom: 1.5rem;
 }
 
-/* Remove card styling */
+/* Card styling */
 .card {
   background-color: transparent;
-  border: none;
-  box-shadow: none;
+  border: 1px solid var(--gp-border-primary);
+  border-radius: 8px;
   margin-bottom: 1.5rem;
-  transition: none;
-}
-
-.card:hover {
-  transform: none;
 }
 
 .card-header {
-  background-color: transparent !important;
+  background-color: transparent;
   border-bottom: 1px solid var(--gp-border-primary);
-  padding: 1rem 0;
+  padding: 1rem 1.25rem;
 }
 
 .card-body {
-  padding: 0px;
+  padding: 1.25rem;
 }
 
 .card-footer {
-  background-color: transparent !important;
+  background-color: transparent;
   border-top: 1px solid var(--gp-border-primary);
-  padding: 1rem 0;
+  padding: 0.75rem 1.25rem;
+}
+
+.card-title {
+  color: var(--gp-text-bright);
+  font-size: 1.25rem;
+  font-weight: 500;
+  margin-bottom: 0;
+}
+
+.card-text {
+  margin-bottom: 1rem;
+  line-height: 1.5;
+}
+
+.badge {
+  font-weight: 500;
+  padding: 0.4rem 0.65rem;
 }
 
 /* Project and Sprint styling to match MCP */
 .project-card {
   border-bottom: 1px solid var(--gp-border-primary);
-  padding-bottom: 2rem;
   margin-bottom: 2rem;
-}
-
-.project-card:last-child {
-  border-bottom: none;
 }
 
 .sprint-card {
@@ -287,6 +271,7 @@ code {
   font-size: 1.1rem;
   font-weight: 600;
   margin-right: 0.5rem;
+  color: var(--gp-text-bright)
 }
 
 /* Section styling */
@@ -303,12 +288,7 @@ code {
 }
 
 /* Buttons - Clean, minimal styling */
-.btn {
-  border-radius: 6px;
-  font-weight: 500;
-  padding: 0.5rem 1rem;
-  transition: all 0.2s ease;
-}
+
 
 .btn-primary {
   background-color: var(--gp-primary);
@@ -494,7 +474,7 @@ footer {
 /* Badges */
 .badge {
   font-weight: 500;
-  padding: 0.35em 0.65em;
+  padding: 0.4rem 0.65rem;
 }
 
 /* MCP-style sidebar navigation */
@@ -604,20 +584,9 @@ hr {
 }
 
 /* Action icons styling - applied to all icons */
-.action-icon,
-.fas,
-button i.fas,
-a i.fas {
-  color: var(--gp-text-muted);
-  transition: color 0.2s ease;
-}
 
-.action-icon:hover,
-button:hover i.fas,
-a:hover i.fas,
-.fas:hover {
-  color: var(--gp-text-secondary);
-}
+
+
 
 .action-icon.delete-sprint-btn:hover,
 button.delete-sprint-btn:hover i.fas,

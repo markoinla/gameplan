@@ -50,25 +50,27 @@ class Project(db.Model):
         # Get all sprints for this project and sort them by status priority
         return sorted(self.sprints.all(), key=lambda sprint: status_priority.get(sprint.status, 3))
     
+    def get_sprint_count(self):
+        """Returns the total number of sprints for this project"""
+        return self.sprints.count()
+    
     def to_dict(self):
         """Convert project to dictionary for API responses"""
         # Define a custom sorting function for sprints based on status priority
-        def sprint_status_priority(sprint_dict):
-            status = sprint_dict['status']
-            # Active sprints first, then Planned, then Completed
-            if status == Sprint.STATUS_ACTIVE:
-                return 0
-            elif status == Sprint.STATUS_PLANNED:
-                return 1
-            else:  # Completed
-                return 2
+        from app.models import Sprint
+        status_priority = {
+            Sprint.STATUS_ACTIVE: 0,
+            Sprint.STATUS_PLANNED: 1,
+            Sprint.STATUS_COMPLETED: 2
+        }
         
-        # Get all sprints and convert them to dictionaries
-        sprint_dicts = [sprint.to_dict() for sprint in self.sprints]
+        # Get all sprints for this project
+        all_sprints = self.sprints.all()
         
-        # Sort the sprints by status priority
-        sorted_sprints = sorted(sprint_dicts, key=sprint_status_priority)
+        # Sort sprints by status priority
+        sorted_sprints = sorted(all_sprints, key=lambda sprint: status_priority.get(sprint.status, 3))
         
+        # Convert to dictionary
         return {
             'id': self.id,
             'name': self.name,
@@ -77,7 +79,8 @@ class Project(db.Model):
             'implementation_details': self.implementation_details,
             'created_at': self.created_at.isoformat() if self.created_at else None,
             'updated_at': self.updated_at.isoformat() if self.updated_at else None,
-            'sprints': sorted_sprints
+            'sprint_count': self.get_sprint_count(),
+            'sprints': [sprint.to_dict() for sprint in sorted_sprints]
         }
         
     def to_dict_simple(self):

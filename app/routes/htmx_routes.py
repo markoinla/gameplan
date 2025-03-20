@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template, request, make_response, url_for
 from app import db
 from app.models import Task, Issue, Sprint, Project
 
@@ -493,7 +493,7 @@ def create_project():
     HTMX endpoint to create a new project
     
     Returns:
-        Redirect to the index page with the new project
+        Redirect to the new project detail page on successful creation
     """
     name = request.form.get('name')
     description = request.form.get('description', '')
@@ -511,9 +511,10 @@ def create_project():
         db.session.add(project)
         db.session.commit()
         
-        # Return all projects
-        projects = Project.query.all()
-        return render_template('partials/projects_list.html', projects=projects)
+        # Return a redirect response to the project detail page
+        response = make_response('')
+        response.headers['HX-Redirect'] = url_for('main.project_detail', project_id=project.id)
+        return response
     
     return '', 400  # Bad request
 
