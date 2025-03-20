@@ -107,7 +107,7 @@ def create_project(name, description=""):
     db.session.commit()
     return project.to_dict()
 
-def update_project(project_id, name=None, description=None):
+def update_project(project_id, name=None, description=None, requirements=None, implementation_details=None):
     """Update an existing project"""
     project = Project.query.get(project_id)
     if not project:
@@ -117,6 +117,10 @@ def update_project(project_id, name=None, description=None):
         project.name = name
     if description is not None:
         project.description = description
+    if requirements is not None:
+        project.requirements = requirements
+    if implementation_details is not None:
+        project.implementation_details = implementation_details
     
     db.session.commit()
     return project.to_dict()

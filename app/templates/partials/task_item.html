@@ -7,8 +7,8 @@
                hx-target="#projectsContainer"
                hx-swap="innerHTML"
                name="completed">
-        <label class="form-check-label" for="task-checkbox-{{ task.id }}">
-            <small class="text-muted ms-2">Task #{{ task.id }}</small>
+        <label class="form-check-label ms-2" for="task-checkbox-{{ task.id }}">
+            <small class="text-muted">Task #{{ task.id }}</small>
             <!-- Star icon that toggles starred status -->
             <button class="btn btn-sm btn-link p-0 ms-1" 
                     hx-put="/htmx/tasks/{{ task.id }}/star"
