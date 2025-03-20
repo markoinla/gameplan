@@ -8,7 +8,7 @@
                hx-swap="innerHTML"
                name="completed">
         <label class="form-check-label" for="issue-checkbox-{{ issue.id }}">
-            <small class="text-muted ms-2">Issue #{{ issue.id }}:</small> {{ issue.details }}
+            <small class="text-muted ms-2">Issue #{{ issue.id }}:</small> {{ issue.details|markdown }}
         </label>
     </div>
     <div class="issue-actions">

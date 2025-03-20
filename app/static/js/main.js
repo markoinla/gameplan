@@ -268,42 +268,67 @@ function initializeIssueEventListeners() {
  * Initialize keyboard shortcuts for the application
  */
 function initializeKeyboardShortcuts() {
-    // Add global keydown event listener for modal save shortcuts (Cmd/Ctrl + Enter)
+    // Add global keydown event listener for form submission shortcuts (Cmd/Ctrl + Enter)
     document.addEventListener('keydown', function(e) {
         // Check if Cmd (Mac) or Ctrl (Windows/Linux) key is pressed along with Enter
         if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
-            // Check which modal is currently active and trigger the appropriate save button
-            if (document.getElementById('projectModal').classList.contains('show')) {
-                // Project modal is active, trigger save project
-                e.preventDefault();
-                document.getElementById('saveProjectBtn').click();
-            } else if (document.getElementById('sprintModal').classList.contains('show')) {
-                // Sprint modal is active, trigger save sprint
-                e.preventDefault();
-                document.getElementById('saveSprintBtn').click();
-            } else if (document.getElementById('taskModal').classList.contains('show')) {
-                // Task modal is active, trigger save task
-                e.preventDefault();
-                document.getElementById('saveTaskBtn').click();
-            } else if (document.getElementById('issueModal').classList.contains('show')) {
-                // Issue modal is active, trigger save issue
-                e.preventDefault();
-                document.getElementById('saveIssueBtn').click();
-            } else {
-                // Check for HTMX task forms
-                const htmxTaskForm = document.getElementById('htmx-task-form');
-                if (htmxTaskForm) {
-                    e.preventDefault();
-                    // Submit the HTMX task form
-                    htmxTaskForm.querySelector('button[type="submit"]').click();
-                }
+            e.preventDefault(); // Prevent default behavior
+            
+            // Get the currently active/focused element
+            const activeElement = document.activeElement;
+            
+            // Find the closest form to the active element
+            const form = activeElement.closest('form');
+            
+            if (form) {
+                // If we found a form, submit it
+                console.log('Submitting form via keyboard shortcut:', form.id || 'unnamed form');
                 
-                // Check for HTMX issue forms
-                const htmxIssueForm = document.getElementById('htmx-issue-form');
-                if (htmxIssueForm) {
-                    e.preventDefault();
-                    // Submit the HTMX issue form
-                    htmxIssueForm.querySelector('button[type="submit"]').click();
+                // For forms with a submit button, click the submit button instead of using form.submit()
+                // This ensures any click handlers on the submit button are executed
+                const submitButton = form.querySelector('button[type="submit"]');
+                if (submitButton) {
+                    submitButton.click();
+                } else {
+                    // Fallback to form.submit() if no submit button is found
+                    form.submit();
+                }
+                return;
+            }
+            
+            // Legacy modal support (fallback for older code)
+            // Check which modal is currently active and trigger the appropriate save button
+            if (document.getElementById('projectModal')?.classList.contains('show')) {
+                // Project modal is active, trigger save project
+                document.getElementById('saveProjectBtn')?.click();
+            } else if (document.getElementById('sprintModal')?.classList.contains('show')) {
+                // Sprint modal is active, trigger save sprint
+                document.getElementById('saveSprintBtn')?.click();
+            } else if (document.getElementById('taskModal')?.classList.contains('show')) {
+                // Task modal is active, trigger save task
+                document.getElementById('saveTaskBtn')?.click();
+            } else if (document.getElementById('issueModal')?.classList.contains('show')) {
+                // Issue modal is active, trigger save issue
+                document.getElementById('saveIssueBtn')?.click();
+            } else {
+                // Check for specific HTMX forms that might not be focused but are visible
+                const htmxForms = [
+                    'htmx-task-form',
+                    'htmx-issue-form',
+                    'htmx-sprint-form',
+                    'htmx-project-form'
+                ];
+                
+                for (const formId of htmxForms) {
+                    const htmxForm = document.getElementById(formId);
+                    if (htmxForm) {
+                        console.log('Submitting HTMX form via keyboard shortcut:', formId);
+                        const submitBtn = htmxForm.querySelector('button[type="submit"]');
+                        if (submitBtn) {
+                            submitBtn.click();
+                            return;
+                        }
+                    }
                 }
             }
         }

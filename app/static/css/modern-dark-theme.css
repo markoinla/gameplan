@@ -17,7 +17,7 @@
   /* Text Colors - From MCP prose-gray inverted colors */
   --gp-text-primary: rgb(158, 158, 158);  /* Primary text color as requested */
   --gp-text-secondary: #9ca3af;/* Secondary text (--tw-prose-invert-lead) */
-  --gp-text-muted: #6b7280;    /* Muted text for placeholders, etc. */
+  --gp-text-muted: #858faf;    /* Muted text for placeholders, etc. */
   --gp-text-bright: #fff;      /* Bright text for headings (--tw-prose-invert-headings) */
   --gp-text-link: #fff;        /* Link text color (--tw-prose-invert-links) */
   --gp-text-code: #fff;        /* Code text (--tw-prose-invert-code) */

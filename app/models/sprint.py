@@ -61,18 +61,17 @@ class Sprint(db.Model):
     def get_sorted_tasks(self):
         """
         Get tasks sorted by completion status and creation date
-        - Incomplete tasks first (newest to oldest)
+        - Incomplete tasks first (oldest to newest)
         - Completed tasks last (oldest to newest)
         """
         # Get all tasks for this sprint
         all_tasks = self.tasks.all()
         
-        # Sort tasks: incomplete tasks first (newest to oldest), then completed tasks (oldest to newest)
+        # Sort tasks: incomplete tasks first (oldest first), then completed tasks (oldest first)
         incomplete_tasks = sorted([task for task in all_tasks if not task.completed], 
-                                key=lambda task: task.created_at,
-                                reverse=True)  # Reverse to get newest first
+                                key=lambda task: task.created_at)  # Oldest first
         completed_tasks = sorted([task for task in all_tasks if task.completed], 
-                               key=lambda task: task.created_at)
+                               key=lambda task: task.created_at)  # Oldest first
         
         # Combine the sorted lists
         return incomplete_tasks + completed_tasks
@@ -80,18 +79,17 @@ class Sprint(db.Model):
     def get_sorted_issues(self):
         """
         Get issues sorted by completion status and creation date
-        - Incomplete issues first (newest to oldest)
+        - Incomplete issues first (oldest to newest)
         - Completed issues last (oldest to newest)
         """
         # Get all issues for this sprint
         all_issues = self.issues.all()
         
-        # Sort issues: incomplete issues first (newest to oldest), then completed issues (oldest to newest)
+        # Sort issues: incomplete issues first (oldest first), then completed issues (oldest first)
         incomplete_issues = sorted([issue for issue in all_issues if not issue.completed], 
-                                 key=lambda issue: issue.created_at,
-                                 reverse=True)  # Reverse to get newest first
+                                 key=lambda issue: issue.created_at)  # Oldest first
         completed_issues = sorted([issue for issue in all_issues if issue.completed], 
-                                key=lambda issue: issue.created_at)
+                                key=lambda issue: issue.created_at)  # Oldest first
         
         # Combine the sorted lists
         return incomplete_issues + completed_issues
