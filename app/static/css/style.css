@@ -182,6 +182,12 @@ main {
     color: #6c757d;
 }
 
+/* Override line-through for starred checkboxes */
+.form-check-input[name="starred"]:checked + .form-check-label {
+    text-decoration: none;
+    color: inherit;
+}
+
 /* Empty State Styles */
 .text-muted {
     color: #6c757d;

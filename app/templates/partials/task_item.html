@@ -8,7 +8,16 @@
                hx-swap="innerHTML"
                name="completed">
         <label class="form-check-label" for="task-checkbox-{{ task.id }}">
-            <small class="text-muted ms-2">Task #{{ task.id }}:</small> {{ task.details|markdown }}
+            <small class="text-muted ms-2">Task #{{ task.id }}</small>
+            <!-- Star icon that toggles starred status -->
+            <button class="btn btn-sm btn-link p-0 ms-1" 
+                    hx-put="/htmx/tasks/{{ task.id }}/star"
+                    hx-target="#projectsContainer"
+                    hx-swap="innerHTML"
+                    hx-preserve="true">
+                <i class="bi {{ 'bi-star-fill text-warning' if task.starred else 'bi-star' }}"></i>
+            </button>
+            {{ task.details|markdown }}
         </label>
     </div>
     <div class="task-actions">

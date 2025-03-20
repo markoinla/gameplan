@@ -62,6 +62,7 @@ def create_task():
     sprint_id = request.form.get('sprint_id')
     details = request.form.get('details')
     completed = request.form.get('completed') == 'on'
+    starred = request.form.get('starred') == 'on'  # Get starred status from form
     
     if sprint_id and details:
         sprint = Sprint.query.get(sprint_id)
@@ -70,6 +71,7 @@ def create_task():
             task = Task(
                 details=details,
                 completed=completed,
+                starred=starred,  # Set starred status for the new task
                 sprint_id=sprint_id
             )
             db.session.add(task)
@@ -106,6 +108,7 @@ def create_issue():
     sprint_id = request.form.get('sprint_id')
     details = request.form.get('details')
     completed = request.form.get('completed') == 'on'
+    starred = request.form.get('starred') == 'on'  # Get starred status from form
     
     if sprint_id and details:
         sprint = Sprint.query.get(sprint_id)
@@ -114,6 +117,7 @@ def create_issue():
             issue = Issue(
                 details=details,
                 completed=completed,
+                starred=starred,  # Set starred status for the new issue
                 sprint_id=sprint_id
             )
             db.session.add(issue)
@@ -173,6 +177,10 @@ def update_task(task_id):
     task.details = request.form.get('details', task.details)
     task.completed = request.form.get('completed') == 'on'
     
+    # Preserve starred status if not explicitly changed
+    if 'starred' in request.form:
+        task.starred = request.form.get('starred') == 'on'
+    
     db.session.commit()
     
     # Return updated projects list
@@ -198,6 +206,32 @@ def delete_task(task_id):
     
     # Return updated projects list
     projects = Project.query.all()
+    return render_template('partials/projects_list.html', projects=projects)
+
+@htmx_bp.route('/tasks/<int:task_id>/star', methods=['PUT'])
+def star_task(task_id):
+    """
+    HTMX endpoint to toggle a task's starred status
+    
+    Args:
+        task_id: ID of the task to star/unstar
+        
+    Returns:
+        Rendered HTML fragment of the updated projects list
+    """
+    # Get the task
+    task = Task.query.get_or_404(task_id)
+    
+    # Toggle starred status
+    task.starred = not task.starred
+    
+    # Save to database
+    db.session.commit()
+    
+    # Get all projects to refresh the view
+    projects = Project.query.all()
+    
+    # Return the updated projects list
     return render_template('partials/projects_list.html', projects=projects)
 
 # Issue HTMX Routes
@@ -253,6 +287,10 @@ def update_issue(issue_id):
     issue.details = request.form.get('details', issue.details)
     issue.completed = request.form.get('completed') == 'on'
     
+    # Preserve starred status if not explicitly changed
+    if 'starred' in request.form:
+        issue.starred = request.form.get('starred') == 'on'
+    
     db.session.commit()
     
     # Return updated projects list
@@ -278,6 +316,32 @@ def delete_issue(issue_id):
     
     # Return updated projects list
     projects = Project.query.all()
+    return render_template('partials/projects_list.html', projects=projects)
+
+@htmx_bp.route('/issues/<int:issue_id>/star', methods=['PUT'])
+def star_issue(issue_id):
+    """
+    HTMX endpoint to toggle an issue's starred status
+    
+    Args:
+        issue_id: ID of the issue to star/unstar
+        
+    Returns:
+        Rendered HTML fragment of the updated projects list
+    """
+    # Get the issue
+    issue = Issue.query.get_or_404(issue_id)
+    
+    # Toggle starred status
+    issue.starred = not issue.starred
+    
+    # Save to database
+    db.session.commit()
+    
+    # Get all projects to refresh the view
+    projects = Project.query.all()
+    
+    # Return the updated projects list
     return render_template('partials/projects_list.html', projects=projects)
 
 # Sprint HTMX Routes
