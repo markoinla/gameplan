@@ -3,6 +3,7 @@
     <form hx-post="/htmx/projects" 
           hx-target="#projectsContainer" 
           hx-swap="innerHTML"
+          hx-preserve="true"
           hx-on::after-request="if(event.detail.successful) { closeProjectForm(); }">
         <div class="mb-3">
             <label for="projectName" class="form-label">Project Name</label>

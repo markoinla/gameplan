@@ -1,11 +1,12 @@
 <!-- Issue edit form with ID that matches the original issue ID structure -->
 <div id="issue-{{ issue.id }}" class="issue-edit-container">
     <form class="issue-edit-form p-2" id="edit-issue-form-{{ issue.id }}"
-          hx-post="/htmx/issues/{{ issue.id }}/update"
-          hx-target="#issue-{{ issue.id }}"
-          hx-swap="outerHTML">
+          hx-put="/htmx/issues/{{ issue.id }}/update"
+          hx-target="#projectsContainer"
+          hx-swap="innerHTML"
+          hx-preserve="true">
         <div class="mb-2">
-            <textarea class="form-control" name="details" rows="2" required>{{ issue.details }}</textarea>
+            <textarea class="form-control auto-expand" name="details" rows="2" required>{{ issue.details }}</textarea>
         </div>
         <div class="form-check mb-2">
             <input class="form-check-input" type="checkbox" name="completed" id="editIssueCompleted{{ issue.id }}" 
@@ -16,9 +17,7 @@
         </div>
         <div class="d-flex justify-content-end">
             <button type="button" class="btn btn-sm btn-secondary me-2" 
-                    hx-get="/htmx/issues/{{ issue.id }}"
-                    hx-target="#issue-{{ issue.id }}"
-                    hx-swap="outerHTML">
+                    onclick="closeIssueEditForm('{{ issue.id }}')">
                 Cancel
             </button>
             <button type="submit" class="btn btn-sm btn-primary">Save</button>

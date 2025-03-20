@@ -3,26 +3,27 @@
     <div class="form-check">
         <input class="form-check-input" type="checkbox" id="issue-checkbox-{{ issue.id }}" 
                {{ 'checked' if issue.completed else '' }}
-               hx-post="/htmx/issues/{{ issue.id }}/toggle"
-               hx-target="#issue-{{ issue.id }}"
-               hx-swap="outerHTML">
+               hx-put="/htmx/issues/{{ issue.id }}/update"
+               hx-target="#projectsContainer"
+               hx-swap="innerHTML"
+               name="completed">
         <label class="form-check-label" for="issue-checkbox-{{ issue.id }}">
             <small class="text-muted ms-2">Issue #{{ issue.id }}:</small> {{ issue.details }}
         </label>
     </div>
     <div class="issue-actions">
-        <span class="action-icon edit-issue-btn me-1" data-issue-id="{{ issue.id }}"
+        <button class="btn btn-sm btn-link text-secondary border-0 p-0 me-2" 
                 hx-get="/htmx/issues/{{ issue.id }}/edit"
                 hx-target="#issue-{{ issue.id }}"
                 hx-swap="outerHTML">
             <i class="fas fa-edit"></i>
-        </span>
-        <span class="action-icon delete-issue-btn" 
-                hx-post="/htmx/issues/{{ issue.id }}/delete"
-                hx-target="#issue-{{ issue.id }}"
-                hx-swap="outerHTML"
+        </button>
+        <button class="btn btn-sm btn-link text-danger border-0 p-0" 
+                hx-delete="/htmx/issues/{{ issue.id }}/delete"
+                hx-target="#projectsContainer"
+                hx-swap="innerHTML"
                 hx-confirm="Are you sure you want to delete this issue?">
             <i class="fas fa-trash"></i>
-        </span>
+        </button>
     </div>
 </div>

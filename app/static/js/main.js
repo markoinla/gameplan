@@ -142,7 +142,10 @@ function closeIssueForm(sprintId) {
  * @param {string} projectId - The ID of the project
  */
 function closeSprintForm(projectId) {
-    closeFormContainer(`sprint-form-container-${projectId}`);
+    const formContainer = document.getElementById(`sprint-form-container-${projectId}`);
+    if (formContainer) {
+        formContainer.innerHTML = '';
+    }
 }
 
 /**
@@ -150,7 +153,11 @@ function closeSprintForm(projectId) {
  * @param {string} sprintId - The ID of the sprint
  */
 function closeSprintEditForm(sprintId) {
-    closeFormContainer(`sprint-edit-form-container-${sprintId}`);
+    const formContainer = document.getElementById(`sprint-${sprintId}`);
+    if (formContainer) {
+        // Get the original sprint HTML
+        htmx.ajax('GET', `/htmx/sprints/${sprintId}`, {target: formContainer});
+    }
 }
 
 /**

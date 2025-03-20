@@ -57,33 +57,29 @@ def create_task():
     HTMX endpoint to create a new task
     
     Returns:
-        Rendered HTML fragment of the updated task list
+        Rendered HTML fragment of the updated projects list
     """
-    # Get form data
-    details = request.form.get('details')
     sprint_id = request.form.get('sprint_id')
-    completed = True if request.form.get('completed') else False
+    details = request.form.get('details')
+    completed = request.form.get('completed') == 'on'
     
-    # Validate data
-    if not details or not sprint_id:
-        return "Task details and sprint ID are required", 400
+    if sprint_id and details:
+        sprint = Sprint.query.get(sprint_id)
+        if sprint:
+            # Create new task
+            task = Task(
+                details=details,
+                completed=completed,
+                sprint_id=sprint_id
+            )
+            db.session.add(task)
+            db.session.commit()
+            
+            # Return updated projects list
+            projects = Project.query.all()
+            return render_template('partials/projects_list.html', projects=projects)
     
-    # Create new task
-    task = Task(
-        details=details,
-        completed=completed,
-        sprint_id=int(sprint_id)
-    )
-    
-    # Save to database
-    db.session.add(task)
-    db.session.commit()
-    
-    # Get the sprint to render all tasks
-    sprint = Sprint.query.get_or_404(int(sprint_id))
-    
-    # Return the updated tasks container HTML
-    return render_template('partials/task_list_container.html', sprint=sprint)
+    return '', 400  # Bad request
 
 @htmx_bp.route('/tasks/form/<int:sprint_id>', methods=['GET'])
 def get_task_form(sprint_id):
@@ -96,10 +92,7 @@ def get_task_form(sprint_id):
     Returns:
         Rendered HTML fragment of the task form
     """
-    # Check if sprint exists
     sprint = Sprint.query.get_or_404(sprint_id)
-    
-    # Return the task form HTML fragment
     return render_template('partials/task_form.html', sprint_id=sprint_id)
 
 @htmx_bp.route('/issues/create', methods=['POST'])
@@ -108,33 +101,29 @@ def create_issue():
     HTMX endpoint to create a new issue
     
     Returns:
-        Rendered HTML fragment of the updated issue list
+        Rendered HTML fragment of the updated projects list
     """
-    # Get form data
-    details = request.form.get('details')
     sprint_id = request.form.get('sprint_id')
-    completed = True if request.form.get('completed') else False
+    details = request.form.get('details')
+    completed = request.form.get('completed') == 'on'
     
-    # Validate data
-    if not details or not sprint_id:
-        return "Issue details and sprint ID are required", 400
+    if sprint_id and details:
+        sprint = Sprint.query.get(sprint_id)
+        if sprint:
+            # Create new issue
+            issue = Issue(
+                details=details,
+                completed=completed,
+                sprint_id=sprint_id
+            )
+            db.session.add(issue)
+            db.session.commit()
+            
+            # Return updated projects list
+            projects = Project.query.all()
+            return render_template('partials/projects_list.html', projects=projects)
     
-    # Create new issue
-    issue = Issue(
-        details=details,
-        completed=completed,
-        sprint_id=int(sprint_id)
-    )
-    
-    # Save to database
-    db.session.add(issue)
-    db.session.commit()
-    
-    # Get the sprint to render all issues
-    sprint = Sprint.query.get_or_404(int(sprint_id))
-    
-    # Return the updated issues container HTML
-    return render_template('partials/issue_list_container.html', sprint=sprint)
+    return '', 400  # Bad request
 
 @htmx_bp.route('/issues/form/<int:sprint_id>', methods=['GET'])
 def get_issue_form(sprint_id):
@@ -164,30 +153,10 @@ def edit_task_form(task_id):
     Returns:
         Rendered HTML fragment of the task edit form
     """
-    # Get the task
     task = Task.query.get_or_404(task_id)
-    
-    # Return the task edit form HTML fragment
     return render_template('partials/task_edit_form.html', task=task)
 
-@htmx_bp.route('/tasks/<int:task_id>', methods=['GET'])
-def get_task(task_id):
-    """
-    HTMX endpoint to get a single task
-    
-    Args:
-        task_id: ID of the task to get
-        
-    Returns:
-        Rendered HTML fragment of the task
-    """
-    # Get the task
-    task = Task.query.get_or_404(task_id)
-    
-    # Return the task HTML fragment
-    return render_template('partials/task_item.html', task=task)
-
-@htmx_bp.route('/tasks/<int:task_id>/update', methods=['POST'])
+@htmx_bp.route('/tasks/<int:task_id>/update', methods=['PUT', 'POST'])
 def update_task(task_id):
     """
     HTMX endpoint to update a task
@@ -196,29 +165,21 @@ def update_task(task_id):
         task_id: ID of the task to update
         
     Returns:
-        Rendered HTML fragment of the updated task
+        Rendered HTML fragment of the updated projects list
     """
-    # Get the task
     task = Task.query.get_or_404(task_id)
     
-    # Get form data
-    details = request.form.get('details')
-    completed = True if request.form.get('completed') else False
+    # Update task data
+    task.details = request.form.get('details', task.details)
+    task.completed = request.form.get('completed') == 'on'
     
-    # Update task details
-    task.details = details
-    task.completed = completed
-    
-    # Save to database
     db.session.commit()
     
-    # Log the update for debugging
-    print(f"Task #{task_id} updated: details='{details}', completed={completed}")
-    
-    # Return the updated task HTML fragment
-    return render_template('partials/task_item.html', task=task)
+    # Return updated projects list
+    projects = Project.query.all()
+    return render_template('partials/projects_list.html', projects=projects)
 
-@htmx_bp.route('/tasks/<int:task_id>/delete', methods=['POST'])
+@htmx_bp.route('/tasks/<int:task_id>/delete', methods=['DELETE', 'POST'])
 def delete_task(task_id):
     """
     HTMX endpoint to delete a task
@@ -227,22 +188,17 @@ def delete_task(task_id):
         task_id: ID of the task to delete
         
     Returns:
-        Empty string (task is removed from the DOM)
+        Rendered HTML fragment of the updated projects list
     """
-    try:
-        # Get the task
-        task = Task.query.get_or_404(task_id)
-        
-        # Delete the task
-        db.session.delete(task)
-        db.session.commit()
-        
-        # Return empty string (task will be removed from DOM)
-        return ""
-    except Exception as e:
-        # Log the error
-        print(f"Error deleting task: {e}")
-        return f"Error deleting task: {str(e)}", 500
+    task = Task.query.get_or_404(task_id)
+    
+    # Delete the task
+    db.session.delete(task)
+    db.session.commit()
+    
+    # Return updated projects list
+    projects = Project.query.all()
+    return render_template('partials/projects_list.html', projects=projects)
 
 # Issue HTMX Routes
 
@@ -280,7 +236,7 @@ def get_issue(issue_id):
     # Return the issue HTML fragment
     return render_template('partials/issue_item.html', issue=issue)
 
-@htmx_bp.route('/issues/<int:issue_id>/update', methods=['POST'])
+@htmx_bp.route('/issues/<int:issue_id>/update', methods=['PUT', 'POST'])
 def update_issue(issue_id):
     """
     HTMX endpoint to update an issue
@@ -289,29 +245,21 @@ def update_issue(issue_id):
         issue_id: ID of the issue to update
         
     Returns:
-        Rendered HTML fragment of the updated issue
+        Rendered HTML fragment of the updated projects list
     """
-    # Get the issue
     issue = Issue.query.get_or_404(issue_id)
     
-    # Get form data
-    details = request.form.get('details')
-    completed = True if request.form.get('completed') else False
+    # Update issue data
+    issue.details = request.form.get('details', issue.details)
+    issue.completed = request.form.get('completed') == 'on'
     
-    # Update issue details
-    issue.details = details
-    issue.completed = completed
-    
-    # Save to database
     db.session.commit()
     
-    # Log the update for debugging
-    print(f"Issue #{issue_id} updated: details='{details}', completed={completed}")
-    
-    # Return the updated issue HTML fragment
-    return render_template('partials/issue_item.html', issue=issue)
+    # Return updated projects list
+    projects = Project.query.all()
+    return render_template('partials/projects_list.html', projects=projects)
 
-@htmx_bp.route('/issues/<int:issue_id>/delete', methods=['POST'])
+@htmx_bp.route('/issues/<int:issue_id>/delete', methods=['DELETE', 'POST'])
 def delete_issue(issue_id):
     """
     HTMX endpoint to delete an issue
@@ -320,17 +268,17 @@ def delete_issue(issue_id):
         issue_id: ID of the issue to delete
         
     Returns:
-        Empty string (issue is removed from the DOM)
+        Rendered HTML fragment of the updated projects list
     """
-    # Get the issue
     issue = Issue.query.get_or_404(issue_id)
     
-    # Delete from database
+    # Delete the issue
     db.session.delete(issue)
     db.session.commit()
     
-    # Return empty string (issue will be removed from DOM)
-    return ""
+    # Return updated projects list
+    projects = Project.query.all()
+    return render_template('partials/projects_list.html', projects=projects)
 
 # Sprint HTMX Routes
 
@@ -370,11 +318,12 @@ def create_sprint():
     HTMX endpoint to create a new sprint
     
     Returns:
-        Rendered HTML fragment of the updated sprint list
+        Rendered HTML fragment of the updated projects list
     """
     project_id = request.form.get('project_id')
     name = request.form.get('name')
     status = request.form.get('status', 'Planned')
+    description = request.form.get('description')
     
     if project_id and name:
         project = Project.query.get(project_id)
@@ -383,28 +332,33 @@ def create_sprint():
             sprint = Sprint(
                 name=name,
                 status=status,
+                description=description,
                 project_id=project_id
             )
             db.session.add(sprint)
             db.session.commit()
             
-            # Return updated sprints list
-            return render_template('partials/project_sprints.html', project=project)
+            # Return updated projects list
+            projects = Project.query.all()
+            return render_template('partials/projects_list.html', projects=projects)
     
     return '', 400  # Bad request
 
-@htmx_bp.route('/sprints/<int:sprint_id>', methods=['PUT', 'POST'])
+@htmx_bp.route('/sprints/<int:sprint_id>', methods=['GET', 'PUT', 'POST'])
 def update_sprint(sprint_id):
     """
-    HTMX endpoint to update a sprint
+    HTMX endpoint to update or get a sprint
     
     Args:
-        sprint_id: ID of the sprint to update
+        sprint_id: ID of the sprint to update/get
         
     Returns:
-        Rendered HTML fragment of the updated sprint
+        Rendered HTML fragment of the sprint or updated projects list
     """
     sprint = Sprint.query.get_or_404(sprint_id)
+    
+    if request.method == 'GET':
+        return render_template('partials/sprint.html', sprint=sprint)
     
     # Update sprint data
     sprint.name = request.form.get('name', sprint.name)
@@ -413,9 +367,9 @@ def update_sprint(sprint_id):
     
     db.session.commit()
     
-    # Return updated project sprints
-    project = Project.query.get(sprint.project_id)
-    return render_template('partials/project_sprints.html', project=project)
+    # Return updated projects list
+    projects = Project.query.all()
+    return render_template('partials/projects_list.html', projects=projects)
 
 @htmx_bp.route('/sprints/<int:sprint_id>/delete', methods=['DELETE', 'POST'])
 def delete_sprint(sprint_id):
@@ -426,12 +380,12 @@ def delete_sprint(sprint_id):
         sprint_id: ID of the sprint to delete
         
     Returns:
-        Rendered HTML fragment of the updated sprint list
+        Rendered HTML fragment of the updated projects list
     """
     sprint = Sprint.query.get_or_404(sprint_id)
     project_id = sprint.project_id
     
-    # Delete all tasks and issues in the sprint
+    # Delete all tasks and issues associated with this sprint
     Task.query.filter_by(sprint_id=sprint_id).delete()
     Issue.query.filter_by(sprint_id=sprint_id).delete()
     
@@ -439,9 +393,9 @@ def delete_sprint(sprint_id):
     db.session.delete(sprint)
     db.session.commit()
     
-    # Return updated project sprints
-    project = Project.query.get(project_id)
-    return render_template('partials/project_sprints.html', project=project)
+    # Return updated projects list
+    projects = Project.query.all()
+    return render_template('partials/projects_list.html', projects=projects)
 
 # Project HTMX Routes
 

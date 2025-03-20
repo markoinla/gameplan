@@ -1,12 +1,13 @@
 <form id="htmx-issue-form" 
       hx-post="/htmx/issues/create" 
-      hx-target=".issues-container" 
+      hx-target="#projectsContainer" 
       hx-swap="innerHTML"
+      hx-preserve="true"
       hx-on::after-request="if(event.detail.successful) { closeIssueForm('{{ sprint_id }}'); }">
     <input type="hidden" name="sprint_id" value="{{ sprint_id }}">
     <div class="mb-3">
         <label for="issue-details-{{ sprint_id }}" class="form-label">Issue Details <span class="text-danger">*</span></label>
-        <textarea class="form-control" id="issue-details-{{ sprint_id }}" name="details" rows="3" required></textarea>
+        <textarea class="form-control auto-expand" id="issue-details-{{ sprint_id }}" name="details" rows="3" required></textarea>
     </div>
     <div class="mb-3 form-check">
         <input type="checkbox" class="form-check-input" id="issue-completed-{{ sprint_id }}" name="completed">

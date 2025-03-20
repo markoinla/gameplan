@@ -1,3 +1,6 @@
+{% extends "base.html" %}
+
+{% block content %}
 <div id="project-sprints-{{ project.id }}" class="sprints-container">
     <div class="d-flex justify-content-end mb-3">
         <button class="btn btn-sm btn-outline-primary" 
@@ -23,15 +26,16 @@
                             <span class="badge 
                                 {% if sprint.status == 'Planned' %}bg-secondary
                                 {% elif sprint.status == 'Active' %}bg-primary
-                                {% elif sprint.status == 'Completed' %}bg-success
-                                {% endif %}">{{ sprint.status }}</span>
+                                {% else %}bg-success{% endif %}">
+                                {{ sprint.status }}
+                            </span>
                         </div>
                         <div class="sprint-actions">
                             <button class="btn btn-sm btn-outline-secondary me-2" 
                                     hx-get="/htmx/sprints/{{ sprint.id }}/edit" 
                                     hx-target="#sprint-edit-form-container-{{ sprint.id }}" 
                                     hx-swap="innerHTML"
-                                    @click.stop="sprintOpen = true">
+                                    @click.stop>
                                 <i class="fas fa-edit"></i>
                             </button>
                             <button class="btn btn-sm btn-outline-danger" 
@@ -73,7 +77,13 @@
                             </div>
                             <div id="task-form-container-{{ sprint.id }}" class="mb-3"></div>
                             <div class="tasks-container">
-                                {% include 'partials/task_list_container.html' %}
+                                {% if sprint.tasks.count() > 0 %}
+                                    {% for task in sprint.get_sorted_tasks() %}
+                                        {% include 'partials/task_item.html' %}
+                                    {% endfor %}
+                                {% else %}
+                                    <p class="text-muted">No tasks yet. Add your first task!</p>
+                                {% endif %}
                             </div>
                         </div>
                         
@@ -96,7 +106,13 @@
                             </div>
                             <div id="issue-form-container-{{ sprint.id }}" class="mb-3"></div>
                             <div class="issues-container">
-                                {% include 'partials/issue_list_container.html' %}
+                                {% if sprint.issues.count() > 0 %}
+                                    {% for issue in sprint.get_sorted_issues() %}
+                                        {% include 'partials/issue_item.html' %}
+                                    {% endfor %}
+                                {% else %}
+                                    <p class="text-muted">No issues yet. Add your first issue!</p>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
@@ -107,3 +123,4 @@
         <p class="text-muted">No sprints yet. Click "Add Sprint" to create one.</p>
     {% endif %}
 </div>
+{% endblock %}
