@@ -516,9 +516,9 @@ def get_project_form():
     HTMX endpoint to get the project creation form
     
     Returns:
-        Rendered HTML fragment of the project form in the dedicated container
+        Rendered HTML fragment of the project form
     """
-    return render_template('partials/project_form_container.html')
+    return render_template('partials/project_form.html')
 
 @htmx_bp.route('/projects/<int:project_id>/edit', methods=['GET'])
 def edit_project_form(project_id):
@@ -531,8 +531,14 @@ def edit_project_form(project_id):
     Returns:
         Rendered HTML fragment of the project edit form
     """
-    project = Project.query.get_or_404(project_id)
-    return render_template('partials/project_edit_form_container.html', project=project)
+    try:
+        project = Project.query.get_or_404(project_id)
+        # Convert project.id to string before passing to template
+        project.form_id = str(project.id)
+        return render_template('partials/project_form.html', project=project)
+    except Exception as e:
+        print(f"Error in edit_project_form: {str(e)}")
+        return "Error loading project form", 500
 
 @htmx_bp.route('/projects', methods=['POST'])
 def create_project():

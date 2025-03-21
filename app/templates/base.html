@@ -10,14 +10,20 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <!-- Tailwind CSS (locally compiled with DaisyUI) -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/tailwind.css') }}">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <!-- Modern Dark Theme CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/modern-dark-theme.css') }}" x-bind:disabled="!darkMode">
     {% block extra_css %}{% endblock %}
 </head>
-<body>
+<body x-data="{ darkMode: localStorage.getItem('darkMode') === 'true' }" 
+      x-init="$watch('darkMode', val => localStorage.setItem('darkMode', val))"
+      :class="{ 'dark': darkMode }">
     <!-- Navigation -->
+    <!-- Original Bootstrap Navbar (commented out for reference) -->
+    <!-- 
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container">
             <a class="navbar-brand" href="{{ url_for('main.index') }}">
@@ -35,9 +41,37 @@
             </div>
         </div>
     </nav>
+    -->
+    
+    <!-- New Tailwind/DaisyUI Navbar -->
+    <div class="navbar bg-primary shadow-lg">
+      <div class="container mx-auto px-4">
+        <!-- Brand/Logo -->
+        <div class="flex-1">
+          <a href="{{ url_for('main.index') }}" class="flex items-center text-xl font-semibold text-white">
+            <i class="fas fa-tasks mr-4"></i>
+            <span>Build Together - AI+Human Project Collab</span>
+          </a>
+        </div>
+        
+        <!-- Right side actions -->
+        <div class="flex-none flex items-center">
+          <!-- View Projects Button -->
+          <a href="{{ url_for('main.index') }}" class="btn btn-sm btn-outline text-white border-white hover:bg-white hover:text-primary mr-4">
+            <i class="fas fa-list mr-1"></i>View Projects
+          </a>
+          
+          <!-- Theme Toggle Button -->
+          <button class="btn btn-sm btn-circle btn-ghost text-white" 
+                  @click.prevent="darkMode = !darkMode; localStorage.setItem('darkMode', darkMode)">
+            <i class="fas" :class="darkMode ? 'fa-sun' : 'fa-moon'"></i>
+          </button>
+        </div>
+      </div>
+    </div>
 
     <!-- Main Content -->
-    <main class="container py-4">
+    <main class="container mx-auto px-4 py-4">
         {% block content %}{% endblock %}
     </main>
 

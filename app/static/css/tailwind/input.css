@@ -1,0 +1,14 @@
+/* Tailwind CSS Input File */
+@import "tailwindcss";
+@plugin "daisyui" {
+  themes: light, dark --default;
+}
+
+/* Custom BTG Styles that we want to preserve during migration */
+@layer components {
+  /* We can add custom component styles here that use Tailwind's utility classes */
+}
+
+@layer utilities {
+  /* We can add custom utility classes here */
+}
