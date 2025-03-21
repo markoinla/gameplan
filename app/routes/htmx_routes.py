@@ -14,7 +14,7 @@ def toggle_task(task_id):
         task_id: ID of the task to toggle
         
     Returns:
-        Rendered HTML fragment of the updated task
+        Rendered HTML fragment of the updated project
     """
     # Get the task
     task = Task.query.get_or_404(task_id)
@@ -25,8 +25,12 @@ def toggle_task(task_id):
     # Save to database
     db.session.commit()
     
-    # Return the updated task HTML fragment
-    return render_template('partials/task_item.html', task=task)
+    # Get the sprint and project for this task
+    sprint = Sprint.query.get(task.sprint_id)
+    project = Project.query.get(sprint.project_id)
+    
+    # Return the specific project context
+    return render_template('partials/projects_list.html', projects=[project])
 
 @htmx_bp.route('/issues/<int:issue_id>/toggle', methods=['POST'])
 def toggle_issue(issue_id):
@@ -37,7 +41,7 @@ def toggle_issue(issue_id):
         issue_id: ID of the issue to toggle
         
     Returns:
-        Rendered HTML fragment of the updated issue
+        Rendered HTML fragment of the updated project
     """
     # Get the issue
     issue = Issue.query.get_or_404(issue_id)
@@ -48,8 +52,12 @@ def toggle_issue(issue_id):
     # Save to database
     db.session.commit()
     
-    # Return the updated issue HTML fragment
-    return render_template('partials/issue_item.html', issue=issue)
+    # Get the sprint and project for this issue
+    sprint = Sprint.query.get(issue.sprint_id)
+    project = Project.query.get(sprint.project_id)
+    
+    # Return the specific project context
+    return render_template('partials/projects_list.html', projects=[project])
 
 @htmx_bp.route('/tasks/create', methods=['POST'])
 def create_task():
@@ -57,11 +65,11 @@ def create_task():
     HTMX endpoint to create a new task
     
     Returns:
-        Rendered HTML fragment of the updated projects list
+        Rendered HTML fragment of the updated project or all projects
     """
     sprint_id = request.form.get('sprint_id')
     details = request.form.get('details')
-    completed = request.form.get('completed') == 'on'
+    completed = request.form.get('completed', 'false').lower() == 'true'
     starred = request.form.get('starred') == 'on'  # Get starred status from form
     
     if sprint_id and details:
@@ -77,9 +85,12 @@ def create_task():
             db.session.add(task)
             db.session.commit()
             
-            # Return updated projects list
-            projects = Project.query.all()
-            return render_template('partials/projects_list.html', projects=projects)
+            # Get the project for this sprint
+            project = Project.query.get(sprint.project_id)
+            
+            # Always return the specific project for task operations
+            # Task operations are always performed from the project detail page
+            return render_template('partials/projects_list.html', projects=[project])
     
     return '', 400  # Bad request
 
@@ -103,11 +114,11 @@ def create_issue():
     HTMX endpoint to create a new issue
     
     Returns:
-        Rendered HTML fragment of the updated projects list
+        Rendered HTML fragment of the updated project or all projects
     """
     sprint_id = request.form.get('sprint_id')
     details = request.form.get('details')
-    completed = request.form.get('completed') == 'on'
+    completed = request.form.get('completed', 'false').lower() == 'true'
     starred = request.form.get('starred') == 'on'  # Get starred status from form
     
     if sprint_id and details:
@@ -123,9 +134,12 @@ def create_issue():
             db.session.add(issue)
             db.session.commit()
             
-            # Return updated projects list
-            projects = Project.query.all()
-            return render_template('partials/projects_list.html', projects=projects)
+            # Get the project for this sprint
+            project = Project.query.get(sprint.project_id)
+            
+            # Always return the specific project for issue operations
+            # Issue operations are always performed from the project detail page
+            return render_template('partials/projects_list.html', projects=[project])
     
     return '', 400  # Bad request
 
@@ -169,23 +183,23 @@ def update_task(task_id):
         task_id: ID of the task to update
         
     Returns:
-        Rendered HTML fragment of the updated projects list
+        Rendered HTML fragment of the updated project or all projects
     """
     task = Task.query.get_or_404(task_id)
     
     # Update task data
     task.details = request.form.get('details', task.details)
-    task.completed = request.form.get('completed') == 'on'
-    
-    # Preserve starred status if not explicitly changed
-    if 'starred' in request.form:
-        task.starred = request.form.get('starred') == 'on'
+    task.completed = request.form.get('completed', 'false').lower() == 'true'
     
     db.session.commit()
     
-    # Return updated projects list
-    projects = Project.query.all()
-    return render_template('partials/projects_list.html', projects=projects)
+    # Get the sprint and project for this task
+    sprint = Sprint.query.get(task.sprint_id)
+    project = Project.query.get(sprint.project_id)
+    
+    # Always return the specific project for task operations
+    # Task operations are always performed from the project detail page
+    return render_template('partials/projects_list.html', projects=[project])
 
 @htmx_bp.route('/tasks/<int:task_id>/delete', methods=['DELETE', 'POST'])
 def delete_task(task_id):
@@ -196,17 +210,24 @@ def delete_task(task_id):
         task_id: ID of the task to delete
         
     Returns:
-        Rendered HTML fragment of the updated projects list
+        Rendered HTML fragment of the updated project
     """
     task = Task.query.get_or_404(task_id)
+    
+    # Get the sprint and project for this task before deleting
+    sprint = Sprint.query.get(task.sprint_id)
+    project_id = sprint.project_id
     
     # Delete the task
     db.session.delete(task)
     db.session.commit()
     
-    # Return updated projects list
-    projects = Project.query.all()
-    return render_template('partials/projects_list.html', projects=projects)
+    # Get the project
+    project = Project.query.get(project_id)
+    
+    # Always return the specific project for task operations
+    # Task operations are always performed from the project detail page
+    return render_template('partials/projects_list.html', projects=[project])
 
 @htmx_bp.route('/tasks/<int:task_id>/star', methods=['PUT'])
 def star_task(task_id):
@@ -217,7 +238,7 @@ def star_task(task_id):
         task_id: ID of the task to star/unstar
         
     Returns:
-        Rendered HTML fragment of the updated projects list
+        Rendered HTML fragment of the updated project or all projects
     """
     # Get the task
     task = Task.query.get_or_404(task_id)
@@ -228,11 +249,13 @@ def star_task(task_id):
     # Save to database
     db.session.commit()
     
-    # Get all projects to refresh the view
-    projects = Project.query.all()
+    # Get the sprint and project for this task
+    sprint = Sprint.query.get(task.sprint_id)
+    project = Project.query.get(sprint.project_id)
     
-    # Return the updated projects list
-    return render_template('partials/projects_list.html', projects=projects)
+    # Always return the specific project for task operations
+    # Task operations are always performed from the project detail page
+    return render_template('partials/projects_list.html', projects=[project])
 
 # Issue HTMX Routes
 
@@ -279,13 +302,13 @@ def update_issue(issue_id):
         issue_id: ID of the issue to update
         
     Returns:
-        Rendered HTML fragment of the updated projects list
+        Rendered HTML fragment of the updated project or all projects
     """
     issue = Issue.query.get_or_404(issue_id)
     
     # Update issue data
     issue.details = request.form.get('details', issue.details)
-    issue.completed = request.form.get('completed') == 'on'
+    issue.completed = request.form.get('completed', 'false').lower() == 'true'
     
     # Preserve starred status if not explicitly changed
     if 'starred' in request.form:
@@ -293,9 +316,13 @@ def update_issue(issue_id):
     
     db.session.commit()
     
-    # Return updated projects list
-    projects = Project.query.all()
-    return render_template('partials/projects_list.html', projects=projects)
+    # Get the sprint and project for this issue
+    sprint = Sprint.query.get(issue.sprint_id)
+    project = Project.query.get(sprint.project_id)
+    
+    # Always return the specific project for issue operations
+    # Issue operations are always performed from the project detail page
+    return render_template('partials/projects_list.html', projects=[project])
 
 @htmx_bp.route('/issues/<int:issue_id>/delete', methods=['DELETE', 'POST'])
 def delete_issue(issue_id):
@@ -306,17 +333,24 @@ def delete_issue(issue_id):
         issue_id: ID of the issue to delete
         
     Returns:
-        Rendered HTML fragment of the updated projects list
+        Rendered HTML fragment of the updated project
     """
     issue = Issue.query.get_or_404(issue_id)
+    
+    # Get the sprint and project for this issue before deleting
+    sprint = Sprint.query.get(issue.sprint_id)
+    project_id = sprint.project_id
     
     # Delete the issue
     db.session.delete(issue)
     db.session.commit()
     
-    # Return updated projects list
-    projects = Project.query.all()
-    return render_template('partials/projects_list.html', projects=projects)
+    # Get the project
+    project = Project.query.get(project_id)
+    
+    # Always return the specific project for issue operations
+    # Issue operations are always performed from the project detail page
+    return render_template('partials/projects_list.html', projects=[project])
 
 @htmx_bp.route('/issues/<int:issue_id>/star', methods=['PUT'])
 def star_issue(issue_id):
@@ -327,7 +361,7 @@ def star_issue(issue_id):
         issue_id: ID of the issue to star/unstar
         
     Returns:
-        Rendered HTML fragment of the updated projects list
+        Rendered HTML fragment of the updated project
     """
     # Get the issue
     issue = Issue.query.get_or_404(issue_id)
@@ -338,11 +372,13 @@ def star_issue(issue_id):
     # Save to database
     db.session.commit()
     
-    # Get all projects to refresh the view
-    projects = Project.query.all()
+    # Get the sprint and project for this issue
+    sprint = Sprint.query.get(issue.sprint_id)
+    project = Project.query.get(sprint.project_id)
     
-    # Return the updated projects list
-    return render_template('partials/projects_list.html', projects=projects)
+    # Always return the specific project for issue operations
+    # Issue operations are always performed from the project detail page
+    return render_template('partials/projects_list.html', projects=[project])
 
 # Sprint HTMX Routes
 
@@ -382,7 +418,7 @@ def create_sprint():
     HTMX endpoint to create a new sprint
     
     Returns:
-        Rendered HTML fragment of the updated projects list
+        Rendered HTML fragment of the updated project
     """
     project_id = request.form.get('project_id')
     name = request.form.get('name')
@@ -402,9 +438,9 @@ def create_sprint():
             db.session.add(sprint)
             db.session.commit()
             
-            # Return updated projects list
-            projects = Project.query.all()
-            return render_template('partials/projects_list.html', projects=projects)
+            # Always return the specific project for sprint operations
+            # Sprint operations are always performed from the project detail page
+            return render_template('partials/projects_list.html', projects=[project])
     
     return '', 400  # Bad request
 
@@ -417,7 +453,7 @@ def update_sprint(sprint_id):
         sprint_id: ID of the sprint to update/get
         
     Returns:
-        Rendered HTML fragment of the sprint or updated projects list
+        Rendered HTML fragment of the sprint or updated project
     """
     sprint = Sprint.query.get_or_404(sprint_id)
     
@@ -431,9 +467,12 @@ def update_sprint(sprint_id):
     
     db.session.commit()
     
-    # Return updated projects list
-    projects = Project.query.all()
-    return render_template('partials/projects_list.html', projects=projects)
+    # Get the project for this sprint
+    project = Project.query.get(sprint.project_id)
+    
+    # Always return the specific project for sprint operations
+    # Sprint operations are always performed from the project detail page
+    return render_template('partials/projects_list.html', projects=[project])
 
 @htmx_bp.route('/sprints/<int:sprint_id>/delete', methods=['DELETE', 'POST'])
 def delete_sprint(sprint_id):
@@ -444,7 +483,7 @@ def delete_sprint(sprint_id):
         sprint_id: ID of the sprint to delete
         
     Returns:
-        Rendered HTML fragment of the updated projects list
+        Rendered HTML fragment of the updated project
     """
     sprint = Sprint.query.get_or_404(sprint_id)
     project_id = sprint.project_id
@@ -457,9 +496,17 @@ def delete_sprint(sprint_id):
     db.session.delete(sprint)
     db.session.commit()
     
-    # Return updated projects list
-    projects = Project.query.all()
-    return render_template('partials/projects_list.html', projects=projects)
+    # Get the project
+    project = Project.query.get(project_id)
+    if project:
+        # Always return the specific project for sprint operations
+        # Sprint operations are always performed from the project detail page
+        return render_template('partials/projects_list.html', projects=[project])
+    else:
+        # If project was deleted, redirect to dashboard
+        response = make_response('')
+        response.headers['HX-Redirect'] = url_for('main.index')
+        return response
 
 # Project HTMX Routes
 
@@ -527,7 +574,7 @@ def update_project(project_id):
         project_id: ID of the project to update
         
     Returns:
-        Redirect to the index page with the updated project
+        Rendered HTML fragment of the updated project
     """
     project = Project.query.get_or_404(project_id)
     
@@ -539,9 +586,18 @@ def update_project(project_id):
     
     db.session.commit()
     
-    # Return all projects
-    projects = Project.query.all()
-    return render_template('partials/projects_list.html', projects=projects)
+    # Check if we're on a project detail page
+    request_url = request.headers.get('HX-Request-URL', '')
+    print(f"DEBUG - Request URL: {request_url}")
+    print(f"DEBUG - Looking for: /project/{project_id}")
+    print(f"DEBUG - Match found: {f'/project/{project_id}' in request_url}")
+    if f'/project/{project_id}' in request_url:
+        # Return only the specific project for project detail page
+        return render_template('partials/project_detail.html', project=project)
+    else:
+        # Return all projects for the dashboard or index page
+        projects = Project.query.all()
+        return render_template('partials/projects_list.html', projects=projects)
 
 @htmx_bp.route('/projects/<int:project_id>/delete', methods=['DELETE', 'POST'])
 def delete_project(project_id):
@@ -552,7 +608,7 @@ def delete_project(project_id):
         project_id: ID of the project to delete
         
     Returns:
-        Redirect to the index page without the deleted project
+        Redirect to dashboard if on project detail page, otherwise return updated projects list
     """
     project = Project.query.get_or_404(project_id)
     
@@ -566,6 +622,17 @@ def delete_project(project_id):
     db.session.delete(project)
     db.session.commit()
     
-    # Return all projects
-    projects = Project.query.all()
-    return render_template('partials/projects_list.html', projects=projects)
+    # Check if we're on a project detail page
+    request_url = request.headers.get('HX-Request-URL', '')
+    print(f"DEBUG - Request URL: {request_url}")
+    print(f"DEBUG - Looking for: /project/{project_id}")
+    print(f"DEBUG - Match found: {f'/project/{project_id}' in request_url}")
+    if f'/project/{project_id}' in request_url:
+        # If on project detail page, redirect to dashboard
+        response = make_response('')
+        response.headers['HX-Redirect'] = url_for('main.index')
+        return response
+    else:
+        # Return all projects for the dashboard or index page
+        projects = Project.query.all()
+        return render_template('partials/projects_list.html', projects=projects)

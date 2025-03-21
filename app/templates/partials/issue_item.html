@@ -3,9 +3,10 @@
     <div class="form-check">
         <input class="form-check-input" type="checkbox" id="issue-checkbox-{{ issue.id }}" 
                {{ 'checked' if issue.completed else '' }}
-               hx-put="/htmx/issues/{{ issue.id }}/update"
+               hx-post="/htmx/issues/{{ issue.id }}/toggle"
                hx-target="#projectsContainer"
                hx-swap="innerHTML"
+               hx-preserve="true"
                name="completed">
         <label class="form-check-label ms-2" for="issue-checkbox-{{ issue.id }}">
             <small class="text-muted">Issue #{{ issue.id }}</small>
