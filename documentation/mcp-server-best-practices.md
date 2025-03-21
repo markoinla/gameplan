@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This document outlines the best practices implemented in the GamePlan MCP server to ensure reliable, secure, and performant operation. These implementations follow the official MCP documentation guidelines and address common issues encountered in MCP server deployments.
+This document outlines the best practices implemented in the BTG MCP server to ensure reliable, secure, and performant operation. These implementations follow the official MCP documentation guidelines and address common issues encountered in MCP server deployments.
 
 ## 1. Error Handling
 

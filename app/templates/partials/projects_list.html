@@ -10,13 +10,6 @@
                           hx-swap="innerHTML">
                         <i class="fas fa-edit"></i>
                     </span>
-                    <span class="action-icon delete-project-btn" 
-                          hx-confirm="Are you sure you want to delete this project? This will also delete all sprints, tasks, and issues associated with this project."
-                          hx-post="/htmx/projects/{{ project.id }}/delete" 
-                          hx-target="#projectsContainer" 
-                          hx-swap="innerHTML">
-                        <i class="fas fa-trash"></i>
-                    </span>
                 </div>
             </div>
             <div class="card-body">
@@ -25,9 +18,10 @@
                 
                 <!-- Description Section - Collapsible with Alpine.js -->
                 <div x-data="{ descriptionOpen: true }">
-                    <div class="d-flex justify-content-between align-items-center mb-3 cursor-pointer"
-                         @click="descriptionOpen = !descriptionOpen">
-                        <h4 class="mb-0">Description</h4>
+                    <div class="d-flex justify-content-between align-items-center mb-3 cursor-pointer border-bottom pb-2"
+                         @click="descriptionOpen = !descriptionOpen"
+                         :class="{ 'border-bottom-0': descriptionOpen }">
+                        <h5 class="mb-0">Description</h5>
                         <i class="fas" :class="descriptionOpen ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
                     </div>
                     <div x-show="descriptionOpen" x-transition class="mb-4">
@@ -36,26 +30,28 @@
                 </div>
 
                 <!-- Requirements Section - Collapsible with Alpine.js -->
-                <div x-data="{ requirementsOpen: true }">
-                    <div class="d-flex justify-content-between align-items-center mb-3 cursor-pointer"
-                         @click="requirementsOpen = !requirementsOpen">
-                        <h4 class="mb-0">Requirements</h4>
+                <div x-data="{ requirementsOpen: false }">
+                    <div class="d-flex justify-content-between align-items-center mb-3 cursor-pointer border-bottom pb-2"
+                         @click="requirementsOpen = !requirementsOpen"
+                         :class="{ 'border-bottom-0': requirementsOpen }">
+                        <h5 class="mb-0">Requirements</h5>
                         <i class="fas" :class="requirementsOpen ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
                     </div>
                     <div x-show="requirementsOpen" x-transition class="mb-4">
-                        <p class="project-requirements">{{ project.requirements|markdown or 'No requirements provided.' }}</p>
+                        <div class="project-requirements">{{ project.requirements|markdown or 'No requirements provided.' }}</div>
                     </div>
                 </div>
 
                 <!-- Implementation Details Section - Collapsible with Alpine.js -->
-                <div x-data="{ implementationDetailsOpen: true }">
-                    <div class="d-flex justify-content-between align-items-center mb-3 cursor-pointer"
-                         @click="implementationDetailsOpen = !implementationDetailsOpen">
-                        <h4 class="mb-0">Implementation Details</h4>
+                <div x-data="{ implementationDetailsOpen: false }">
+                    <div class="d-flex justify-content-between align-items-center mb-3 cursor-pointer border-bottom pb-2"
+                         @click="implementationDetailsOpen = !implementationDetailsOpen"
+                         :class="{ 'border-bottom-0': implementationDetailsOpen }">
+                        <h5 class="mb-0">Implementation Details</h5>
                         <i class="fas" :class="implementationDetailsOpen ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
                     </div>
                     <div x-show="implementationDetailsOpen" x-transition class="mb-4">
-                        <p class="project-implementation-details">{{ project.implementation_details|markdown or 'No implementation details provided.' }}</p>
+                        <div class="project-implementation-details">{{ project.implementation_details|markdown or 'No implementation details provided.' }}</div>
                     </div>
                 </div>
 
@@ -103,9 +99,10 @@
                                             </span>
                                             <span class="action-icon delete-sprint-btn me-3" 
                                                   hx-confirm="Are you sure you want to delete this sprint? This will also delete all tasks and issues in this sprint."
-                                                  hx-post="/htmx/sprints/{{ sprint.id }}/delete" 
-                                                  hx-target="#project-sprints-{{ project.id }}" 
-                                                  hx-swap="outerHTML"
+                                                  hx-delete="/htmx/sprints/{{ sprint.id }}/delete" 
+                                                  hx-target="#projectsContainer" 
+                                                  hx-swap="innerHTML"
+                                                  hx-preserve="true"
                                                   @click.stop>
                                                 <i class="fas fa-trash"></i>
                                             </span>
@@ -209,7 +206,7 @@
     {% endfor %}
 {% else %}
     <div class="text-center p-5 border rounded">
-        <h3 class="mb-3">Welcome to GamePlan!</h3>
+        <h3 class="mb-3">Welcome to Build Together (BTG)!</h3>
         <p class="mb-4">You don't have any projects yet. Create your first project to get started.</p>
         <button id="createFirstProjectBtn" class="btn btn-primary" 
                 hx-get="/htmx/projects/form" 

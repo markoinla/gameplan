@@ -42,6 +42,7 @@
                     hx-delete="/htmx/sprints/{{ sprint.id }}/delete"
                     hx-target="#projectsContainer"
                     hx-swap="innerHTML"
+                    hx-preserve="true"
                     @click.stop>
                 <i class="fas fa-trash"></i>
             </button>

@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """
-Simple MCP Server for GamePlan integration with Windsurf
+Simple MCP Server for Build Together integration with Windsurf
 
 This server implements the Model Context Protocol (MCP) using stdio transport
 to integrate with Windsurf. It provides tools for interacting with the
-GamePlan application API.
+Build Together application API.
 """
 
 import os
@@ -30,12 +30,12 @@ logging.basicConfig(
 )
 
 # Create a logger for the MCP server
-logger = logging.getLogger("gameplan_mcp")
+logger = logging.getLogger("buildtogether_mcp")
 
-# Define API URL for the GamePlan API
-GAMEPLAN_API_URL = os.environ.get("GAMEPLAN_BASE_URL", "http://127.0.0.1:5001") + "/mcp"
+# Define API URL for the Build Together (BTG) API
+BTG_API_URL = os.environ.get("BTG_BASE_URL", "http://127.0.0.1:5001") + "/mcp"
 
-logger.info(f"Using GamePlan API URL: {GAMEPLAN_API_URL}")
+logger.info(f"Using Build Together API URL: {BTG_API_URL}")
 
 # Configuration settings
 CONFIG = {
@@ -56,7 +56,7 @@ CONFIG = {
 TOOLS = [
     {
         "name": "list_projects",
-        "description": "List all projects in GamePlan",
+        "description": "List all projects in Build Together (BTG)",
         "inputSchema": {
             "type": "object",
             "properties": {}
@@ -78,7 +78,7 @@ TOOLS = [
     },
     {
         "name": "create_project",
-        "description": "Create a new project in GamePlan",
+        "description": "Create a new project in Build Together (BTG)",
         "inputSchema": {
             "type": "object",
             "properties": {
@@ -378,7 +378,7 @@ async def execute_tool(tool_name: str, parameters: Dict[str, Any]) -> Dict[str, 
         # First, send a ping to establish the connection
         try:
             async with httpx.AsyncClient() as client:
-                ping_response = await client.get(f"{GAMEPLAN_API_URL}/ping", timeout=2.0)
+                ping_response = await client.get(f"{BTG_API_URL}/ping", timeout=2.0)
                 logger.debug(f"[{request_id}] Ping response: {ping_response.status_code}")
         except Exception as e:
             logger.warning(f"[{request_id}] Ping failed, but continuing: {e}")
@@ -444,9 +444,9 @@ async def execute_tool(tool_name: str, parameters: Dict[str, Any]) -> Dict[str, 
                 logger.warning(f"[{request_id}] Rate limit exceeded for tool: {tool_name}")
                 return format_error_response("Rate limit exceeded. Please try again later.", 429)
         
-        # Execute the tool against the GamePlan API
+        # Execute the tool against the Build Together API
         # Important: We're calling /execute endpoint instead of /tools/{tool_name}
-        url = f"{GAMEPLAN_API_URL}/execute"
+        url = f"{BTG_API_URL}/execute"
         
         try:
             # Format the request according to what the Flask app expects
@@ -1100,7 +1100,7 @@ if __name__ == "__main__":
     signal.signal(signal.SIGTERM, signal_handler)
     
     # Log startup information
-    logger.info("Starting GamePlan MCP Server")
+    logger.info("Starting Build Together MCP Server")
     
     # Run the main loop
     asyncio.run(main_loop())

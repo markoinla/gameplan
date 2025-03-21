@@ -2,7 +2,7 @@
 MCP API Endpoints
 
 This module provides API endpoints for the standalone MCP server to interact with
-the GamePlan application. These endpoints implement the necessary functionality
+the Build Together (BTG) application. These endpoints implement the necessary functionality
 for the MCP tools without duplicating the MCP server implementation.
 """
 
@@ -31,7 +31,7 @@ def get_tool_parameters(tool_name):
 @mcp_api_bp.route('/', methods=['GET'])
 def mcp_root():
     """Root endpoint for the MCP server"""
-    return jsonify({"message": "GamePlan MCP Server is running"})
+    return jsonify({"message": "Build Together (BTG) MCP Server is running"})
 
 @mcp_api_bp.route('/ping', methods=['GET'])
 def ping():

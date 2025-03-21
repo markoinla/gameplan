@@ -586,18 +586,9 @@ def update_project(project_id):
     
     db.session.commit()
     
-    # Check if we're on a project detail page
-    request_url = request.headers.get('HX-Request-URL', '')
-    print(f"DEBUG - Request URL: {request_url}")
-    print(f"DEBUG - Looking for: /project/{project_id}")
-    print(f"DEBUG - Match found: {f'/project/{project_id}' in request_url}")
-    if f'/project/{project_id}' in request_url:
-        # Return only the specific project for project detail page
-        return render_template('partials/project_detail.html', project=project)
-    else:
-        # Return all projects for the dashboard or index page
-        projects = Project.query.all()
-        return render_template('partials/projects_list.html', projects=projects)
+    # Always return the specific project for project operations
+    # Project update operations are always performed from the project detail page
+    return render_template('partials/projects_list.html', projects=[project])
 
 @htmx_bp.route('/projects/<int:project_id>/delete', methods=['DELETE', 'POST'])
 def delete_project(project_id):
@@ -608,7 +599,7 @@ def delete_project(project_id):
         project_id: ID of the project to delete
         
     Returns:
-        Redirect to dashboard if on project detail page, otherwise return updated projects list
+        Redirect to the current page or to dashboard if on project detail page
     """
     project = Project.query.get_or_404(project_id)
     
@@ -622,17 +613,17 @@ def delete_project(project_id):
     db.session.delete(project)
     db.session.commit()
     
-    # Check if we're on a project detail page
+    # Get the current URL
     request_url = request.headers.get('HX-Request-URL', '')
-    print(f"DEBUG - Request URL: {request_url}")
-    print(f"DEBUG - Looking for: /project/{project_id}")
-    print(f"DEBUG - Match found: {f'/project/{project_id}' in request_url}")
+    
+    # Create a response with a refresh header
+    response = make_response('')
+    
+    # If on project detail page, redirect to dashboard
     if f'/project/{project_id}' in request_url:
-        # If on project detail page, redirect to dashboard
-        response = make_response('')
         response.headers['HX-Redirect'] = url_for('main.index')
-        return response
     else:
-        # Return all projects for the dashboard or index page
-        projects = Project.query.all()
-        return render_template('partials/projects_list.html', projects=projects)
+        # For all other pages, refresh the current page
+        response.headers['HX-Refresh'] = 'true'
+    
+    return response

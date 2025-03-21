@@ -1,0 +1,23 @@
+{
+  "name": "gameplan",
+  "version": "1.0.0",
+  "description": "A Flask-based project management application specially designed for AI coding projects, with full Model Context Protocol (MCP) support for integration with AI assistants like Windsurf.",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/markoinla/gameplan.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/markoinla/gameplan/issues"
+  },
+  "homepage": "https://github.com/markoinla/gameplan#readme"
+}

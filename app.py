@@ -1,5 +1,5 @@
 """
-Main application entry point for the GamePlan project management application.
+Main application entry point for the BTG project management application.
 
 This file creates the Flask application instance and sets up the database.
 It also provides a CLI command for initializing the database.

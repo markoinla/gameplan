@@ -1,7 +1,7 @@
 """
-MCP Server Setup for GamePlan
+MCP Server Setup for BTG
 
-This module handles the integration between the GamePlan Flask application
+This module handles the integration between the BTG Flask application
 and the MCP server implementation. It sets up the necessary routes and
 connections for the MCP server to communicate with the application.
 """

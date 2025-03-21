@@ -1,5 +1,5 @@
 """
-Markdown parser utility for GamePlan app.
+Markdown parser utility for BTG app.
 Provides functions to convert markdown text to HTML for display in the UI.
 """
 import markdown

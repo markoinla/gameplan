@@ -1,7 +1,7 @@
 /**
- * GamePlan - Main JavaScript
+ * BTG - Main JavaScript
  * 
- * This file contains the client-side JavaScript for the GamePlan application.
+ * This file contains the client-side JavaScript for the BTG application.
  * It handles API calls, UI interactions, and dynamic content updates.
  */
 

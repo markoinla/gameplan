@@ -1,7 +1,7 @@
 """
-Tests for the GamePlan API endpoints.
+Tests for the BTG API endpoints.
 
-This file contains tests for the RESTful API endpoints of the GamePlan application.
+This file contains tests for the RESTful API endpoints of the BTG application.
 It tests the CRUD operations for Projects, Sprints, Tasks, and Issues.
 """
 import os

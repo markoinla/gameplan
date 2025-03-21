@@ -1,4 +1,4 @@
-/* GamePlan Custom Styles */
+/* BTG Custom Styles */
 
 /* General Styles */
 body {
@@ -271,6 +271,88 @@ main {
 /* Empty State Styles */
 .text-muted {
   color: #6c757d;
+}
+
+/* Markdown Content Styling */
+.project-description h1, 
+.project-requirements h1, 
+.project-implementation-details h1 {
+  font-size: 1.5rem;
+  margin-top: 1rem;
+  margin-bottom: 0.75rem;
+  font-weight: 500;
+}
+
+.project-description h2, 
+.project-requirements h2, 
+.project-implementation-details h2 {
+  font-size: 1.3rem;
+  margin-top: 0.9rem;
+  margin-bottom: 0.6rem;
+  font-weight: 500;
+}
+
+.project-description h3, 
+.project-requirements h3, 
+.project-implementation-details h3 {
+  font-size: 1.15rem;
+  margin-top: 0.8rem;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.project-description h4, 
+.project-requirements h4, 
+.project-implementation-details h4 {
+  font-size: 1.05rem;
+  margin-top: 0.7rem;
+  margin-bottom: 0.4rem;
+  font-weight: 500;
+}
+
+.project-description h5, 
+.project-requirements h5, 
+.project-implementation-details h5 {
+  font-size: 1rem;
+  margin-top: 0.6rem;
+  margin-bottom: 0.3rem;
+  font-weight: 500;
+}
+
+.project-description h6, 
+.project-requirements h6, 
+.project-implementation-details h6 {
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.3rem;
+  font-weight: 500;
+}
+
+/* Additional markdown styling for consistency */
+.project-description p, 
+.project-requirements p, 
+.project-implementation-details p {
+  margin-bottom: 0.8rem;
+}
+
+.project-description ul, 
+.project-requirements ul, 
+.project-implementation-details ul,
+.project-description ol, 
+.project-requirements ol, 
+.project-implementation-details ol {
+  padding-left: 1.5rem;
+  margin-bottom: 0.8rem;
+}
+
+.project-description code, 
+.project-requirements code, 
+.project-implementation-details code {
+  background-color: rgba(0, 0, 0, 0.05);
+  border-radius: 3px;
+  padding: 0.2em 0.4em;
+  font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+  font-size: 85%;
 }
 
 /* Responsive Adjustments */

@@ -1,4 +1,4 @@
-# GamePlan
+# BTG
 
 A Flask-based project management application specially designed for AI coding projects, with full Model Context Protocol (MCP) support for integration with AI assistants like Windsurf.
 
@@ -16,7 +16,7 @@ A Flask-based project management application specially designed for AI coding pr
 
 ## Screenshots
 
-The GamePlan application features a clean, intuitive interface:
+The BTG application features a clean, intuitive interface:
 
 - **Project Dashboard**: View all your projects and their sprints
 - **Sprint View**: Manage tasks and issues within each sprint
@@ -51,7 +51,7 @@ The application will be available at http://127.0.0.1:5001 by default.
 ## Project Structure
 
 ```
-GAMEPLAN/
+BTG/
 ├── app/                    # Application package
 │   ├── api/                # API endpoints
 │   ├── models/             # Database models
@@ -70,7 +70,7 @@ GAMEPLAN/
 
 ## User Interface
 
-GamePlan uses a combination of technologies to create a smooth user experience:
+BTG uses a combination of technologies to create a smooth user experience:
 
 - **Bootstrap 5**: For responsive styling and components
 - **HTMX**: For dynamic content updates without full page reloads
@@ -135,24 +135,24 @@ curl -X POST http://127.0.0.1:5001/mcp/execute -H "Content-Type: application/jso
 
 ## MCP Integration
 
-GamePlan includes MCP (Model Context Protocol) support for integration with AI assistants like Windsurf. This allows AI assistants to interact with the application programmatically.
+BTG includes MCP (Model Context Protocol) support for integration with AI assistants like Windsurf. This allows AI assistants to interact with the application programmatically.
 
 ### Setting Up MCP with Windsurf
 
-1. Start the GamePlan application:
+1. Start the BTG application:
 ```python
 python app.py
 ```
 
 2. Configure Windsurf by copying the `mcp_config.json` file to your Windsurf configuration directory.
 
-3. In Windsurf, select "GamePlan" as your MCP provider.
+3. In Windsurf, select "BTG" as your MCP provider.
 
-> **Note**: When using GamePlan with AI coding tools like Windsurf or Cursor, the tool names might be prefixed (e.g., with `mcp0_`). This is handled automatically by these tools, so you can refer to them without the prefix in your prompts.
+> **Note**: When using BTG with AI coding tools like Windsurf or Cursor, the tool names might be prefixed (e.g., with `mcp0_`). This is handled automatically by these tools, so you can refer to them without the prefix in your prompts.
 
 ### Available MCP Tools
 
-Here are the main MCP tools available for GamePlan:
+Here are the main MCP tools available for BTG:
 
 **Project Management:**
 - `list_projects` - List all projects
@@ -188,7 +188,7 @@ The application runs in debug mode by default when started with `python app.py`.
 
 ### Database Migrations
 
-GamePlan uses Flask-Migrate for database schema evolution:
+BTG uses Flask-Migrate for database schema evolution:
 
 1. Initialize migrations (first time only):
 ```bash
