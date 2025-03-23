@@ -71,3 +71,32 @@ def project_detail(project_id):
     
     # Render the project detail template
     return render_template('project_detail.html', project=project)
+
+@main_bp.route('/project/<int:project_id>/sprint/<int:sprint_id>')
+def sprint_detail(project_id, sprint_id):
+    """
+    Route that renders a single sprint within a project context
+    
+    This loads a specific sprint by ID within a specific project context
+    and renders it on a dedicated page. This provides a focused view of
+    a single sprint with all its tasks and issues.
+    
+    Args:
+        project_id: ID of the project the sprint belongs to
+        sprint_id: ID of the sprint to display
+        
+    Returns:
+        Rendered sprint_detail.html template with sprint and project context
+    """
+    # Verify the project exists
+    project = Project.query.get_or_404(project_id)
+    
+    # Get the sprint and verify it belongs to this project
+    sprint = Sprint.query.get_or_404(sprint_id)
+    
+    # Ensure the sprint belongs to the specified project
+    if sprint.project_id != project_id:
+        return "Sprint not found in this project", 404
+    
+    # Render the sprint detail in project context
+    return render_template('sprint_detail.html', project=project, sprint=sprint)
