@@ -1,5 +1,7 @@
 from app import db
 from datetime import datetime
+from app.models.issue import Issue
+from app.models.task import Task
 
 class Sprint(db.Model):
     """
@@ -60,39 +62,23 @@ class Sprint(db.Model):
         
     def get_sorted_tasks(self):
         """
-        Get tasks sorted by completion status and creation date
-        - Incomplete tasks first (oldest to newest)
-        - Completed tasks last (oldest to newest)
+        Get tasks sorted by:
+        1. Open tasks first (oldest first)
+        2. Closed tasks second (oldest first)
         """
-        # Get all tasks for this sprint
-        all_tasks = self.tasks.all()
-        
-        # Sort tasks: incomplete tasks first (oldest first), then completed tasks (oldest first)
-        incomplete_tasks = sorted([task for task in all_tasks if not task.completed], 
-                                key=lambda task: task.created_at)  # Oldest first
-        completed_tasks = sorted([task for task in all_tasks if task.completed], 
-                               key=lambda task: task.created_at)  # Oldest first
-        
-        # Combine the sorted lists
-        return incomplete_tasks + completed_tasks
+        open_tasks = self.tasks.filter_by(completed=False).order_by(Task.created_at.asc()).all()
+        closed_tasks = self.tasks.filter_by(completed=True).order_by(Task.created_at.asc()).all()
+        return open_tasks + closed_tasks
     
     def get_sorted_issues(self):
         """
-        Get issues sorted by completion status and creation date
-        - Incomplete issues first (oldest to newest)
-        - Completed issues last (oldest to newest)
+        Get issues sorted by:
+        1. Open issues first (oldest first)
+        2. Closed issues second (oldest first)
         """
-        # Get all issues for this sprint
-        all_issues = self.issues.all()
-        
-        # Sort issues: incomplete issues first (oldest first), then completed issues (oldest first)
-        incomplete_issues = sorted([issue for issue in all_issues if not issue.completed], 
-                                 key=lambda issue: issue.created_at)  # Oldest first
-        completed_issues = sorted([issue for issue in all_issues if issue.completed], 
-                                key=lambda issue: issue.created_at)  # Oldest first
-        
-        # Combine the sorted lists
-        return incomplete_issues + completed_issues
+        open_issues = self.issues.filter_by(completed=False).order_by(Issue.created_at.asc()).all()
+        closed_issues = self.issues.filter_by(completed=True).order_by(Issue.created_at.asc()).all()
+        return open_issues + closed_issues
     
     def to_dict_simple(self):
         """Convert sprint to dictionary without related objects for API responses"""

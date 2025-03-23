@@ -12,12 +12,9 @@ module.exports = {
       // We can extend the default theme here later if needed
     },
   },
-  // Include DaisyUI as a plugin
+  // Include DaisyUI and Typography plugins
   plugins: [
-    require('daisyui')
-  ],
-  // DaisyUI configuration
-  daisyui: {
-    themes: ["dark", "light"], // Set dark as the first theme (default)
-  }
+    require('daisyui'),
+    require('@tailwindcss/typography')
+  ]
 }

@@ -146,7 +146,7 @@ def create_issue():
 @htmx_bp.route('/issues/form/<int:sprint_id>', methods=['GET'])
 def get_issue_form(sprint_id):
     """
-    HTMX endpoint to get the issue creation form
+    HTMX endpoint to get the issue form (for both creation and editing)
     
     Args:
         sprint_id: ID of the sprint to add the issue to
@@ -154,11 +154,21 @@ def get_issue_form(sprint_id):
     Returns:
         Rendered HTML fragment of the issue form
     """
-    # Check if sprint exists
-    sprint = Sprint.query.get_or_404(sprint_id)
-    
-    # Return the issue form HTML fragment
     return render_template('partials/issue_form.html', sprint_id=sprint_id)
+
+@htmx_bp.route('/issues/<int:issue_id>/edit', methods=['GET'])
+def get_issue_edit_form(issue_id):
+    """
+    HTMX endpoint to get the issue edit form
+    
+    Args:
+        issue_id: ID of the issue to edit
+        
+    Returns:
+        Rendered HTML fragment of the issue form
+    """
+    issue = Issue.query.get_or_404(issue_id)
+    return render_template('partials/issue_form.html', issue=issue)
 
 @htmx_bp.route('/tasks/<int:task_id>/edit', methods=['GET'])
 def edit_task_form(task_id):
@@ -169,10 +179,10 @@ def edit_task_form(task_id):
         task_id: ID of the task to edit
         
     Returns:
-        Rendered HTML fragment of the task edit form
+        Rendered HTML fragment of the task form
     """
     task = Task.query.get_or_404(task_id)
-    return render_template('partials/task_edit_form.html', task=task)
+    return render_template('partials/task_form.html', task=task)
 
 @htmx_bp.route('/tasks/<int:task_id>/update', methods=['PUT', 'POST'])
 def update_task(task_id):
@@ -258,23 +268,6 @@ def star_task(task_id):
     return render_template('partials/projects_list.html', projects=[project])
 
 # Issue HTMX Routes
-
-@htmx_bp.route('/issues/<int:issue_id>/edit', methods=['GET'])
-def edit_issue_form(issue_id):
-    """
-    HTMX endpoint to get the issue edit form
-    
-    Args:
-        issue_id: ID of the issue to edit
-        
-    Returns:
-        Rendered HTML fragment of the issue edit form
-    """
-    # Get the issue
-    issue = Issue.query.get_or_404(issue_id)
-    
-    # Return the issue edit form HTML fragment
-    return render_template('partials/issue_edit_form.html', issue=issue)
 
 @htmx_bp.route('/issues/<int:issue_id>', methods=['GET'])
 def get_issue(issue_id):
@@ -407,10 +400,14 @@ def edit_sprint_form(sprint_id):
         sprint_id: ID of the sprint to edit
         
     Returns:
-        Rendered HTML fragment of the sprint edit form
+        Rendered HTML fragment of the sprint form
     """
-    sprint = Sprint.query.get_or_404(sprint_id)
-    return render_template('partials/sprint_edit_form.html', sprint=sprint)
+    try:
+        sprint = Sprint.query.get_or_404(sprint_id)
+        return render_template('partials/sprint_form.html', sprint=sprint)
+    except Exception as e:
+        print(f"Error in edit_sprint_form: {str(e)}")
+        return "Error loading sprint form", 500
 
 @htmx_bp.route('/sprints', methods=['POST'])
 def create_sprint():

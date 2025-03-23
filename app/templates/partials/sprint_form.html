@@ -1,34 +1,48 @@
-<div class="card mb-3 sprint-card">
-    <div class="card-header">
-        <h5 class="mb-0">Add New Sprint</h5>
-    </div>
-    <div class="card-body">
-        <form hx-post="/htmx/sprints" 
-              hx-target="#projectsContainer" 
-              hx-swap="innerHTML"
-              hx-preserve="true"
-              hx-on::after-request="if(event.detail.successful) { closeSprintForm('{{ project.id }}'); }">
-            <input type="hidden" name="project_id" value="{{ project.id }}">
-            <div class="mb-3">
-                <label for="sprintName" class="form-label">Sprint Name</label>
-                <input type="text" class="form-control" id="sprintName" name="name" required>
-            </div>
-            <div class="mb-3">
-                <label for="sprintStatus" class="form-label">Status</label>
-                <select class="form-select" id="sprintStatus" name="status">
-                    <option value="Planned">Planned</option>
-                    <option value="Active">Active</option>
-                    <option value="Completed">Completed</option>
-                </select>
-            </div>
-            <div class="mb-3">
-                <label for="sprintDescription" class="form-label">Description</label>
-                <textarea class="form-control auto-expand" id="sprintDescription" name="description" rows="3"></textarea>
-            </div>
-            <div class="d-flex justify-content-end">
-                <button type="button" class="btn btn-sm btn-secondary me-2" onclick="closeSprintForm('{{ project.id }}')">Cancel</button>
-                <button type="submit" class="btn btn-sm btn-primary">Save Sprint</button>
-            </div>
-        </form>
-    </div>
+<!-- Sprint Form -->
+<div class="mb-4">
+    <h3 class="text-secondary font-bold mb-4">{{ 'Edit Sprint' if sprint else 'Add New Sprint' }}</h3>
+    <form hx-{{ 'put' if sprint else 'post' }}="{{ '/htmx/sprints/' + sprint.id|string if sprint else '/htmx/sprints' }}" 
+          hx-target="#projectsContainer" 
+          hx-swap="innerHTML"
+          hx-preserve="true"
+          data-form-id="{{ 'sprint-edit-form-container-' + sprint.id|string if sprint else 'sprint-form-container-' + project.id|string }}"
+          hx-on::after-request="if(event.detail.successful) { closeFormContainer(this.dataset.formId); }">
+        <input type="hidden" name="project_id" value="{{ sprint.project_id if sprint else project.id }}">
+        <div class="space-y-2 mb-4">
+            <label for="sprintName" class="block font-medium">Sprint Name</label>
+            <input type="text" 
+                   class="input input-bordered w-full" 
+                   id="sprintName" 
+                   name="name" 
+                   value="{{ sprint.name if sprint else '' }}" 
+                   required>
+        </div>
+        <div class="space-y-2 mb-4">
+            <label for="sprintStatus" class="block font-medium">Status</label>
+            <select class="select select-bordered w-full" 
+                    id="sprintStatus" 
+                    name="status">
+                <option value="Planned" {{ 'selected' if sprint and sprint.status == 'Planned' else '' }}>Planned</option>
+                <option value="Active" {{ 'selected' if sprint and sprint.status == 'Active' else '' }}>Active</option>
+                <option value="Completed" {{ 'selected' if sprint and sprint.status == 'Completed' else '' }}>Completed</option>
+            </select>
+        </div>
+        <div class="space-y-2 mb-4">
+            <label for="sprintDescription" class="block font-medium">Description</label>
+            <textarea class="textarea textarea-bordered w-full min-h-[6rem] auto-expand" 
+                      id="sprintDescription" 
+                      name="description" 
+                      rows="3">{{ sprint.description if sprint else '' }}</textarea>
+        </div>
+        <div class="flex justify-end gap-2">
+            <button type="button" 
+                    class="btn btn-sm btn-ghost" 
+                    onclick="closeFormContainer(this.closest('form').dataset.formId)">
+                Cancel
+            </button>
+            <button type="submit" class="btn btn-sm btn-primary">
+                {{ 'Save Changes' if sprint else 'Save Sprint' }}
+            </button>
+        </div>
+    </form>
 </div>

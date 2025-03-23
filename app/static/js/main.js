@@ -36,10 +36,8 @@ function updateSprintContainer(sprintId) {
                         issuesContainer.innerHTML = data.data.issuesHtml || '';
                     }
                     
-                    // Initialize any new tooltips or popovers
-                    initializeBootstrapComponents();
+                    resolve();
                 }
-                resolve();
             } else {
                 reject(new Error('Failed to update sprint content'));
             }
@@ -78,36 +76,6 @@ function showNotification(message, type = 'success') {
         }, 300);
     }, 3000);
 }
-
-/**
- * Initialize Bootstrap components (tooltips, popovers, etc.)
- */
-function initializeBootstrapComponents() {
-    // Initialize tooltips
-    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-    tooltipTriggerList.map(function (tooltipTriggerEl) {
-        return new bootstrap.Tooltip(tooltipTriggerEl, {
-            container: 'body'
-        });
-    });
-    
-    // Initialize popovers
-    const popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
-    popoverTriggerList.map(function (popoverTriggerEl) {
-        return new bootstrap.Popover(popoverTriggerEl, {
-            container: 'body',
-            html: true
-        });
-    });
-}
-
-// Project and Sprint Management - Removed in favor of HTMX
-// The following functions were previously causing errors:
-// - openProjectModal
-// - openSprintModal
-// - editProject
-// - confirmDeleteProject
-// These have been replaced with HTMX attributes in the HTML templates
 
 /**
  * Universal utility function to close any form container

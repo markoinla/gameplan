@@ -1,26 +1,60 @@
-<form id="htmx-issue-form" 
-      hx-post="/htmx/issues/create" 
-      hx-target="#projectsContainer" 
-      hx-swap="innerHTML"
-      hx-preserve="true"
-      hx-on::after-request="if(event.detail.successful) { closeIssueForm('{{ sprint_id }}'); }">
-    <input type="hidden" name="sprint_id" value="{{ sprint_id }}">
-    <div class="mb-3">
-        <label for="issue-details-{{ sprint_id }}" class="form-label">Issue Details <span class="text-danger">*</span></label>
-        <textarea class="form-control auto-expand" id="issue-details-{{ sprint_id }}" name="details" rows="3" required></textarea>
-    </div>
-    <div class="mb-3 form-check">
-        <input type="checkbox" class="form-check-input" id="issue-completed-{{ sprint_id }}" name="completed">
-        <label class="form-check-label" for="issue-completed-{{ sprint_id }}">Mark as Completed</label>
-    </div>
-    <div class="mb-3 form-check">
-        <input type="checkbox" class="form-check-input" id="issue-starred-{{ sprint_id }}" name="starred">
-        <label class="form-check-label" for="issue-starred-{{ sprint_id }}">
-            <i class="bi bi-star-fill text-warning me-1"></i> Mark as Important
-        </label>
-    </div>
-    <div class="d-flex justify-content-end">
-        <button type="button" class="btn btn-sm btn-secondary me-2" onclick="closeIssueForm('{{ sprint_id }}')">Cancel</button>
-        <button type="submit" class="btn btn-sm btn-primary">Save Issue</button>
-    </div>
-</form>
+<!-- Issue Form with DaisyUI Classes -->
+<div class="card bg-base-100 shadow-sm p-4" id="{{ 'issue-' + issue.id|string if issue else 'issue-form-container-' + sprint_id|string }}">
+    <h3 class="text-lg font-semibold mb-4">{{ 'Edit Issue' if issue else 'Add New Issue' }}</h3>
+    <form id="htmx-issue-form" 
+          hx-{{ 'put' if issue else 'post' }}="{{ '/htmx/issues/' + issue.id|string + '/update' if issue else '/htmx/issues/create' }}" 
+          hx-target="#projectsContainer" 
+          hx-swap="innerHTML"
+          hx-preserve="true"
+          data-form-id="{{ 'issue-' + issue.id|string if issue else 'issue-form-container-' + sprint_id|string }}"
+          hx-on::after-request="if(event.detail.successful) { closeFormContainer(this.dataset.formId); }">
+        <input type="hidden" name="sprint_id" value="{{ issue.sprint_id if issue else sprint_id }}">
+        
+        <!-- Issue Details -->
+        <div class="form-control mb-4">
+            <label for="issue-details-{{ issue.id if issue else sprint_id }}" class="label">
+                <span class="label-text font-medium">Issue Details <span class="text-error">*</span></span>
+            </label>
+            <textarea class="textarea textarea-bordered w-full min-h-[6rem] auto-expand" 
+                      id="issue-details-{{ issue.id if issue else sprint_id }}" 
+                      name="details" 
+                      required>{{ issue.details if issue else '' }}</textarea>
+        </div>
+
+        <!-- Issue Status -->
+        <div class="form-control gap-2 mb-4">
+            <label class="label cursor-pointer justify-start gap-2">
+                <input type="checkbox" 
+                       class="checkbox checkbox-sm" 
+                       id="issue-completed-{{ issue.id if issue else sprint_id }}" 
+                       name="completed"
+                       {{ 'checked' if issue and issue.completed else '' }}>
+                <span class="label-text font-medium">Mark as Completed</span>
+            </label>
+
+            <label class="label cursor-pointer pl-4 justify-start gap-2">
+                <input type="checkbox" 
+                       class="checkbox checkbox-sm" 
+                       id="issue-starred-{{ issue.id if issue else sprint_id }}" 
+                       name="starred"
+                       {{ 'checked' if issue and issue.starred else '' }}>
+                <span class="label-text font-medium flex items-center gap-1">
+                    <i class="bi bi-star-fill text-warning"></i> 
+                    Mark as Important
+                </span>
+            </label>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="flex justify-end gap-2">
+            <button type="button" 
+                    class="btn btn-sm btn-ghost"
+                    onclick="closeFormContainer(this.closest('form').dataset.formId)">
+                Cancel
+            </button>
+            <button type="submit" class="btn btn-sm btn-primary">
+                {{ 'Save Changes' if issue else 'Add Issue' }}
+            </button>
+        </div>
+    </form>
+</div>

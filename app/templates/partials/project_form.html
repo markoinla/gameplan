@@ -1,5 +1,5 @@
 <!-- Project Form -->
-<div class="bg-base-100 p-4 border rounded-lg mb-4">
+<div class="p-8 mb-4">
     <h3 class="text-lg font-semibold mb-4">{{ 'Edit Project' if project else 'Add New Project' }}</h3>
     <form hx-post="{{ '/htmx/projects/' + project.id|string if project else '/htmx/projects' }}" 
           hx-target="#projectsContainer"
@@ -7,7 +7,7 @@
           hx-preserve="true"
           {% if project %}hx-on::after-request="if(event.detail.successful) { closeFormContainer('project-edit-form-container-{{ project.id }}'); }"{% endif %}>
         <div class="space-y-2 mb-4">
-            <label for="projectName" class="block font-medium">Project Name</label>
+            <label for="projectName" class="block text-xlfont-medium">Project Name</label>
             <input type="text" 
                    class="input input-bordered w-full" 
                    id="projectName" 
@@ -17,19 +17,19 @@
         </div>
         <div class="space-y-2 mb-4">
             <label for="projectDescription" class="block font-medium">Description (Optional)</label>
-            <textarea class="textarea textarea-bordered w-full min-h-[6rem] auto-expand" 
+            <textarea class="textarea w-full min-h-[6rem] auto-expand" 
                       id="projectDescription" 
                       name="description">{{ project.description if project else '' }}</textarea>
         </div>
         <div class="space-y-2 mb-4">
             <label for="projectRequirements" class="block font-medium">Requirements (Optional)</label>
-            <textarea class="textarea textarea-bordered w-full min-h-[6rem] auto-expand" 
+            <textarea class="textarea w-full min-h-[6rem] auto-expand" 
                       id="projectRequirements" 
                       name="requirements">{{ project.requirements if project else '' }}</textarea>
         </div>
         <div class="space-y-2 mb-4">
             <label for="projectImplementationDetails" class="block font-medium">Implementation Details (Optional)</label>
-            <textarea class="textarea textarea-bordered w-full min-h-[6rem] auto-expand" 
+            <textarea class="textarea w-full min-h-[6rem] auto-expand" 
                       id="projectImplementationDetails" 
                       name="implementation_details">{{ project.implementation_details if project else '' }}</textarea>
         </div>

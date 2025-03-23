@@ -1,115 +1,85 @@
 <!DOCTYPE html>
-<html lang="en" x-data="{ darkMode: localStorage.getItem('darkMode') === 'true' || localStorage.getItem('darkMode') === null }" :class="{ 'dark-mode': darkMode }">
+<html lang="en" x-data="{ darkMode: localStorage.getItem('darkMode') === 'true' }" :data-theme="darkMode ? 'btg-dark' : 'btg-light'">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Build Together (BTG) - AI Project Management{% endblock %}</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome for icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Bootstrap Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <!-- Font Awesome for icons (will migrate to Hero Icons later) -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='vendor/css/font-awesome.min.css') }}">
+    <!-- Bootstrap Icons (will migrate to Hero Icons later) -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='vendor/css/bootstrap-icons.css') }}">
     <!-- Tailwind CSS (locally compiled with DaisyUI) -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/tailwind.css') }}">
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <!-- Modern Dark Theme CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/modern-dark-theme.css') }}" x-bind:disabled="!darkMode">
     {% block extra_css %}{% endblock %}
 </head>
-<body x-data="{ darkMode: localStorage.getItem('darkMode') === 'true' }" 
-      x-init="$watch('darkMode', val => localStorage.setItem('darkMode', val))"
-      :class="{ 'dark': darkMode }">
+<body class="min-h-screen text-base-content"
+      x-init="
+        if (!localStorage.getItem('darkMode')) {
+            darkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            localStorage.setItem('darkMode', darkMode);
+        }
+        $watch('darkMode', value => localStorage.setItem('darkMode', value))
+      ">
     <!-- Navigation -->
-    <!-- Original Bootstrap Navbar (commented out for reference) -->
-    <!-- 
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <div class="container">
-            <a class="navbar-brand" href="{{ url_for('main.index') }}">
-                <img src="{{ url_for('static', filename='img/btg-logo.svg') }}" alt="BTG Logo" height="30" class="me-2">
-                Build Together - AI+Human Project Collab
-            </a>
-            <div class="ms-auto d-flex align-items-center">
-                <a href="{{ url_for('main.index') }}" class="btn btn-sm btn-outline-light me-3">
-                    <i class="fas fa-list me-1"></i>View Projects
-                </a>
-                <a class="nav-link theme-toggle" href="#" 
-                   @click.prevent="darkMode = !darkMode; localStorage.setItem('darkMode', darkMode)">
-                    <i class="fas" :class="darkMode ? 'fa-sun' : 'fa-moon'"></i>
-                </a>
-            </div>
-        </div>
-    </nav>
-    -->
-    
-    <!-- New Tailwind/DaisyUI Navbar -->
-    <div class="navbar bg-primary shadow-lg">
-      <div class="container mx-auto px-4">
-        <!-- Brand/Logo -->
+    <div class="text-primary-content">
+      <div class="container mx-auto navbar px-4">
         <div class="flex-1">
-          <a href="{{ url_for('main.index') }}" class="flex items-center text-xl font-semibold text-white">
-            <i class="fas fa-tasks mr-4"></i>
-            <span>Build Together - AI+Human Project Collab</span>
+          <!-- Brand/Logo -->
+          <a href="{{ url_for('main.index') }}" class="flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V19.5a2.25 2.25 0 0 0 2.25 2.25h.75m0-3H12m-.75 3h3.75m-3.75 0V18" />
+              </svg>
+              <span class="text-xl">Build Together - AI+Human Project Collab</span>
           </a>
         </div>
         
         <!-- Right side actions -->
-        <div class="flex-none flex items-center">
-          <!-- View Projects Button -->
-          <a href="{{ url_for('main.index') }}" class="btn btn-sm btn-outline text-white border-white hover:bg-white hover:text-primary mr-4">
-            <i class="fas fa-list mr-1"></i>View Projects
+        <div class="flex-none gap-4">
+          <!-- View Projects -->
+          <a href="{{ url_for('main.index') }}" class="btn btn-outline btn-sm">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+            </svg>
+            View Projects
           </a>
           
-          <!-- Theme Toggle Button -->
-          <button class="btn btn-sm btn-circle btn-ghost text-white" 
-                  @click.prevent="darkMode = !darkMode; localStorage.setItem('darkMode', darkMode)">
-            <i class="fas" :class="darkMode ? 'fa-sun' : 'fa-moon'"></i>
-          </button>
+          <!-- Theme toggle -->
+          <div class="btn btn-ghost btn-sm btn-circle"
+               x-on:click="darkMode = !darkMode"
+               x-cloak>
+            <template x-if="darkMode">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
+              </svg>
+            </template>
+            <template x-if="!darkMode">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+              </svg>
+            </template>
+          </div>
         </div>
       </div>
     </div>
 
     <!-- Main Content -->
-    <main class="container mx-auto px-4 py-4">
+    <main class="container mx-auto max-w-6xl px-4 py-4">
         {% block content %}{% endblock %}
     </main>
 
     <!-- Modals -->
     {% block modals %}{% endblock %}
 
-    <!-- Bootstrap JS Bundle with Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- jQuery (still useful for AJAX) -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- HTMX -->
-    <script src="https://cdn.jsdelivr.net/npm/htmx.org@1.9.10/dist/htmx.min.js"></script>
+    <script src="{{ url_for('static', filename='vendor/js/htmx.min.js') }}"></script>
     <!-- Configure HTMX -->
     <script>
-        // Configure HTMX to maintain scroll position by default
         htmx.config.defaultSettleDelay = 0;
         htmx.config.scrollBehavior = 'smooth';
     </script>
     <!-- Alpine.js and Plugins -->
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.5/dist/cdn.min.js"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.13.5/dist/cdn.min.js"></script>
-    <!-- Alpine.js Configuration -->
-    <script>
-        document.addEventListener('alpine:init', () => {
-            // Global Alpine.js configuration
-            Alpine.store('transitions', {
-                // Default transition settings
-                defaultTransition: {
-                    enter: 'transition ease-out duration-200',
-                    enterStart: 'opacity-0 transform -translate-y-2',
-                    enterEnd: 'opacity-100 transform translate-y-0',
-                    leave: 'transition ease-in duration-200',
-                    leaveStart: 'opacity-100 transform translate-y-0',
-                    leaveEnd: 'opacity-0 transform -translate-y-2'
-                }
-            });
-        });
-    </script>
+    <script defer src="{{ url_for('static', filename='vendor/js/alpine.min.js') }}"></script>
+    <script defer src="{{ url_for('static', filename='vendor/js/alpine-collapse.min.js') }}"></script>
     <!-- Custom JavaScript -->
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     {% block extra_js %}{% endblock %}
