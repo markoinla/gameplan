@@ -20,12 +20,7 @@
         <div class="d-flex align-items-center">
             <h5 class="mb-0 me-2">{{ sprint.name }}</h5>
             <small class="text-muted ms-2">(Created: {{ sprint.created_at.strftime('%Y-%m-%d') if sprint.created_at else '' }})</small>
-            <span class="badge rounded-pill" 
-                  :class="{
-                      'bg-secondary': '{{ sprint.status }}' === 'Planned',
-                      'bg-primary': '{{ sprint.status }}' === 'Active',
-                      'bg-success': '{{ sprint.status }}' === 'Completed'
-                  }">
+            <span class="badge {% if sprint.status == 'Active' %}badge-primary{% elif sprint.status == 'Completed' %}badge-success{% else %}badge-secondary{% endif %}">
                 {{ sprint.status }}
             </span>
         </div>

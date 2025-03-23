@@ -75,9 +75,9 @@
                                             <div>
                                                 <span class="sprint-name">{{ sprint.name }}</span>
                                                 <span class="badge 
-                                                    {% if sprint.status == 'Planned' %}bg-secondary
-                                                    {% elif sprint.status == 'Active' %}bg-primary
-                                                    {% elif sprint.status == 'Completed' %}bg-success
+                                                    {% if sprint.status == 'Planned' %}badge-secondary
+                                                    {% elif sprint.status == 'Active' %}badge-primary
+                                                    {% elif sprint.status == 'Completed' %}badge-success
                                                     {% endif %}">{{ sprint.status }}</span>
                                             </div>
                                             <div class="sprint-actions">

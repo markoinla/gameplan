@@ -4,12 +4,20 @@
 <!-- Project Form Container -->
 <div id="project-form-container"></div>
 
-<!-- Projects Container -->
-<div id="projectsContainer" class="mt-4 w-full">
-    {% with projects=[project] %}
-        {% include 'partials/projects_list.html' %}
-    {% endwith %}
+<!-- Main Content -->
+<div id="projectsContainer" class="w-full">
+  {% with projects=[project] %}
+    {% include 'partials/projects_list.html' %}
+  {% endwith %}
 </div>
+
+<!-- Sprint Detail Content for HTMX updates -->
+<div id="sprint-detail-content"></div>
+{% endblock %}
+
+{% block sidebar %}
+  <!-- Include the sprint sidebar here -->
+  {% include 'partials/sprint_sidebar.html' %}
 {% endblock %}
 
 {% block modals %}

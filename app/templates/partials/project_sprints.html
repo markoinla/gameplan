@@ -24,9 +24,10 @@
                             <span class="sprint-name">{{ sprint.name }}</span>
                             <small class="text-muted ms-2">(Created: {{ sprint.created_at.strftime('%Y-%m-%d') if sprint.created_at else '' }})</small>
                             <span class="badge 
-                                {% if sprint.status == 'Planned' %}bg-secondary
-                                {% elif sprint.status == 'Active' %}bg-primary
-                                {% else %}bg-success{% endif %}">
+                                {% if sprint.status == 'Planned' %}badge-secondary
+                                {% elif sprint.status == 'Active' %}badge-primary
+                                {% elif sprint.status == 'Completed' %}badge-success
+                                {% else %}badge-secondary{% endif %}">
                                 {{ sprint.status }}
                             </span>
                         </div>

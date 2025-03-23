@@ -97,18 +97,42 @@
 
 /* Custom markdown styling using Tailwind Typography */
 .markdown {
-    @apply prose max-w-none prose-base prose-headings:text-base-content prose-p:text-base-content;
+    color: hsl(var(--color-base-content));
+    max-width: none;
 }
 
 .markdown p {
-    @apply mt-[0px];
+    margin-top: 0px;
 }
 
 /* Dark mode adjustments */
 [data-theme="btg-dark"] .markdown {
-    @apply prose-invert;
+    color-scheme: dark;
 }
 
 .prose {
-  @apply max-w-none;
+  max-width: none;
+  color: hsl(var(--color-base-content));
+}
+
+/* Fix for list styling consistency */
+.prose ul {
+  color: hsl(var(--color-base-content));
+}
+
+/* Styling for completed tasks and issues */
+.task-content.completed, .issue-content.completed {
+  color: hsl(var(--color-base-300));
+  text-decoration-line: line-through;
+}
+
+/* Sprint highlight animation for navigation */
+.highlight-sprint {
+  animation: highlight-pulse 1s ease-in-out;
+}
+
+@keyframes highlight-pulse {
+  0% { background-color: transparent; }
+  30% { background-color: hsl(var(--color-primary) / 0.15); }
+  100% { background-color: transparent; }
 }
