@@ -9,7 +9,24 @@
     - current_sprint_id (optional): ID of the currently selected sprint
 -->
 
-<div class="bg-base-200 min-h-full w-80 text-base-content overflow-y-auto flex flex-col">
+<div class="bg-base-200 min-h-full w-80 text-base-content overflow-y-auto flex flex-col"
+     x-data="{ 
+        activeSectionsOpen: localStorage.getItem('sidebar-active-section') !== 'false', 
+        plannedSectionsOpen: localStorage.getItem('sidebar-planned-section') !== 'false',
+        completedSectionsOpen: localStorage.getItem('sidebar-completed-section') !== 'false',
+        toggleActiveSection() {
+            this.activeSectionsOpen = !this.activeSectionsOpen;
+            localStorage.setItem('sidebar-active-section', this.activeSectionsOpen);
+        },
+        togglePlannedSection() {
+            this.plannedSectionsOpen = !this.plannedSectionsOpen;
+            localStorage.setItem('sidebar-planned-section', this.plannedSectionsOpen);
+        },
+        toggleCompletedSection() {
+            this.completedSectionsOpen = !this.completedSectionsOpen;
+            localStorage.setItem('sidebar-completed-section', this.completedSectionsOpen);
+        }
+     }">
     <!-- Sidebar Header with Close Button -->
     <div class="px-4 py-3 border-b border-base-300 flex justify-between items-center">
         <a href="{{ url_for('main.project_detail', project_id=project.id) }}" class="hover:opacity-80 transition-opacity">
@@ -63,13 +80,19 @@
             
             {# Active Sprints Section #}
             {% if active_sprints %}
-                <div class="px-4 pt-3 pb-1">
+                <!-- Active Sprints Header - Collapsible -->
+                <div class="px-4 pt-3 pb-1 cursor-pointer flex justify-between items-center" @click="toggleActiveSection()">
                     <h3 class="text-xs font-semibold uppercase tracking-wider flex items-center">
                         <div class="w-2 h-2 bg-primary rounded-full mr-2"></div>
                         Active
                     </h3>
+                    <!-- Chevron Icon - Rotates based on section state -->
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4" :class="activeSectionsOpen ? 'rotate-180' : ''">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                    </svg>
                 </div>
-                <div class="p-1">
+                <!-- Active Sprints Content - Collapsible -->
+                <div class="p-1" x-show="activeSectionsOpen" x-transition>
                     {% for sprint in active_sprints|sort(attribute='created_at', reverse=True) %}
                         <a href="{{ url_for('main.sprint_detail', project_id=project.id, sprint_id=sprint.id) }}"
                            data-tip="{{ sprint.name }}" 
@@ -77,9 +100,6 @@
                             
                             <!-- Main Sprint Info -->
                             <div class="flex items-center gap-2 w-full">
-                                <!-- Status Indicator -->
-                                <!--<div class="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-primary"></div>-->
-                                
                                 <!-- Sprint Name -->
                                 <span class="text-base flex-grow truncate">{{ sprint.name }}</span>
                             </div>
@@ -88,7 +108,7 @@
                             <div class="flex gap-2 mt-1 text-xs opacity-70">
                                 <span>Open:</span>
                                 <span><span class="font-medium">{{ sprint.tasks.count() - sprint.tasks.filter_by(completed=True).count() if sprint.tasks is defined else 0 }}</span> tasks</span>
-                                <span><span class="font-medium">{{ sprint.issues.count() if sprint.issues is defined else 0 }}</span> issues</span>
+                                <span><span class="font-medium">{{ sprint.issues.count() - sprint.issues.filter_by(completed=True).count() if sprint.issues is defined else 0 }}</span> issues</span>
                             </div>
                         </a>
                     {% endfor %}
@@ -97,13 +117,19 @@
             
             {# Planned Sprints Section #}
             {% if planned_sprints %}
-                <div class="px-4 pt-3 pb-1">
+                <!-- Planned Sprints Header - Collapsible -->
+                <div class="px-4 pt-3 pb-1 cursor-pointer flex justify-between items-center" @click="togglePlannedSection()">
                     <h3 class="text-xs font-semibold uppercase tracking-wider flex items-center">
                         <div class="w-2 h-2 bg-secondary rounded-full mr-2"></div>
                         Planned
                     </h3>
+                    <!-- Chevron Icon - Rotates based on section state -->
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4" :class="plannedSectionsOpen ? 'rotate-180' : ''">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                    </svg>
                 </div>
-                <div class="p-1">
+                <!-- Planned Sprints Content - Collapsible -->
+                <div class="p-1" x-show="plannedSectionsOpen" x-transition>
                     {% for sprint in planned_sprints|sort(attribute='created_at', reverse=True) %}
                         <a href="{{ url_for('main.sprint_detail', project_id=project.id, sprint_id=sprint.id) }}"
                         data-tip="{{ sprint.name }}" 
@@ -111,9 +137,6 @@
                             
                             <!-- Main Sprint Info -->
                             <div class="flex items-center gap-2 w-full">
-                                <!-- Status Indicator -->
-                               <!-- <div class="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-secondary"></div>-->
-                                
                                 <!-- Sprint Name -->
                                 <span class="text-base flex-grow truncate">{{ sprint.name }}</span>
                             </div>
@@ -122,7 +145,7 @@
                             <div class="flex gap-2 mt-1 text-xs opacity-70">
                                 <span>Open:</span>
                                 <span><span class="font-medium">{{ sprint.tasks.count() - sprint.tasks.filter_by(completed=True).count() if sprint.tasks is defined else 0 }}</span> tasks</span>
-                                <span><span class="font-medium">{{ sprint.issues.count() if sprint.issues is defined else 0 }}</span> issues</span>
+                                <span><span class="font-medium">{{ sprint.issues.count() - sprint.issues.filter_by(completed=True).count() if sprint.issues is defined else 0 }}</span> issues</span>
                             </div>
                         </a>
                     {% endfor %}
@@ -131,13 +154,19 @@
             
             {# Completed Sprints Section #}
             {% if completed_sprints %}
-                <div class="px-4 pt-3 pb-1">
+                <!-- Completed Sprints Header - Collapsible -->
+                <div class="px-4 pt-3 pb-1 cursor-pointer flex justify-between items-center" @click="toggleCompletedSection()">
                     <h3 class="text-xs font-semibold uppercase tracking-wider flex items-center">
                         <div class="w-2 h-2 bg-success rounded-full mr-2"></div>
                         Completed
                     </h3>
+                    <!-- Chevron Icon - Rotates based on section state -->
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4" :class="completedSectionsOpen ? 'rotate-180' : ''">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                    </svg>
                 </div>
-                <div class="p-1">
+                <!-- Completed Sprints Content - Collapsible -->
+                <div class="p-1" x-show="completedSectionsOpen" x-transition>
                     {% for sprint in completed_sprints|sort(attribute='created_at', reverse=True) %}
                         <a href="{{ url_for('main.sprint_detail', project_id=project.id, sprint_id=sprint.id) }}"
                             data-tip="{{ sprint.name }}" 
@@ -145,9 +174,6 @@
                             
                             <!-- Main Sprint Info -->
                             <div class="flex items-center gap-2 w-full">
-                                <!-- Status Indicator -->
-                                <!-- <div class="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-success"></div> -->
-                                
                                 <!-- Sprint Name -->
                                 <span class="text-base flex-grow truncate">{{ sprint.name }}</span>
                             </div>
@@ -156,13 +182,12 @@
                             <div class="flex gap-2 mt-1 text-xs opacity-70">
                                 <span>Open:</span>
                                 <span><span class="font-medium">{{ sprint.tasks.count() - sprint.tasks.filter_by(completed=True).count() if sprint.tasks is defined else 0 }}</span> tasks</span>
-                                <span><span class="font-medium">{{ sprint.issues.count() if sprint.issues is defined else 0 }}</span> issues</span>
+                                <span><span class="font-medium">{{ sprint.issues.count() - sprint.issues.filter_by(completed=True).count() if sprint.issues is defined else 0 }}</span> issues</span>
                             </div>
                         </a>
                     {% endfor %}
                 </div>
             {% endif %}
-            
         {% else %}
             <div class="flex flex-col items-center justify-center h-32 text-center opacity-60 p-4">
                 <p class="text-sm">No sprints yet</p>

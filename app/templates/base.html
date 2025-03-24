@@ -12,39 +12,32 @@
     </style>
     {% block extra_css %}{% endblock %}
 </head>
-<body class="min-h-screen text-base-content"
-      x-init="
-        // Always use dark mode
-        localStorage.setItem('darkMode', true);
-        
-        // Remove theme toggle capability temporarily
-        darkMode = true;
-      ">
+<body class="min-h-screen text-base-content">
       
     <!-- Custom Sidebar Implementation to properly push content -->
-    <div x-data="{ 
-        sidebarOpen: localStorage.getItem('sidebarOpen') !== 'false',
-        isDashboard: window.location.pathname === '/' || window.location.pathname === '/projects',
-        preloaded: false
-      }"
-      x-init="
-        // Set preloaded to true after a brief delay to prevent initial animations
-        setTimeout(() => { preloaded = true }, 50);
-        
-        // Initialize UI Alpine Store
+    <div id="appContainer">
+      <!-- Alpine Store Initialization -->
+      <script>
         document.addEventListener('alpine:init', () => {
+          // Sidebar store for managing sidebar state
+          Alpine.store('sidebar', {
+            isOpen: localStorage.getItem('sidebarOpen') !== 'false',
+            isDashboard: window.location.pathname === '/' || window.location.pathname === '/projects',
+            preloaded: false,
+            toggle() {
+              this.isOpen = !this.isOpen;
+              localStorage.setItem('sidebarOpen', this.isOpen);
+            }
+          });
+          
+          // UI store for sprint management and other UI interactions
           Alpine.store('ui', {
             openSprint(id) {
               // Find the sprint container
               setTimeout(() => {
                 const sprintEl = document.getElementById(`sprint-${id}`);
                 if (sprintEl) {
-                  // Set the Alpine x-data property directly using evaluate
-                  Alpine.evaluate(sprintEl, () => {
-                    this.sprintOpen = true;
-                  });
-
-                  // Fallback method - directly modify the x-data object
+                  // Set the Alpine x-data property directly using $data
                   try {
                     const alpineComponent = Alpine.$data(sprintEl);
                     if (alpineComponent) {
@@ -66,23 +59,28 @@
             }
           });
         });
-      ">
+      </script>
+      
       <!-- Main Content Area with transition for sidebar push -->
       <div class="transition-all duration-300 ease-in-out min-h-screen flex flex-col" 
            :class="{
-             'pl-80': sidebarOpen && !isDashboard, 
-             'pl-0': !sidebarOpen || isDashboard,
-             'transition-all duration-300 ease-in-out': preloaded
-           }">
+             'pl-80': $store.sidebar.isOpen && !$store.sidebar.isDashboard, 
+             'pl-0': !$store.sidebar.isOpen || $store.sidebar.isDashboard,
+             'transition-all duration-300 ease-in-out': $store.sidebar.preloaded
+           }"
+           x-init="
+             // Set preloaded to true after a brief delay to prevent initial animations
+             setTimeout(() => { $store.sidebar.preloaded = true }, 50);
+           ">
         
         <!-- Navigation -->
         <div class="text-primary-content">
           <div class="navbar bg-base-100 px-8">
             <div class="flex-1 flex items-center">
               <!-- Hamburger Menu Button - Hidden on dashboard and when sidebar is open -->
-              <button @click="sidebarOpen = !sidebarOpen; localStorage.setItem('sidebarOpen', sidebarOpen)" 
+              <button @click="$store.sidebar.toggle()" 
                       class="btn btn-ghost mr-2"
-                      x-show="!isDashboard && !sidebarOpen">
+                      x-show="!$store.sidebar.isDashboard && !$store.sidebar.isOpen">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
                 </svg>
@@ -129,11 +127,11 @@
       <!-- Sidebar Content (fixed position, will not overlay) -->
       <div class="fixed top-0 left-0 h-screen w-80 bg-base-200 shadow-lg z-20 overflow-y-auto"
            :class="{
-              'translate-x-0': sidebarOpen, 
-              '-translate-x-full': !sidebarOpen,
-              'transition-transform duration-300 ease-in-out': preloaded
+              'translate-x-0': $store.sidebar.isOpen, 
+              '-translate-x-full': !$store.sidebar.isOpen,
+              'transition-transform duration-300 ease-in-out': $store.sidebar.preloaded
            }"
-           x-show="!isDashboard"
+           x-show="!$store.sidebar.isDashboard"
            x-cloak>
         <!-- Sidebar content here -->
         {% block sidebar %}{% endblock %}
