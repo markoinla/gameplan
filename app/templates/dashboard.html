@@ -85,20 +85,14 @@
     
     // Update the event listeners for the modal
     document.addEventListener('DOMContentLoaded', function() {
-        // Open modal when "New Project" button is clicked
-        document.getElementById('newProjectBtn').addEventListener('click', function() {
-            setTimeout(function() { // Give HTMX time to load the form
-                openModal();
-            }, 100);
-        });
+        // No longer open modal when "New Project" button is clicked
+        // Project form will be shown directly in the dashboard
         
         // Handle "Create First Project" button if it exists
         const createFirstBtn = document.getElementById('createFirstProjectBtn');
         if (createFirstBtn) {
             createFirstBtn.addEventListener('click', function() {
-                setTimeout(function() {
-                    openModal();
-                }, 100);
+                // No longer open modal, load form directly in dashboard
             });
         }
     });

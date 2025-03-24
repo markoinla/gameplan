@@ -3,7 +3,7 @@
     <h3 class="text-lg font-semibold mb-4">{{ 'Edit Issue' if issue else 'Add New Issue' }}</h3>
     <form id="htmx-issue-form" 
           hx-{{ 'put' if issue else 'post' }}="{{ '/htmx/issues/' + issue.id|string + '/update' if issue else '/htmx/issues/create' }}" 
-          hx-target="#projectsContainer" 
+          hx-target="#appMainContainer" 
           hx-swap="innerHTML"
           hx-preserve="true"
           data-form-id="{{ 'issue-' + issue.id|string if issue else 'issue-form-container-' + sprint_id|string }}"

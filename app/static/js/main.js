@@ -106,6 +106,19 @@ function closeIssueForm(sprintId) {
 }
 
 /**
+ * Close any modal by ID
+ * @param {string} modalId - The ID of the modal to close
+ */
+function closeModal(modalId) {
+    // Dispatch the close-modal event that Alpine.js listens for
+    document.dispatchEvent(new CustomEvent('close-modal', {
+        detail: {
+            id: modalId
+        }
+    }));
+}
+
+/**
  * Close the sprint form for a specific project
  * @param {string} projectId - The ID of the project
  */

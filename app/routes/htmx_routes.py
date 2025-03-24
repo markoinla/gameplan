@@ -30,7 +30,7 @@ def toggle_task(task_id):
     project = Project.query.get(sprint.project_id)
     
     # Return the specific project context
-    return render_template('partials/projects_list.html', projects=[project])
+    return render_template('partials/sprint.html', sprint=sprint, project=project, is_sprint_detail=True)
 
 @htmx_bp.route('/issues/<int:issue_id>/toggle', methods=['POST'])
 def toggle_issue(issue_id):
@@ -57,7 +57,7 @@ def toggle_issue(issue_id):
     project = Project.query.get(sprint.project_id)
     
     # Return the specific project context
-    return render_template('partials/projects_list.html', projects=[project])
+    return render_template('partials/sprint.html', sprint=sprint, project=project, is_sprint_detail=True)
 
 @htmx_bp.route('/tasks/create', methods=['POST'])
 def create_task():
@@ -90,22 +90,14 @@ def create_task():
             
             # Always return the specific project for task operations
             # Task operations are always performed from the project detail page
-            return render_template('partials/projects_list.html', projects=[project])
+            return render_template('partials/sprint.html', sprint=sprint, project=project, is_sprint_detail=True)
     
     return '', 400  # Bad request
 
 @htmx_bp.route('/tasks/form/<int:sprint_id>', methods=['GET'])
 def get_task_form(sprint_id):
-    """
-    HTMX endpoint to get the task creation form
-    
-    Args:
-        sprint_id: ID of the sprint to add the task to
-        
-    Returns:
-        Rendered HTML fragment of the task form
-    """
     sprint = Sprint.query.get_or_404(sprint_id)
+    # No longer need to check referer since we're using a generic container
     return render_template('partials/task_form.html', sprint_id=sprint_id)
 
 @htmx_bp.route('/issues/create', methods=['POST'])
@@ -139,7 +131,7 @@ def create_issue():
             
             # Always return the specific project for issue operations
             # Issue operations are always performed from the project detail page
-            return render_template('partials/projects_list.html', projects=[project])
+            return render_template('partials/sprint.html', sprint=sprint, project=project, is_sprint_detail=True)
     
     return '', 400  # Bad request
 
@@ -171,7 +163,7 @@ def get_issue_edit_form(issue_id):
     return render_template('partials/issue_form.html', issue=issue)
 
 @htmx_bp.route('/tasks/<int:task_id>/edit', methods=['GET'])
-def edit_task_form(task_id):
+def get_task_edit_form(task_id):
     """
     HTMX endpoint to get the task edit form
     
@@ -179,9 +171,10 @@ def edit_task_form(task_id):
         task_id: ID of the task to edit
         
     Returns:
-        Rendered HTML fragment of the task form
+        Rendered HTML fragment of the task edit form
     """
     task = Task.query.get_or_404(task_id)
+    # No longer need to check referer since we're using a generic container
     return render_template('partials/task_form.html', task=task)
 
 @htmx_bp.route('/tasks/<int:task_id>/update', methods=['PUT', 'POST'])
@@ -209,7 +202,7 @@ def update_task(task_id):
     
     # Always return the specific project for task operations
     # Task operations are always performed from the project detail page
-    return render_template('partials/projects_list.html', projects=[project])
+    return render_template('partials/sprint.html', sprint=sprint, project=project, is_sprint_detail=True)
 
 @htmx_bp.route('/tasks/<int:task_id>/delete', methods=['DELETE', 'POST'])
 def delete_task(task_id):
@@ -237,7 +230,7 @@ def delete_task(task_id):
     
     # Always return the specific project for task operations
     # Task operations are always performed from the project detail page
-    return render_template('partials/projects_list.html', projects=[project])
+    return render_template('partials/sprint.html', sprint=sprint, project=project, is_sprint_detail=True)
 
 @htmx_bp.route('/tasks/<int:task_id>/star', methods=['PUT'])
 def star_task(task_id):
@@ -265,7 +258,7 @@ def star_task(task_id):
     
     # Always return the specific project for task operations
     # Task operations are always performed from the project detail page
-    return render_template('partials/projects_list.html', projects=[project])
+    return render_template('partials/sprint.html', sprint=sprint, project=project, is_sprint_detail=True)
 
 # Issue HTMX Routes
 
@@ -315,7 +308,7 @@ def update_issue(issue_id):
     
     # Always return the specific project for issue operations
     # Issue operations are always performed from the project detail page
-    return render_template('partials/projects_list.html', projects=[project])
+    return render_template('partials/sprint.html', sprint=sprint, project=project, is_sprint_detail=True)
 
 @htmx_bp.route('/issues/<int:issue_id>/delete', methods=['DELETE', 'POST'])
 def delete_issue(issue_id):
@@ -343,7 +336,7 @@ def delete_issue(issue_id):
     
     # Always return the specific project for issue operations
     # Issue operations are always performed from the project detail page
-    return render_template('partials/projects_list.html', projects=[project])
+    return render_template('partials/sprint.html', sprint=sprint, project=project, is_sprint_detail=True)
 
 @htmx_bp.route('/issues/<int:issue_id>/star', methods=['PUT'])
 def star_issue(issue_id):
@@ -371,7 +364,7 @@ def star_issue(issue_id):
     
     # Always return the specific project for issue operations
     # Issue operations are always performed from the project detail page
-    return render_template('partials/projects_list.html', projects=[project])
+    return render_template('partials/sprint.html', sprint=sprint, project=project, is_sprint_detail=True)
 
 # Sprint HTMX Routes
 
@@ -389,7 +382,10 @@ def get_sprint_form():
     project_id = request.args.get('project_id')
     project = Project.query.get_or_404(project_id)
     
-    return render_template('partials/sprint_form.html', project=project)
+    # Flag to indicate this is for the modal
+    is_modal = True
+    
+    return render_template('partials/sprint_form.html', project=project, is_modal=is_modal)
 
 @htmx_bp.route('/sprints/<int:sprint_id>/edit', methods=['GET'])
 def edit_sprint_form(sprint_id):
@@ -404,7 +400,9 @@ def edit_sprint_form(sprint_id):
     """
     try:
         sprint = Sprint.query.get_or_404(sprint_id)
-        return render_template('partials/sprint_form.html', sprint=sprint)
+        # This is not a modal context
+        is_modal = False
+        return render_template('partials/sprint_form.html', sprint=sprint, is_modal=is_modal)
     except Exception as e:
         print(f"Error in edit_sprint_form: {str(e)}")
         return "Error loading sprint form", 500
@@ -415,7 +413,8 @@ def create_sprint():
     HTMX endpoint to create a new sprint
     
     Returns:
-        Rendered HTML fragment of the updated project
+        Either a redirect to the new sprint detail page or
+        rendered HTML fragment of the updated project
     """
     project_id = request.form.get('project_id')
     name = request.form.get('name')
@@ -435,9 +434,18 @@ def create_sprint():
             db.session.add(sprint)
             db.session.commit()
             
-            # Always return the specific project for sprint operations
-            # Sprint operations are always performed from the project detail page
-            return render_template('partials/projects_list.html', projects=[project])
+            # Check if the request is coming from the modal form
+            # This is identified by the 'source' field we added to the form
+            source = request.form.get('source', '')
+            
+            if source == 'sidebar_modal':
+                # For modal submissions, redirect to the sprint detail page
+                response = make_response('')
+                response.headers['HX-Redirect'] = url_for('main.sprint_detail', project_id=project_id, sprint_id=sprint.id)
+                return response
+            else:
+                # For other submissions, return the updated sprint HTML
+                return render_template('partials/sprint.html', sprint=sprint, project=project, is_sprint_detail=True)
     
     return '', 400  # Bad request
 
@@ -467,9 +475,9 @@ def update_sprint(sprint_id):
     # Get the project for this sprint
     project = Project.query.get(sprint.project_id)
     
-    # Always return the specific project for sprint operations
-    # Sprint operations are always performed from the project detail page
-    return render_template('partials/projects_list.html', projects=[project])
+    # Since we've restructured the app, all sprint form submissions 
+    # now come from the sprint detail page, so always return the sprint partial
+    return render_template('partials/sprint.html', sprint=sprint, project=project, is_sprint_detail=True)
 
 @htmx_bp.route('/sprints/<int:sprint_id>/delete', methods=['DELETE', 'POST'])
 def delete_sprint(sprint_id):
@@ -480,7 +488,7 @@ def delete_sprint(sprint_id):
         sprint_id: ID of the sprint to delete
         
     Returns:
-        Rendered HTML fragment of the updated project
+        Rendered HTML fragment of the updated project or redirect to project detail
     """
     sprint = Sprint.query.get_or_404(sprint_id)
     project_id = sprint.project_id
@@ -495,15 +503,24 @@ def delete_sprint(sprint_id):
     
     # Get the project
     project = Project.query.get(project_id)
-    if project:
-        # Always return the specific project for sprint operations
-        # Sprint operations are always performed from the project detail page
-        return render_template('partials/projects_list.html', projects=[project])
-    else:
+    
+    # Check if the request is coming from the sprint detail page
+    referer = request.headers.get('Referer', '')
+    is_sprint_detail_page = f'/project/{project_id}/sprint/{sprint_id}' in referer if referer else False
+    
+    if not project:
         # If project was deleted, redirect to dashboard
         response = make_response('')
         response.headers['HX-Redirect'] = url_for('main.index')
         return response
+    elif is_sprint_detail_page:
+        # If on sprint detail page, redirect to the project detail page
+        response = make_response('')
+        response.headers['HX-Redirect'] = url_for('main.project_detail', project_id=project_id)
+        return response
+    else:
+        # For all other cases (project detail page), update the project view
+        return render_template('partials/projects_list.html', projects=Project.query.all())
 
 # Project HTMX Routes
 
@@ -589,9 +606,9 @@ def update_project(project_id):
     
     db.session.commit()
     
-    # Always return the specific project for project operations
-    # Project update operations are always performed from the project detail page
-    return render_template('partials/projects_list.html', projects=[project])
+    # For project updates, we need to render the projects list with this project
+    projects = [project]  # Just include this project
+    return render_template('partials/projects_list.html', projects=projects)
 
 @htmx_bp.route('/projects/<int:project_id>/delete', methods=['DELETE', 'POST'])
 def delete_project(project_id):

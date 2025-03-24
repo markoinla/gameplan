@@ -1,20 +1,35 @@
 <!DOCTYPE html>
-<html lang="en" x-data="{ darkMode: localStorage.getItem('darkMode') === 'true' }" :data-theme="darkMode ? 'btg-dark' : 'btg-light'">
+<html lang="en" x-data="{ darkMode: true }" data-theme="btg-dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Build Together (BTG) - AI Project Management{% endblock %}</title>
     <!-- Tailwind CSS (locally compiled with DaisyUI) -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/tailwind.css') }}">
+    <style>
+        /* Hide elements until Alpine.js is loaded */
+        [x-cloak] { display: none !important; }
+    </style>
     {% block extra_css %}{% endblock %}
 </head>
 <body class="min-h-screen text-base-content"
       x-init="
-        if (!localStorage.getItem('darkMode')) {
-            darkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            localStorage.setItem('darkMode', darkMode);
-        }
-        $watch('darkMode', value => localStorage.setItem('darkMode', value))
+        // Always use dark mode
+        localStorage.setItem('darkMode', true);
+        
+        // Remove theme toggle capability temporarily
+        darkMode = true;
+      ">
+      
+    <!-- Custom Sidebar Implementation to properly push content -->
+    <div x-data="{ 
+        sidebarOpen: localStorage.getItem('sidebarOpen') !== 'false',
+        isDashboard: window.location.pathname === '/' || window.location.pathname === '/projects',
+        preloaded: false
+      }"
+      x-init="
+        // Set preloaded to true after a brief delay to prevent initial animations
+        setTimeout(() => { preloaded = true }, 50);
         
         // Initialize UI Alpine Store
         document.addEventListener('alpine:init', () => {
@@ -52,23 +67,26 @@
           });
         });
       ">
-      
-    <!-- DaisyUI Drawer (Following the official documentation pattern) -->
-    <div class="drawer lg:drawer-open">
-      <input id="project-drawer" type="checkbox" class="drawer-toggle" />
-      
-      <!-- Main Content Area -->
-      <div class="drawer-content flex flex-col min-h-screen">
+      <!-- Main Content Area with transition for sidebar push -->
+      <div class="transition-all duration-300 ease-in-out min-h-screen flex flex-col" 
+           :class="{
+             'pl-80': sidebarOpen && !isDashboard, 
+             'pl-0': !sidebarOpen || isDashboard,
+             'transition-all duration-300 ease-in-out': preloaded
+           }">
+        
         <!-- Navigation -->
         <div class="text-primary-content">
-          <div class="navbar bg-base-100 px-4">
+          <div class="navbar bg-base-100 px-8">
             <div class="flex-1 flex items-center">
-              <!-- Hamburger Menu Button (controls sidebar drawer) -->
-              <label for="project-drawer" class="btn btn-ghost drawer-button mr-2 lg:hidden">
+              <!-- Hamburger Menu Button - Hidden on dashboard and when sidebar is open -->
+              <button @click="sidebarOpen = !sidebarOpen; localStorage.setItem('sidebarOpen', sidebarOpen)" 
+                      class="btn btn-ghost mr-2"
+                      x-show="!isDashboard && !sidebarOpen">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
                 </svg>
-              </label>
+              </button>
               
               <!-- Brand/Logo -->
               <a href="{{ url_for('main.index') }}" class="flex items-center gap-2">
@@ -95,18 +113,29 @@
         </div>
 
         <!-- Main Content -->
-        <main class="mx-auto max-w-6xl px-4 py-4">
+        <main class="mx-auto w-full max-w-6xl px-4 py-4">
             {% block content %}{% endblock %}
         </main>
-
+        
+        <!-- Modal containers -->
+        {% with modal_id="sprint-form-modal", default_title="Create New Sprint" %}
+            {% include 'partials/modal.html' %}
+        {% endwith %}
+        
         <!-- Modals -->
         {% block modals %}{% endblock %}
       </div>
       
-      <!-- Sidebar Content (will only be shown on project detail pages) -->
-      <div class="drawer-side">
-        <label for="project-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
-        <!-- Sidebar content here - will be populated by project_detail.html -->
+      <!-- Sidebar Content (fixed position, will not overlay) -->
+      <div class="fixed top-0 left-0 h-screen w-80 bg-base-200 shadow-lg z-20 overflow-y-auto"
+           :class="{
+              'translate-x-0': sidebarOpen, 
+              '-translate-x-full': !sidebarOpen,
+              'transition-transform duration-300 ease-in-out': preloaded
+           }"
+           x-show="!isDashboard"
+           x-cloak>
+        <!-- Sidebar content here -->
         {% block sidebar %}{% endblock %}
       </div>
     </div>

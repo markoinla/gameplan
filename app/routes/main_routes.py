@@ -99,4 +99,5 @@ def sprint_detail(project_id, sprint_id):
         return "Sprint not found in this project", 404
     
     # Render the sprint detail in project context
-    return render_template('sprint_detail.html', project=project, sprint=sprint)
+    # Pass is_sprint_detail=True to tell the sprint template not to make the sprint collapsible
+    return render_template('sprint_detail.html', project=project, sprint=sprint, is_sprint_detail=True)

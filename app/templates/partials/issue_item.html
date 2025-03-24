@@ -8,7 +8,7 @@
                 id="issue-checkbox-{{ issue.id }}" 
                 {{ 'checked' if issue.completed else '' }}
                 hx-post="/htmx/issues/{{ issue.id }}/toggle"
-                hx-target="#projectsContainer"
+                hx-target="#appMainContainer"
                 hx-swap="innerHTML"
                 hx-preserve="true"
                 name="completed">
@@ -18,7 +18,7 @@
             <div class="cursor-pointer ml-2 text-gray-500 tooltip tooltip-bottom" 
                     data-tip="Toggle starred status"
                     hx-put="/htmx/issues/{{ issue.id }}/star"
-                    hx-target="#projectsContainer"
+                    hx-target="#appMainContainer"
                     hx-swap="innerHTML"
                     hx-preserve="true">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="{{ 'text-warning' if issue.starred }}" width="1.2em" height="1.2em" >
@@ -60,7 +60,7 @@
             <div class="text-slate-200 hover:text-error cursor-pointer flex items-center justify-center tooltip tooltip-top" 
                     data-tip="Delete issue"
                     hx-delete="/htmx/issues/{{ issue.id }}/delete"
-                    hx-target="#projectsContainer"
+                    hx-target="#appMainContainer"
                     hx-swap="innerHTML"
                     hx-confirm="Are you sure you want to delete this issue?">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" data-slot="icon" width="1.2em" height="1.2em">

@@ -8,7 +8,7 @@
                 id="task-checkbox-{{ task.id }}" 
                 {{ 'checked' if task.completed else '' }}
                 hx-post="/htmx/tasks/{{ task.id }}/toggle"
-                hx-target="#projectsContainer"
+                hx-target="#appMainContainer"
                 hx-swap="innerHTML"
                 hx-preserve="true"
                 name="completed"></div>
@@ -18,7 +18,7 @@
             <div class="cursor-pointer ml-2 text-gray-500 tooltip tooltip-bottom" 
                     data-tip="Toggle starred status"
                     hx-put="/htmx/tasks/{{ task.id }}/star"
-                    hx-target="#projectsContainer"
+                    hx-target="#appMainContainer"
                     hx-swap="innerHTML"
                     hx-preserve="true">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="{{ 'text-warning' if task.starred }}" width="1.2em" height="1.2em" >
@@ -60,7 +60,7 @@
             <div class="text-slate-200 hover:text-error cursor-pointer flex items-center justify-center tooltip tooltip-top"
                     data-tip="Delete task"
                     hx-delete="/htmx/tasks/{{ task.id }}/delete"
-                    hx-target="#projectsContainer"
+                    hx-target="#appMainContainer"
                     hx-swap="innerHTML"
                     hx-confirm="Are you sure you want to delete this task?">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" data-slot="icon" width="1.2em" height="1.2em">
@@ -71,7 +71,7 @@
     </div>
     <div class="form-control">
         <div class="flex items-center cursor-pointer">
-            <div class="ml-8 hover:text-white {{ 'text-white/40' if task.completed else 'text-white/80' }} markdown">{{ task.details|markdown }}</div>
+            <div class="ml-8 hover:text-white {{ 'text-white/40' if task.completed else 'text-white/80' }} prose markdown">{{ task.details|markdown }}</div>
         </div>
     </div>
 </div>

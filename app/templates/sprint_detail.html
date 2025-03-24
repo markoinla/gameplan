@@ -8,29 +8,10 @@
 {% endblock %}
 
 {% block content %}
-<div class="px-6 py-6">
-    <!-- Breadcrumb Navigation -->
-    <div class="text-sm breadcrumbs mb-4">
-        <ul>
-            <li><a href="{{ url_for('main.index') }}">Dashboard</a></li>
-            <li><a href="{{ url_for('main.project_detail', project_id=project.id) }}">{{ project.name }}</a></li>
-            <li>{{ sprint.name }}</li>
-        </ul>
-    </div>
-
-    <!-- Back to Project Button -->
-    <div class="mb-4">
-        <a href="{{ url_for('main.project_detail', project_id=project.id) }}" class="btn btn-outline btn-sm">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="1.2em" height="1.2em">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3" />
-            </svg>
-            Back to Project
-        </a>
-    </div>
-
+<div class="">
     <!-- Sprint Detail Container -->
-    <div id="sprintDetailContainer">
-        {% include 'partials/sprint.html' %}
+    <div id="appMainContainer">
+        {% include 'partials/sprint.html' with context %}
     </div>
 </div>
 {% endblock %}
