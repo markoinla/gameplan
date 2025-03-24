@@ -28,18 +28,21 @@
         }
      }">
     <!-- Sidebar Header with Close Button -->
-    <div class="px-4 py-3 border-b border-base-300 flex justify-between items-center">
+    <div class="mt-4 px-4 py-3">
+        <h3 class="text-xs font-semibold uppercase tracking-wider">Current Project</h3>
+    </div>
+    <div class="px-4 border-b border-base-300 flex justify-between items-center">
         <a href="{{ url_for('main.project_detail', project_id=project.id) }}" class="hover:opacity-80 transition-opacity">
-            <h2 class="font-semibold text-lg truncate">{{ project.name }}</h2>
+            <h2 class="font-semibold text-lg">{{ project.name }}</h2>
         </a>
         
-        <!-- Close Sidebar Button (Hamburger Menu) -->
+        <!-- Close Sidebar Button (Hamburger Menu) 
         <button @click="sidebarOpen = false; localStorage.setItem('sidebarOpen', false)" 
                 class="btn btn-ghost p-1">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
             </svg>
-        </button>
+        </button>-->
     </div>
     
     <!-- Sidebar Actions -->
@@ -70,6 +73,9 @@
     
     <!-- Sprint List - Organized by Status -->
     <div class="overflow-y-auto flex-grow">
+        <div class="px-4 py-3">
+            <h3 class="text-xs font-semibold uppercase tracking-wider">Sprints</h3>
+        </div>
         {% if project.sprints %}
             {# Get active sprints #}
             {% set active_sprints = project.sprints|selectattr('status', 'equalto', 'Active')|list %}
